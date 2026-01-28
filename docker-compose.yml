@@ -1,0 +1,16 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: hackhub-mysql
+    environment:
+      MYSQL_DATABASE: hackhub
+      MYSQL_USER: hackhub
+      MYSQL_PASSWORD: 1234abc
+      MYSQL_ROOT_PASSWORD: 1234abc
+    ports:
+      - "3306:3306"
+    volumes:
+      - hackhub_mysql_data:/var/lib/mysql
+
+volumes:
+  hackhub_mysql_data:
