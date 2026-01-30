@@ -1,4 +1,4 @@
-package com.example.hackhub.domain.utente;
+package com.example.hackhub.domain;
 
 /**
  * Enum che contiene il ruolo di un generico Utente. Tramite questo enum, si possono distinguere i ruoli
