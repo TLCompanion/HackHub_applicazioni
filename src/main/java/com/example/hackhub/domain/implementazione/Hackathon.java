@@ -4,6 +4,7 @@ import com.example.hackhub.domain.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,12 +28,32 @@ public class Hackathon implements Publisher {
     private List<Staff> staff;
     private List<String> iscrizioni;
 
+    /**
+     * Costruisce un'hackathon
+     * @param builder il costruttore dell'hackathon
+     * @param idHackathon l'identificativo dell'hackathon
+     * @param stato lo stato dell'hackathon
+     */
+    private Hackathon(HackathonBuilder builder, String idHackathon, StatoHackathon stato) {
+        this.nome = builder.nome;
+        this.periodo = builder.periodo;
+        this.premio = builder.premio;
+        this.luogo = builder.luogo;
+        this.teamMax = builder.teamMax;
+        this.teamMin = builder.teamMin;
+        this.regolamento = builder.regolamento;
+
+        // valori di default / inizializzazioni
+        this.idHackathon = idHackathon;
+        this.stato = stato;
+        this.listaSottomissioni = new ArrayList<>();
+        this.subscribers = new ArrayList<>();
+        this.staff = new ArrayList<>();
+        this.iscrizioni = new ArrayList<>();
+    }
+
     //metodi da implementare
 
-    /**
-     * Associo uno stato all'hackathon
-     * @param stato lo stato che voglio associare all'hackathon
-     */
     public void setStato(StatoHackathon stato) {
         //TODO IMPLEMENTARE
     }
@@ -71,6 +92,7 @@ public class Hackathon implements Publisher {
     }
 
     public StatoHackathon getStato(){
-        return this.stato;
+        //TODO IMPLEMENTARE
+        return null;
     }
 }

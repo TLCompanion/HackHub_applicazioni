@@ -2,6 +2,7 @@ package com.example.hackhub.domain.implementazione;
 
 import com.example.hackhub.domain.Ruolo;
 import com.example.hackhub.domain.Subscriber;
+import com.example.hackhub.domain.TipoNotifica;
 
 /**
  * Un generico Utente che può avere ruoli diversi e che utilizza la piattaforma HackHub in base al ruolo
@@ -29,7 +30,7 @@ public class Utente implements Subscriber {
      * Metodo di aggiornamento per ricevere nuovi eventi inerenti l'Hackathon a cui il Team di questo Utente
      * è iscritto.
      */
-    public void update() {
+    public void update(TipoNotifica evento) {
         // TODO implementare
     }
 
