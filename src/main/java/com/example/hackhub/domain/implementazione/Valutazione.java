@@ -1,14 +1,26 @@
 package com.example.hackhub.domain.implementazione;
 
+import jakarta.persistence.*;
+
 /**
  * Valutazione fatta da parte di un giudice per una sottomissione inviata
  * da un' team ad un'hackathon
  */
+@Entity
+@Table(name = "valutazioni")
 public class Valutazione {
 
+    @Id
+    @Column(nullable = false, updatable = false)
     private String idValutazione;
+
+    @Column(nullable = false)
     private int voto;
+
+    @Column
     private String descrizione;
+
+    public Valutazione() {}
 
     /**
      * Creazione di una valutazione per una sottomissione

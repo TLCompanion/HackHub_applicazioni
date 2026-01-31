@@ -1,16 +1,30 @@
 package com.example.hackhub.domain.implementazione;
 
 import com.example.hackhub.domain.StatoIscrizione;
+import jakarta.persistence.*;
 
 /**
  * Classe che gestisce l'iscrizione di un team ad un'hackathon
  */
+@Entity
+@Table(name = "iscrizioneTeam")
 public class IscrizioneTeam {
 
+    @Id
+    @Column(nullable = false, updatable = false)
     private String idIscrizione;
+
+    @Column(nullable = false)
     private String idHackathon;
+
+    @Column(nullable = false)
     private String idTeam;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private StatoIscrizione stato;
+
+    public IscrizioneTeam() {}
 
     /**
      * Crea un'iscrizione di un team
