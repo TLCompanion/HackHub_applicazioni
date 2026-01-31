@@ -24,4 +24,14 @@ public class Sottomissione {
     public void impostaValutazione(String idValutazione){
         //TODO IMPLEMENTARE
     }
+
+
+
+    // METODI GETTER
+
+    public String getIdSottomissione() { return idSottomissione; }
+
+    public String getRiferimentoFile() { return riferimentoFile; }
+
+    public String getIdValutazione() { return idValutazione; }
 }

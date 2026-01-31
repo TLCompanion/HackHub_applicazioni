@@ -30,4 +30,10 @@ public class Notifica {
         this.messaggio = messaggio;
         this.tipo = tipo;
     }
+
+
+
+    // METODI GETTER
+
+    public String getMessaggio() { return messaggio; }
 }

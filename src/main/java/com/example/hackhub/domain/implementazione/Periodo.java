@@ -26,4 +26,16 @@ public class Periodo {
         this.dataFine = dataFine;
         this.oraFine = oraFine;
     }
+
+
+
+    // METODI GETTER
+
+    public LocalDate getDataInizio() { return dataInizio; }
+
+    public LocalTime getOraInizio() { return oraInizio; }
+
+    public LocalDate getDataFine() { return dataFine; }
+
+    public LocalTime getOraFine() { return oraFine; }
 }

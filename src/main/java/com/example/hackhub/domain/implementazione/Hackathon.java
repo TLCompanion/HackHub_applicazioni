@@ -54,9 +54,7 @@ public class Hackathon implements Publisher {
 
     //metodi da implementare
 
-    public void setStato(StatoHackathon stato) {
-        //TODO IMPLEMENTARE
-    }
+    public void setStato(StatoHackathon stato) { this.stato = stato; }
 
     public int getTeamMax() {
         return teamMax;
@@ -91,8 +89,5 @@ public class Hackathon implements Publisher {
         //TODO IMPLEMENTARE
     }
 
-    public StatoHackathon getStato(){
-        //TODO IMPLEMENTARE
-        return null;
-    }
+    public StatoHackathon getStato(){ return this.stato; }
 }

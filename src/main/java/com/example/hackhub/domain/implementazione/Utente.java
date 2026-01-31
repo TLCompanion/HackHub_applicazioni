@@ -3,16 +3,28 @@ package com.example.hackhub.domain.implementazione;
 import com.example.hackhub.domain.Ruolo;
 import com.example.hackhub.domain.Subscriber;
 import com.example.hackhub.domain.TipoNotifica;
+import jakarta.persistence.*;
 
 /**
  * Un generico Utente che può avere ruoli diversi e che utilizza la piattaforma HackHub in base al ruolo
  * corrente, e dunque ai suoi scopi.
  */
+@Entity
+@Table(name = "utenti")
 public class Utente implements Subscriber {
-    private String nomeUtente; // Nome identificativo dell'Utente, unico in tutta la piattaforma
-    private String idUtente; // Identificativo univoco dell'Utente
-    //private Ruolo ruolo; // Ruolo corrente dell'Utente dentro la piattaforma
 
+    @Id
+    @Column(nullable = false, updatable = false)
+    private String idUtente; // Identificativo univoco dell'Utente
+
+    @Column(nullable = false, unique = true)
+    private String nomeUtente; // Nome identificativo dell'Utente, unico in tutta la piattaforma
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Ruolo ruolo; // Ruolo corrente dell'Utente dentro la piattaforma
+
+    public Utente() {}
     /**
      * Crea un Utente, dato un nome, un id e un ruolo.
      *
@@ -23,7 +35,7 @@ public class Utente implements Subscriber {
     public Utente(String nome, String id, Ruolo r) {
         this.nomeUtente = nome;
         this.idUtente = id;
-        //this.ruolo = r;
+        this.ruolo = r;
     }
 
     /**
@@ -40,5 +52,5 @@ public class Utente implements Subscriber {
 
     public String getIdUtente() { return idUtente; }
 
-    //public Ruolo getRuolo() { return ruolo; }
+    public Ruolo getRuolo() { return ruolo; }
 }

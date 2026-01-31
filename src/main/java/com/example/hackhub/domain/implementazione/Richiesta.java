@@ -27,4 +27,17 @@ public class Richiesta {
         this.idDestinatari = new ArrayList<>();
         this.stato = StatoRichiesta.INVIATO; //all'inizio quando ancora la richiesta non è stata valutata lo stato è sempre inviato
     }
+
+
+
+    // METODI GETTER
+
+
+    public String getIdRichiesta() { return idRichiesta; }
+
+    public String getIdMittente() { return idMittente; }
+
+    public List<String> getIdDestinatari() { return idDestinatari; }
+
+    public StatoRichiesta getStato() { return stato; }
 }

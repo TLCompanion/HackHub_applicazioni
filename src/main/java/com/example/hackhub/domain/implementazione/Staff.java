@@ -24,6 +24,8 @@ public class Staff {
         this.ruolo = ruolo;
     }
 
+
+
     //metodi getter
 
     public RuoloStaff getRuolo() {return ruolo;}

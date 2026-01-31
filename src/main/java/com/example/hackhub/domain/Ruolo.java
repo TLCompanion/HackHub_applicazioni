@@ -30,12 +30,5 @@ public enum Ruolo {
      * Un generico Utente che partecipa agli Hackathon. Può partecipare agli Hackathon solo se è Membro di
      * un Team, come Leader oppure come un Membro generico.
      */
-    UTENTE,
-
-    /**
-     * Un utente esterno che visita la piattaforma. Può visualizzare solo le info pubbliche relative agli
-     * Hackathon e alla piattaforma, ma non può partecipare agli Hackathon, ma può registrarsi alla piattaforma
-     * se è interessato a partecipare agli Hackathon.
-     */
-    VISITATORE
+    UTENTE
 }
