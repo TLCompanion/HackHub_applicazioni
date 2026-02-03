@@ -1,13 +1,25 @@
 package com.example.hackhub.domain.implementazione;
 
+import jakarta.persistence.*;
+
 /**
  * Sottomissione creata dai team per un'hackathon
  */
+@Entity
+@Table(name = "sottomissioni")
 public class Sottomissione {
 
+    @Id
+    @Column(nullable = false, updatable = false)
     private String idSottomissione;
+
+    @Column(nullable = false)
     private String riferimentoFile; //allegato al file con il progetto richiesto dall'hackathon
+
+    @Column
     private String idValutazione;
+
+    public Sottomissione() {}
 
     /**
      * Creazine di una nuova sottomissione di un team
@@ -18,11 +30,16 @@ public class Sottomissione {
     public Sottomissione(String idSottomissione, String riferimentoFile, String idValutazione) {
         this.idSottomissione = idSottomissione;
         this.riferimentoFile = riferimentoFile;
-        this.idValutazione = idValutazione;
+        this.idValutazione = "";
     }
 
-    public void impostaValutazione(String idValutazione){
-        //TODO IMPLEMENTARE
+    /**
+     * Metodo che assegna una valutazione a questa sottomissione
+     *
+     * @param idValutazione la valutazione da assegnare
+     */
+    public void impostaValutazione(String idValutazione) {
+        this.idValutazione = idValutazione;
     }
 
 

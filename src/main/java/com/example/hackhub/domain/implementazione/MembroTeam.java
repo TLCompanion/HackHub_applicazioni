@@ -39,4 +39,15 @@ public class MembroTeam {
         this.idTeam = idTeam;
         this.ruolo = ruolo;
     }
+
+
+    // METODI GETTER
+
+    public String getId() { return id; }
+
+    public String getIdUtente() { return idUtente; }
+
+    public String getIdTeam() { return idTeam; }
+
+    public RuoloTeam getRuolo() { return ruolo; }
 }

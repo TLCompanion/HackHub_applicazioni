@@ -1,32 +1,61 @@
 package com.example.hackhub.domain.implementazione;
 
 import com.example.hackhub.domain.*;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO persistenza sospesa
+
 /**
  * Classe che gestisce un'hackathon e tutti i suoi elementi
  */
+@Entity
+@Table(name = "hackathon", uniqueConstraints = @UniqueConstraint(columnNames = "nome"))
 public class Hackathon implements Publisher {
 
+    @Id
     private String idHackathon;
+
     private String nome;
+
+    @Embedded
     private Periodo periodo;
+
     private BigDecimal premio;
+
     private String luogo;
+
     private int teamMax;
+
     private int teamMin;
+
+    @Lob
     private String regolamento;
+
     private int maxIscrizioni;
+
+    @Transient
     private StatoHackathon stato;
+
+    @Transient
     private List<String> listaSottomissioni;
+
     private LocalDateTime scadenzaIscrizioni;
+
+    @Transient
     private List<Subscriber> subscribers;
+
+    @Transient
     private List<Staff> staff;
+
+    @Transient
     private List<String> iscrizioni;
+
+    public Hackathon() {}
 
     /**
      * Costruisce un'hackathon

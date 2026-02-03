@@ -1,50 +1,85 @@
 package com.example.hackhub.domain.implementazione;
 
+import com.example.hackhub.repository.RepositoryHackathon;
+import com.example.hackhub.repository.RepositoryTeam;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 
+@Service
 public class Validatore {
 
     private Validatore instance;
 
+    private final RepositoryHackathon repositoryHackathon;
+
+    private final RepositoryTeam repositoryTeam;
     /**
      * Costruzione di un'entità di validatore
      */
-    public Validatore(){
+    @Autowired
+    public Validatore(RepositoryHackathon rh, RepositoryTeam rt) {
+        this.repositoryHackathon = rh;
+        this.repositoryTeam = rt;
     }
 
     /**
      * Se l'istanza è nulla ne creo una nuuova
      * @return l'istanza creata se è null o quella precedentemente esistente se non è nulla
      */
+    /*
     public Validatore getInstance() {
         if (instance == null) {
             instance = new Validatore();
         }
         return instance;
-    }
+    }*/
 
+    /**
+     * Verifica se il nome dell'hackathon è già stato usato nel database
+     * @param nome il nome da verificare
+     * @return true se è presente, false altrimenti
+     */
     public boolean verificaNomeHackathon(String nome){
-        //TODO IMPLEMENTARE
-        return false;
+        return repositoryHackathon.cercaNome(nome);
     }
 
+    /**
+     * Verifica se il premio inserito è valido
+     *
+     * @param premio il premio da verificare
+     * @return true se il premio è BigDecimal, false altrimenti
+     */
     public boolean verificaPremio(BigDecimal premio){
-        //TODO IMPLEMENTARE
-        return false;
+        return premio != null;
     }
 
-    public boolean verificaTeamMax(int teamMax){
-        //TODO IMPLEMENTARE
-        return false;
-    }
-
+    /**
+     * Verifica che il numero minimo di membri per team sia rispettato
+     * @param teamMin il numero da verificare
+     * @return true se ci sono almeno 3 membri, false altrimenti
+     */
     public boolean verificaTeamMin(int teamMin){
-        //TODO IMPLEMENTARE
-        return false;
+        return teamMin >= 3;
     }
 
+    /**
+     * Verifica che il numero massimo di membri sia valido
+     * @param teamMax il numero massimo di membri
+     * @param teamMin il numero minimo di membri per team
+     * @return true se teamMax >= teamMin, false altrimenti
+     */
+    public boolean verificaTeamMax(int teamMax, int teamMin){
+        return teamMax >= teamMin;
+    }
+
+    /**
+     * Verifica che il nome del team non sia già stato usato nel db
+     * @param nome il nome da verificare
+     * @return true se è già presente, false altrimenti
+     */
     public boolean verificaNomeTeam(String nome){
-        //TODO IMPLEMENTARE
-        return false;
+        return repositoryTeam.esisteNomeTeam(nome);
     }
 }

@@ -1,6 +1,10 @@
 package com.example.hackhub.repository;
 
-public interface RepositoryValutazioni {
+import com.example.hackhub.domain.implementazione.Valutazione;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-    //TODO incompleto
+public interface RepositoryValutazioni extends JpaRepository<Valutazione, String> {
+
+    //void salva(Valutazione valutazione);
+
 }
