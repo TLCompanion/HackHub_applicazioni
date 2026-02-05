@@ -4,7 +4,6 @@ import com.example.hackhub.repository.RepositoryHackathon;
 import com.example.hackhub.repository.RepositoryTeam;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 
 @Service
