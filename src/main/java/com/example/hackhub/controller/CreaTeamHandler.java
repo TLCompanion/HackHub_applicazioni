@@ -44,12 +44,12 @@ public class CreaTeamHandler {
 
         //altrimenti prende in considerazione una stringa per il nome
         boolean nomeDisponibile = false;
-        String nome;
+        Team team;
 
         //l'utente inserisce il nome, il validatore controlla se esiste già un team chiamato così
         do{
-            nome = boundary.inserisciNome();
-            nomeDisponibile = !validatore.verificaNomeTeam(nome);
+            team = boundary.inserisciTeam();
+            nomeDisponibile = !validatore.verificaNomeTeam(team);
 
             //se esiste e quindi il nome non è disponibile allora gli dice che non può usarlo altrimenti esce dal ciclo
             if (!nomeDisponibile){
@@ -58,7 +58,7 @@ public class CreaTeamHandler {
         }while (!nomeDisponibile);
 
         //una volta che ha il nome del team crea il team con quel nome e associa a quel team il membro del team con il ruolo di leader
-        Team team = new Team(nome);
+        Team newTeam = new Team(team.getNome());
         MembroTeam membroTeam = new MembroTeam(utente, team, RuoloTeam.LEADER);
 
         repositoryTeam.save(team);
