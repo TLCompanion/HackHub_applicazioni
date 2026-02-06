@@ -1,6 +1,7 @@
 package com.example.hackhub.boundary;
 
 import com.example.hackhub.controller.CreaTeamHandler;
+import com.example.hackhub.domain.implementazione.Utente;
 
 public class CreaTeamBoundary {
 
@@ -10,8 +11,8 @@ public class CreaTeamBoundary {
 
     private final CreaTeamHandler handler;
 
-    public void avviaCreazioneTeam(String idUtente){
-        this.handler.avviaCreazioneTeam(idUtente);
+    public void avviaCreazioneTeam(Utente utente){
+        this.handler.avviaCreazioneTeam(utente);
     }
 
     public String inserisciNome(){

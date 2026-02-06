@@ -1,6 +1,8 @@
 package com.example.hackhub.controller;
 
+import com.example.hackhub.domain.implementazione.Hackathon;
 import com.example.hackhub.domain.implementazione.MembroTeam;
+import com.example.hackhub.domain.implementazione.Utente;
 
 public class IscriviTeamHandler {
 
@@ -8,11 +10,13 @@ public class IscriviTeamHandler {
 
     }
 
-    public void segnalaHackathonScelto(String nome){
+    //String nome
+    public void segnalaHackathonScelto(Hackathon hackathon){
 
     }
 
-    public boolean concludiIscrizione(String idUtente) {
+    //String idUtente
+    public boolean concludiIscrizione(Utente utente) {
         //TODO IMPLEMENTARE
         return false;
     }

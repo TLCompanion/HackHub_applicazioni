@@ -1,8 +1,11 @@
 package com.example.hackhub.controller;
 
+import com.example.hackhub.domain.implementazione.Sottomissione;
+
 public class ValutazioneHandler {
 
-    public void avviaInserimentoValutazione(String idSottomissione){
+    //String idSottomissione
+    public void avviaInserimentoValutazione(Sottomissione sottomissione){
 
     }
 }

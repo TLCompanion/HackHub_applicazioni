@@ -4,6 +4,7 @@ import com.example.hackhub.boundary.CreaTeamBoundary;
 import com.example.hackhub.domain.RuoloTeam;
 import com.example.hackhub.domain.implementazione.MembroTeam;
 import com.example.hackhub.domain.implementazione.Team;
+import com.example.hackhub.domain.implementazione.Utente;
 import com.example.hackhub.domain.implementazione.Validatore;
 import com.example.hackhub.repository.RepositoryMembriTeam;
 import com.example.hackhub.repository.RepositoryTeam;
@@ -32,12 +33,12 @@ public class CreaTeamHandler {
      * Avvia la creazione di un team da parte di un'utente. Se l'utente ha già un team o è già membro la creazione
      * non va a buon fine, in tutti gli altri casi il membro del team viene associato al team con il ruolo di leader
      *
-     * @param idUtente l'id dell'utente che sta avviando  la creazione di un team
+     * @param utente l'utente che sta avviando  la creazione di un team
      */
-    public void avviaCreazioneTeam(String idUtente){
+    public void avviaCreazioneTeam(Utente utente){
 
         //se il membro ha già un team all'interno della repository esce
-        if (repositoryMembriTeam.esisteTeam(idUtente)){
+        if (repositoryMembriTeam.esisteTeam(utente.getIdUtente())){
             return;
         }
 
@@ -58,7 +59,7 @@ public class CreaTeamHandler {
 
         //una volta che ha il nome del team crea il team con quel nome e associa a quel team il membro del team con il ruolo di leader
         Team team = new Team(nome);
-        MembroTeam membroTeam = new MembroTeam(idUtente, team.getIdTeam(), RuoloTeam.LEADER);
+        MembroTeam membroTeam = new MembroTeam(utente, team, RuoloTeam.LEADER);
 
         repositoryTeam.save(team);
         repositoryMembriTeam.save(membroTeam);

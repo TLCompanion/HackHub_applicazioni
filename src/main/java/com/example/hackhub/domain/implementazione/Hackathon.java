@@ -2,10 +2,10 @@ package com.example.hackhub.domain.implementazione;
 
 import com.example.hackhub.domain.*;
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 // TODO persistenza sospesa
@@ -42,18 +42,19 @@ public class Hackathon implements Publisher {
     private StatoHackathon stato;
 
     @Transient
-    private List<String> listaSottomissioni;
+    private Collection<Sottomissione> sottomissioni;
 
     private LocalDateTime scadenzaIscrizioni;
 
     @Transient
-    private List<Subscriber> subscribers;
+    private Collection<Subscriber> subscribers;
 
     @Transient
-    private List<Staff> staff;
+    private Collection<Staff> staff;
 
+    //private List<String>
     @Transient
-    private List<String> iscrizioni;
+    private Collection<IscrizioneTeam> iscrizioni;
 
     public Hackathon() {}
 
@@ -75,7 +76,7 @@ public class Hackathon implements Publisher {
         // valori di default / inizializzazioni
         this.idHackathon = idHackathon;
         this.stato = stato;
-        this.listaSottomissioni = new ArrayList<>();
+        this.sottomissioni = new ArrayList<>();
         this.subscribers = new ArrayList<>();
         this.staff = new ArrayList<>();
         this.iscrizioni = new ArrayList<>();
@@ -97,7 +98,7 @@ public class Hackathon implements Publisher {
         //TODO IMPLEMENTARE
     }
 
-    public void aggiungiValutazione(String idValutazione, String idSottomissione){
+    public void aggiungiValutazione(Valutazione idValutazione, Sottomissione idSottomissione){
         //TODO IMPLEMENTARE
     }
 
@@ -119,4 +120,8 @@ public class Hackathon implements Publisher {
     }
 
     public StatoHackathon getStato(){ return this.stato; }
+
+    public String getIdHackathon(){return this.idHackathon;}
+
+    public String getNome(){return this.nome;}
 }

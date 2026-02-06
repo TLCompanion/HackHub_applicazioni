@@ -16,8 +16,10 @@ public class Sottomissione {
     @Column(nullable = false)
     private String riferimentoFile; //allegato al file con il progetto richiesto dall'hackathon
 
-    @Column
-    private String idValutazione;
+    //private String idValutazione
+    @OneToOne
+    @JoinColumn(name = "id_valutazione")
+    private Valutazione valutazione;
 
     public Sottomissione() {}
 
@@ -25,21 +27,22 @@ public class Sottomissione {
      * Creazine di una nuova sottomissione di un team
      * @param idSottomissione l'identificativo della sottomissione
      * @param riferimentoFile il file allegato
-     * @param idValutazione l'identificativo della valutazione associata
      */
-    public Sottomissione(String idSottomissione, String riferimentoFile, String idValutazione) {
+    public Sottomissione(String idSottomissione, String riferimentoFile) {
         this.idSottomissione = idSottomissione;
         this.riferimentoFile = riferimentoFile;
-        this.idValutazione = "";
+        this.valutazione = null;
+        //all'inizio la valutazione non c'è
     }
 
     /**
      * Metodo che assegna una valutazione a questa sottomissione
      *
-     * @param idValutazione la valutazione da assegnare
+     * @param valutazione la valutazione da assegnare
      */
-    public void impostaValutazione(String idValutazione) {
-        this.idValutazione = idValutazione;
+    //String idValutazione
+    public void impostaValutazione(Valutazione valutazione) {
+        this.valutazione = valutazione;
     }
 
 
@@ -50,5 +53,5 @@ public class Sottomissione {
 
     public String getRiferimentoFile() { return riferimentoFile; }
 
-    public String getIdValutazione() { return idValutazione; }
+    public String getIdValutazione() { return valutazione.getIdValutazione(); }
 }

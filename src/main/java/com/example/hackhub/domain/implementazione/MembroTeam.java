@@ -14,11 +14,15 @@ public class MembroTeam {
     @Column(nullable = false, updatable = false)
     private String id;
 
-    @Column(nullable = false)
-    private String idUtente; //identificativo unico del membro del team
+    //private String idUtente
+    @OneToOne(optional = false)
+    @JoinColumn(name = "id_utente")
+    private Utente utente;
 
-    @Column(nullable = false)
-    private String idTeam; //identificativo unico che associa il membro del team al suo team
+    //private String idTeam
+    @OneToOne(optional = false)
+    @JoinColumn(name = "id_team")
+    private Team team;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -29,26 +33,26 @@ public class MembroTeam {
     /**
      * Creazione di un membro del team
      * @param id l'identificativo univoco per il membro del team
-     * @param idUtente l'identificativo dell'utente
-     * @param idTeam l'identificativo del team associato al membro
+     * @param utente l'utente che diventa membro del team
+     * @param team il team a cui appartiene
      * @param ruolo il ruolo del membro nel team
      */
-    public MembroTeam(String id, String idUtente, String idTeam, RuoloTeam ruolo){
+    public MembroTeam(String id, Utente utente, Team team, RuoloTeam ruolo){
         this.id = id;
-        this.idUtente = idUtente;
-        this.idTeam = idTeam;
+        this.utente = utente;
+        this.team = team;
         this.ruolo = ruolo;
     }
 
     /**
      * Creazione di un membro del team
-     * @param idUtente l'identificativo dell'utente
-     * @param idTeam l'identificativo del team associato al membro
+     * @param utente l'utente che diventa membro del team
+     * @param team il team a cui appartiene
      * @param ruoloTeam il ruolo del membro del team
      */
-    public MembroTeam(String idUtente, String idTeam, RuoloTeam ruoloTeam) {
-        this.idUtente = idUtente;
-        this.idTeam = idTeam;
+    public MembroTeam(Utente utente, Team team, RuoloTeam ruoloTeam) {
+        this.utente = utente;
+        this.team = team;
         this.ruolo = ruoloTeam;
     }
 
@@ -57,9 +61,9 @@ public class MembroTeam {
 
     public String getId() { return id; }
 
-    public String getIdUtente() { return idUtente; }
+    public String getIdUtente() { return utente.getIdUtente(); }
 
-    public String getIdTeam() { return idTeam; }
+    public String getIdTeam() { return team.getIdTeam(); }
 
     public RuoloTeam getRuolo() { return ruolo; }
 }

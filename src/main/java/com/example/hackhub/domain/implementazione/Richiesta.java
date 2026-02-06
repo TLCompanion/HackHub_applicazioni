@@ -3,28 +3,28 @@ package com.example.hackhub.domain.implementazione;
 import com.example.hackhub.domain.StatoRichiesta;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * Classe che gestisce gli elementi generali di una richiesta
  */
-public class Richiesta {
+public class Richiesta<T> {
 
     private String idRichiesta;
-    private String idMittente;
-    private List<String> idDestinatari;
+    private T mittente;
+    private Collection<T> destinatari;
     private StatoRichiesta stato;
 
     /**
      * Creazione di una nuova richiesta
      * @param idRichiesta l'identificativo della richiesta
-     * @param idMittente l'identificativo del mittente
-     * @param stato lo stato della richiesta
+     * @param mittente il mittente della richiesta
      */
-    public Richiesta(String idRichiesta, String idMittente, StatoRichiesta stato) {
+    public Richiesta(String idRichiesta, T mittente) {
         this.idRichiesta = idRichiesta;
-        this.idMittente = idMittente;
-        this.idDestinatari = new ArrayList<>();
+        this.mittente = mittente;
+        this.destinatari = new ArrayList<>();
         this.stato = StatoRichiesta.INVIATO; //all'inizio quando ancora la richiesta non è stata valutata lo stato è sempre inviato
     }
 
@@ -34,10 +34,6 @@ public class Richiesta {
 
 
     public String getIdRichiesta() { return idRichiesta; }
-
-    public String getIdMittente() { return idMittente; }
-
-    public List<String> getIdDestinatari() { return idDestinatari; }
 
     public StatoRichiesta getStato() { return stato; }
 }

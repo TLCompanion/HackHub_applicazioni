@@ -9,5 +9,6 @@ public interface RepositoryTeam extends JpaRepository<Team, String> {
 /*
     void salva(Team team);
 
-    Team getTeamByIdTeam(String idTeam);*/
+    //String idTeam
+    Team getTeamByIdTeam(Team team);*/
 }

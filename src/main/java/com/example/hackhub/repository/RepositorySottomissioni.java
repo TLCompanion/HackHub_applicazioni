@@ -5,7 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RepositorySottomissioni extends JpaRepository<Sottomissione, String> {
 /*
-    Sottomissione getSottomissione(String idSottomissione);
+    //String idSottomissione
+    Sottomissione getSottomissione(Sottomissione sottomissione);
 
     void salva(Sottomissione sottomissione); */
 }

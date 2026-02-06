@@ -14,11 +14,15 @@ public class IscrizioneTeam {
     @Column(nullable = false, updatable = false)
     private String idIscrizione;
 
-    @Column(nullable = false)
-    private String idHackathon;
+    //private String idHackathon
+    @OneToOne(optional = false)
+    @JoinColumn(name = "hackathon_id")
+    private Hackathon hackathon;
 
-    @Column(nullable = false)
-    private String idTeam;
+    //private String idTeam
+    @OneToOne(optional = false)
+    @JoinColumn(name = "id_team")
+    private Team team;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -28,15 +32,15 @@ public class IscrizioneTeam {
 
     /**
      * Crea un'iscrizione di un team
-     * @param idTeam l'identificativo del team che si sta iscrivendo all'hackathon
+     * @param team il team associato all'iscrizione
      * @param idIscrizione l'identificativo dell'iscrizione
-     * @param idHackathon l'identificativo dell'hackthon a cui si stanno iscrivendo
+     * @param hackathon l'hackathon a cui è associata l'iscrizione
      * @param stato lo stato dell'iscrizione
      */
-    public IscrizioneTeam(String idTeam, String idIscrizione, String idHackathon, StatoIscrizione stato){
+    public IscrizioneTeam(Team team, String idIscrizione, Hackathon hackathon, StatoIscrizione stato){
         this.idIscrizione = idIscrizione;
-        this.idTeam = idTeam;
-        this.idHackathon = idHackathon;
+        this.team = team;
+        this.hackathon = hackathon;
         this.stato = stato;
     }
 }

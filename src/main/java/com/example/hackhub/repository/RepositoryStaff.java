@@ -6,7 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RepositoryStaff extends JpaRepository<Staff, String> {
 /*
-    boolean isStaff(String idUtente, String idHackathon, RuoloStaff ruolo);
+    //String idUtente, String idHackathon
+    boolean isStaff(Utente utente, Hackathon hackathon, RuoloStaff ruolo);
 
     void salva(Staff membroStaff);*/
 }

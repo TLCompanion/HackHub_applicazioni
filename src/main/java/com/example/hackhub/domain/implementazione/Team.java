@@ -3,7 +3,9 @@ package com.example.hackhub.domain.implementazione;
 import com.example.hackhub.domain.RuoloTeam;
 import jakarta.persistence.*;
 
+import java.text.CollationElementIterator;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -22,7 +24,7 @@ public class Team {
     private String nome; // nome del team, unico nella piattaforma
 
     @Transient
-    private List<MembroTeam> membri; //insieme degli utenti che fanno parte del team
+    private Collection<MembroTeam> membri; //insieme degli utenti che fanno parte del team
 
     public Team() {} // Costruttore vuoto richiesto per la persistenza nel DB
     /**
@@ -56,7 +58,6 @@ public class Team {
      * @throws Exception se il membro da aggiungere risulta LEADER
      */
     // TODO che ne pensate di questa implementazione? Exception è puramente indicativo
-
     public void aggiungiMembro(MembroTeam membro) throws Exception {
         if (membro.getRuolo().equals(RuoloTeam.LEADER)) throw new Exception("Tentativo di aggiungere un" +
                 " Leader a un Team");
@@ -70,5 +71,5 @@ public class Team {
 
     public String getIdTeam() { return idTeam; }
 
-    public List<MembroTeam> getMembri() { return membri;}
+    public Collection<MembroTeam> getMembri() { return membri;}
 }

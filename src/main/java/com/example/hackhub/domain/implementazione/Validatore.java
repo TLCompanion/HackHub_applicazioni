@@ -37,11 +37,11 @@ public class Validatore {
 
     /**
      * Verifica se il nome dell'hackathon è già stato usato nel database
-     * @param nome il nome da verificare
+     * @param hackathon l'hackathon da verificare
      * @return true se è presente, false altrimenti
      */
-    public boolean verificaNomeHackathon(String nome){
-        return repositoryHackathon.cercaNome(nome);
+    public boolean verificaNomeHackathon(Hackathon hackathon){
+        return repositoryHackathon.cercaNome(hackathon.getNome());
     }
 
     /**
@@ -75,10 +75,10 @@ public class Validatore {
 
     /**
      * Verifica che il nome del team non sia già stato usato nel db
-     * @param nome il nome da verificare
+     * @param team il team da verificare
      * @return true se è già presente, false altrimenti
      */
-    public boolean verificaNomeTeam(String nome){
-        return repositoryTeam.esisteNomeTeam(nome);
+    public boolean verificaNomeTeam(Team team){
+        return repositoryTeam.esisteNomeTeam(team.getNome());
     }
 }

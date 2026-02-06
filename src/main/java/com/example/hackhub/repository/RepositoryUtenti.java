@@ -5,7 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RepositoryUtenti extends JpaRepository<Utente, String> {
 /*
-    Utente getByID(String idUtente);
+    //entrambi avevano String idUtente
+    Utente getByID(Utente utente);
 
-    boolean esiste(String idUtente);*/
+    boolean esiste(Utente utente);*/
 }

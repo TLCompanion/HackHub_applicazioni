@@ -13,5 +13,6 @@ public interface RepositoryHackathon extends JpaRepository<Hackathon, String> {
 
     List<Hackathon> getHackathonAperti();
 
-    Hackathon getHackathon(String idHackathon);*/
+    //String idHackathon
+    Hackathon getHackathon(Hackathon hackathon);*/
 }

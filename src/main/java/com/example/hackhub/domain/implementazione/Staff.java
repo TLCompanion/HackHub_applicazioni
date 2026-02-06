@@ -15,11 +15,13 @@ public class Staff {
     @Column(nullable = false, updatable = false)
     private String id;
 
-    @Column(nullable = false)
-    private String idUtente;
+    @OneToOne
+    @JoinColumn(name = "id_utente")
+    private Utente utente;
 
-    @Column(nullable = false)
-    private String idHackathon;
+    @OneToOne(optional = false)
+    @JoinColumn(name = "id_hackathon")
+    private Hackathon hackathon;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -27,13 +29,13 @@ public class Staff {
 
     /**
      * Creazione di un membro dello staff
-     * @param idUtente l'identificativo dell'utente
-     * @param idHackathon l'identificativo dell'hackathon associato
+     * @param utente l'utente associato allo staff
+     * @param hackathon l'hackathon associato allo staff
      * @param ruolo il ruolo ricoperto
      */
-    public Staff(String idUtente, String idHackathon, RuoloStaff ruolo) {
-        this.idUtente = idUtente;
-        this.idHackathon = idHackathon;
+    public Staff(Utente utente, Hackathon hackathon, RuoloStaff ruolo) {
+        this.utente = utente;
+        this.hackathon = hackathon;
         this.ruolo = ruolo;
     }
 
@@ -44,7 +46,7 @@ public class Staff {
 
     public RuoloStaff getRuolo() {return ruolo;}
 
-    public String getIdHackathon() {return idHackathon;}
+    public String getIdHackathon() {return hackathon.getIdHackathon();}
 
-    public String getIdUtente() {return idUtente;}
+    public String getIdUtente() {return utente.getIdUtente();}
 }
