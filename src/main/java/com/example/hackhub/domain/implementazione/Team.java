@@ -37,6 +37,10 @@ public class Team {
         this.membri = new ArrayList<>();
     }
 
+    public Team(String nome) {
+        this.nome = nome;
+    }
+
     /**
      * Metodo che ritorna il numero di membri del team
      *
@@ -52,6 +56,7 @@ public class Team {
      * @throws Exception se il membro da aggiungere risulta LEADER
      */
     // TODO che ne pensate di questa implementazione? Exception è puramente indicativo
+
     public void aggiungiMembro(MembroTeam membro) throws Exception {
         if (membro.getRuolo().equals(RuoloTeam.LEADER)) throw new Exception("Tentativo di aggiungere un" +
                 " Leader a un Team");

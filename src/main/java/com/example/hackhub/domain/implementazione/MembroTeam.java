@@ -40,6 +40,18 @@ public class MembroTeam {
         this.ruolo = ruolo;
     }
 
+    /**
+     * Creazione di un membro del team
+     * @param idUtente l'identificativo dell'utente
+     * @param idTeam l'identificativo del team associato al membro
+     * @param ruoloTeam il ruolo del membro del team
+     */
+    public MembroTeam(String idUtente, String idTeam, RuoloTeam ruoloTeam) {
+        this.idUtente = idUtente;
+        this.idTeam = idTeam;
+        this.ruolo = ruoloTeam;
+    }
+
 
     // METODI GETTER
 

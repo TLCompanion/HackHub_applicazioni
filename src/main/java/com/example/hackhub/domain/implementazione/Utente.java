@@ -53,4 +53,6 @@ public class Utente implements Subscriber {
     public String getIdUtente() { return idUtente; }
 
     public Ruolo getRuolo() { return ruolo; }
+
+
 }
