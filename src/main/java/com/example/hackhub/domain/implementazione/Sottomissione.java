@@ -53,5 +53,8 @@ public class Sottomissione {
 
     public String getRiferimentoFile() { return riferimentoFile; }
 
-    public String getIdValutazione() { return valutazione.getIdValutazione(); }
+    public Valutazione getValutazione() { return valutazione; }
+
+    //mi serve per verificare velocemente se questa sottomissione ha già una valutazione o meno
+    public boolean haValutazione() { return this.valutazione != null; }
 }

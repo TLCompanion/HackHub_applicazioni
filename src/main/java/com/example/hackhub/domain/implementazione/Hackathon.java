@@ -47,14 +47,14 @@ public class Hackathon implements Publisher {
     private LocalDateTime scadenzaIscrizioni;
 
     @Transient
-    private Collection<Subscriber> subscribers;
+    private List<Subscriber> subscribers;
 
     @Transient
-    private Collection<Staff> staff;
+    private List<Staff> staff;
 
     //private List<String>
     @Transient
-    private Collection<IscrizioneTeam> iscrizioni;
+    private List<IscrizioneTeam> iscrizioni;
 
     public Hackathon() {}
 
@@ -124,4 +124,10 @@ public class Hackathon implements Publisher {
     public String getIdHackathon(){return this.idHackathon;}
 
     public String getNome(){return this.nome;}
+
+    // mi serve per ottenerlo nell'handler delle valutazioni per verificare che il giudice è un giudice di quello specifico hackathon e non un giudice di un altro hacakthon
+    public List<Staff> getStaff(){ return this.staff; }
+
+    //mi serve per verificare se tutte le sottomissioni sono state valutate e quindi se posso chiudere l'hackathon
+    public List<Sottomissione> getSottomissioni() { return (List<Sottomissione>) this.sottomissioni; }
 }

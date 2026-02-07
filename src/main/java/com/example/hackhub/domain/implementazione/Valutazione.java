@@ -1,5 +1,6 @@
 package com.example.hackhub.domain.implementazione;
 
+import com.example.hackhub.repository.RepositoryValutazioni;
 import jakarta.persistence.*;
 
 /**
@@ -20,18 +21,21 @@ public class Valutazione {
     @Column
     private String descrizione;
 
+    //la uso per generare l'id della valutazione, non è un campo che deve essere salvato nel DB
+    private RepositoryValutazioni repository;
+
     public Valutazione() {}
 
     /**
      * Creazione di una valutazione per una sottomissione
-     * @param idValutazione l'id della valutazione
      * @param voto il voto assegnato dal Giudice
      * @param descrizione la motivazione del voto assegnato
      */
-    public Valutazione(String idValutazione, int voto, String descrizione) {
-        this.idValutazione = idValutazione;
+    public Valutazione(int voto, String descrizione) {
         this.voto = voto;
         this.descrizione = descrizione;
+        int numeroValutazioni = repository.findAll().size();
+        this.idValutazione = "v" + (numeroValutazioni + 1); // Generazione dell'id della valutazione in base al numero di valutazioni già presenti
     }
 
 
