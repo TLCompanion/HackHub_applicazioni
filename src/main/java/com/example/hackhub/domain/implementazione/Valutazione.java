@@ -3,6 +3,8 @@ package com.example.hackhub.domain.implementazione;
 import com.example.hackhub.repository.RepositoryValutazioni;
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 /**
  * Valutazione fatta da parte di un giudice per una sottomissione inviata
  * da un' team ad un'hackathon
@@ -21,9 +23,6 @@ public class Valutazione {
     @Column
     private String descrizione;
 
-    //la uso per generare l'id della valutazione, non è un campo che deve essere salvato nel DB
-    private RepositoryValutazioni repository;
-
     public Valutazione() {}
 
     /**
@@ -34,8 +33,7 @@ public class Valutazione {
     public Valutazione(int voto, String descrizione) {
         this.voto = voto;
         this.descrizione = descrizione;
-        int numeroValutazioni = repository.findAll().size();
-        this.idValutazione = "v" + (numeroValutazioni + 1); // Generazione dell'id della valutazione in base al numero di valutazioni già presenti
+        this.idValutazione = "v" + UUID.randomUUID(); //generazione di un id univoco per la valutazione
     }
 
 
@@ -48,8 +46,6 @@ public class Valutazione {
     public int getVoto() { return voto; }
 
     public String getDescrizione() { return descrizione; }
-
-    public void setIdValutazione(String idValutazione) { this.idValutazione = idValutazione; }
 
     public void setVoto(int voto) { this.voto = voto; }
 

@@ -3,6 +3,8 @@ package com.example.hackhub.boundary;
 import com.example.hackhub.boundary.dto.ValutazioneRequest;
 import com.example.hackhub.controller.ValutazioneHandler;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 /*
@@ -19,8 +21,18 @@ public class ValutazioneBoundary {
     }
 
     @PostMapping("/{id}/valutazione")
-    public ResponseEntity<Void> inserisciValutazione(@PathVariable("id") String idSottomissione, @RequestBody ValutazioneRequest request){
-        handler.avviaInserimentoValutazione(idSottomissione, request.giudizio(), request.punteggio());
+    public ResponseEntity<Void> inserisciValutazione(
+            @PathVariable("id") String idSottomissione,
+            @RequestBody ValutazioneRequest request,
+            @AuthenticationPrincipal Jwt jwt
+    ) {
+        String idGiudice = jwt.getSubject(); // Ottieni l'ID del giudice dal token JWT
+        handler.avviaInserimentoValutazione(idSottomissione, idGiudice, request.giudizio(), request.punteggio());
         return ResponseEntity.status(201).build();
+    }
+    // Un endpoint di test per verificare che il controller sia raggiungibile
+    @GetMapping("/ping")
+    public ResponseEntity<String> ping() {
+        return ResponseEntity.ok("ok");
     }
 }
