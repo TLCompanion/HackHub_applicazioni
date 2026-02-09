@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Classe che gestisce gli elementi generali di una richiesta
  */
-public class Richiesta<T> {
+public abstract class Richiesta<T> {
 
     private String idRichiesta;
     private T mittente;

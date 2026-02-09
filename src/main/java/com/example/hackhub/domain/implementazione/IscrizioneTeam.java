@@ -1,6 +1,5 @@
 package com.example.hackhub.domain.implementazione;
 
-import com.example.hackhub.domain.StatoIscrizione;
 import jakarta.persistence.*;
 
 /**
@@ -24,9 +23,8 @@ public class IscrizioneTeam {
     @JoinColumn(name = "id_team")
     private Team team;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private StatoIscrizione stato;
+    //TODO aggiungere riferimento alla sottomissione, poi nell'handler modificare il modo in cui si prende la
+    // sottomissione (attualmente si prende da hackathon)
 
     public IscrizioneTeam() {}
 
@@ -35,12 +33,10 @@ public class IscrizioneTeam {
      * @param team il team associato all'iscrizione
      * @param idIscrizione l'identificativo dell'iscrizione
      * @param hackathon l'hackathon a cui è associata l'iscrizione
-     * @param stato lo stato dell'iscrizione
      */
-    public IscrizioneTeam(Team team, String idIscrizione, Hackathon hackathon, StatoIscrizione stato){
+    public IscrizioneTeam(Team team, String idIscrizione, Hackathon hackathon){
         this.idIscrizione = idIscrizione;
         this.team = team;
         this.hackathon = hackathon;
-        this.stato = stato;
     }
 }

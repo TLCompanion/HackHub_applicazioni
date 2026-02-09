@@ -41,9 +41,6 @@ public class Hackathon implements Publisher {
     @Transient
     private StatoHackathon stato;
 
-    @Transient
-    private Collection<Sottomissione> sottomissioni;
-
     private LocalDateTime scadenzaIscrizioni;
 
     @Transient
@@ -76,7 +73,6 @@ public class Hackathon implements Publisher {
         // valori di default / inizializzazioni
         this.idHackathon = idHackathon;
         this.stato = stato;
-        this.sottomissioni = new ArrayList<>();
         this.subscribers = new ArrayList<>();
         this.staff = new ArrayList<>();
         this.iscrizioni = new ArrayList<>();
@@ -128,6 +124,4 @@ public class Hackathon implements Publisher {
     // mi serve per ottenerlo nell'handler delle valutazioni per verificare che il giudice è un giudice di quello specifico hackathon e non un giudice di un altro hacakthon
     public List<Staff> getStaff(){ return this.staff; }
 
-    //mi serve per verificare se tutte le sottomissioni sono state valutate e quindi se posso chiudere l'hackathon
-    public List<Sottomissione> getSottomissioni() { return (List<Sottomissione>) this.sottomissioni; }
 }
