@@ -2,11 +2,13 @@ package com.example.hackhub.domain.implementazione;
 
 import com.example.hackhub.domain.*;
 import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 // TODO persistenza sospesa
 
@@ -44,7 +46,7 @@ public class Hackathon implements Publisher {
     private LocalDateTime scadenzaIscrizioni;
 
     @Transient
-    private List<Subscriber> subscribers;
+    private List<Subscriber> subscriber;
 
     @Transient
     private List<Staff> staff;
@@ -53,34 +55,33 @@ public class Hackathon implements Publisher {
     @Transient
     private List<IscrizioneTeam> iscrizioni;
 
-    public Hackathon() {}
+    public Hackathon() {
+    }
 
-    /**
-     * Costruisce un'hackathon
-     * @param builder il costruttore dell'hackathon
-     * @param idHackathon l'identificativo dell'hackathon
-     * @param stato lo stato dell'hackathon
-     */
-    private Hackathon(HackathonBuilder builder, String idHackathon, StatoHackathon stato) {
-        this.nome = builder.nome;
-        this.periodo = builder.periodo;
-        this.premio = builder.premio;
-        this.luogo = builder.luogo;
-        this.teamMax = builder.teamMax;
-        this.teamMin = builder.teamMin;
-        this.regolamento = builder.regolamento;
+    public Hackathon(String nome, Periodo periodo, BigDecimal premio, String luogo, int teamMax, int teamMin, String regolamento) {
+        this.nome = nome;
+        this.periodo = periodo;
+        this.premio = premio;
+        this.luogo = luogo;
+        this.teamMax = teamMax;
+        this.teamMin = teamMin;
+        this.regolamento = regolamento;
 
         // valori di default / inizializzazioni
-        this.idHackathon = idHackathon;
+        // esempio: scadenza iscrizioni 1 giorno prima della fine dell'hackathon
+        this.scadenzaIscrizioni = periodo.getDataFine().minusDays(1).atStartOfDay();
+        this.idHackathon = "h" + UUID.randomUUID(); // genera un id univoco per l'hackathon
         this.stato = stato;
-        this.subscribers = new ArrayList<>();
+        this.subscriber = new ArrayList<>();
         this.staff = new ArrayList<>();
         this.iscrizioni = new ArrayList<>();
     }
 
     //metodi da implementare
 
-    public void setStato(StatoHackathon stato) { this.stato = stato; }
+    public void setStato(StatoHackathon stato) {
+        this.stato = stato;
+    }
 
     public int getTeamMax() {
         return teamMax;
@@ -90,38 +91,41 @@ public class Hackathon implements Publisher {
         return teamMin;
     }
 
-    public void aggiungiIscrizione(String descrizione){
+    public void aggiungiIscrizione(IscrizioneTeam iscrizione) {
+        this.iscrizioni.add(iscrizione);
+    }
+
+    public String getInfo() {
+        return this.regolamento;
+    }
+
+    public void attach(Subscriber subscriber) {
         //TODO IMPLEMENTARE
     }
 
-    public void aggiungiValutazione(Valutazione idValutazione, Sottomissione idSottomissione){
+    public void detach(Subscriber subscriber) {
         //TODO IMPLEMENTARE
     }
 
-    public String getInfo(){
-        //TODO IMPLEMENTARE
-        return null;
-    }
-
-    public void attach(Subscriber subscriber){
+    public void notify(TipoNotifica evento) {
         //TODO IMPLEMENTARE
     }
 
-    public void detach(Subscriber subscriber){
-        //TODO IMPLEMENTARE
+    public StatoHackathon getStato() {
+        return this.stato;
     }
 
-    public void notify(TipoNotifica evento){
-        //TODO IMPLEMENTARE
+    public String getIdHackathon() {
+        return this.idHackathon;
     }
 
-    public StatoHackathon getStato(){ return this.stato; }
-
-    public String getIdHackathon(){return this.idHackathon;}
-
-    public String getNome(){return this.nome;}
+    public String getNome() {
+        return this.nome;
+    }
 
     // mi serve per ottenerlo nell'handler delle valutazioni per verificare che il giudice è un giudice di quello specifico hackathon e non un giudice di un altro hacakthon
-    public List<Staff> getStaff(){ return this.staff; }
+    public List<Staff> getStaff() {
+        return this.staff;
+    }
 
 }

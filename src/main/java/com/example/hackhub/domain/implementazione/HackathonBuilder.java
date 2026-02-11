@@ -40,12 +40,12 @@ public class HackathonBuilder {
         this.regolamento = regolamento;
     }
 
-    public void impostaMaxIscrizioni(int maxIscrizioni){
-        //TODO IMPLEMENTARE
+    public void impostaMaxIscrizioni(int maxIscrizioni) {
+        this.teamMax = maxIscrizioni;
     }
 
-    public Hackathon getRisultato(){
-        //TODO IMPLEMENTARE
-        return null;
+    public Hackathon getRisultato() {
+        return new Hackathon(this.nome, this.periodo, this.premio, this.luogo, this.teamMax, this.teamMin,
+                this.regolamento);
     }
 }

@@ -15,7 +15,7 @@ public class Staff {
     @Column(nullable = false, updatable = false)
     private String id;
 
-    @OneToOne
+    @OneToOne(optional = false)
     @JoinColumn(name = "id_utente")
     private Utente utente;
 

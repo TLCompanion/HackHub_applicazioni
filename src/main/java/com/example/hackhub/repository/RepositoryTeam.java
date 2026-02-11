@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RepositoryTeam extends JpaRepository<Team, String> {
 
-    boolean esisteNomeTeam(String nomeTeam);
+    boolean existsByNome(String nomeTeam);
 /*
     void salva(Team team);
 

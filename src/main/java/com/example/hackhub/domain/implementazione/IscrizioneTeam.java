@@ -25,6 +25,8 @@ public class IscrizioneTeam {
 
     //TODO aggiungere riferimento alla sottomissione, poi nell'handler modificare il modo in cui si prende la
     // sottomissione (attualmente si prende da hackathon)
+    @OneToOne(optional = false)
+    private Sottomissione sottomissione;
 
     public IscrizioneTeam() {}
 

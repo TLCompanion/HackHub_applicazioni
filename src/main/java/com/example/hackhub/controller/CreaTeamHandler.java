@@ -33,12 +33,16 @@ public class CreaTeamHandler {
      * Avvia la creazione di un team da parte di un'utente. Se l'utente ha già un team o è già membro la creazione
      * non va a buon fine, in tutti gli altri casi il membro del team viene associato al team con il ruolo di leader
      *
-     * @param utente l'utente che sta avviando  la creazione di un team
      */
-    public void avviaCreazioneTeam(Utente utente){
+    /*
+    public void avviaCreazioneTeam(String idUtente, String nomeTeam){
+         Utente utente = new Utente();
+         utente.setId(idUtente);
+
+         Team team = new Team(nomeTeam);
 
         //se il membro ha già un team all'interno della repository esce
-        if (repositoryMembriTeam.esisteTeam(utente.getIdUtente())){
+        if (repositoryMembriTeam.existsByUtente(utente)){
             return;
         }
 
@@ -66,4 +70,6 @@ public class CreaTeamHandler {
 
         boundary.confermaCreazione();
     }
+
+     */
 }

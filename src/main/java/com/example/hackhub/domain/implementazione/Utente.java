@@ -30,6 +30,10 @@ public class Utente {
         this.idUtente = id;
     }
 
+    public Utente() {
+
+    }
+
 
     // DI SEGUITO SONO RIPORTATI TUTTI I METODI GETTER
 

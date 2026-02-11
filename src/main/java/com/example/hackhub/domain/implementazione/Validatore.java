@@ -41,7 +41,7 @@ public class Validatore {
      * @return true se è presente, false altrimenti
      */
     public boolean verificaNomeHackathon(Hackathon hackathon){
-        return repositoryHackathon.cercaNome(hackathon.getNome());
+        return repositoryHackathon.existsByNome(hackathon.getNome());
     }
 
     /**
@@ -79,6 +79,6 @@ public class Validatore {
      * @return true se è già presente, false altrimenti
      */
     public boolean verificaNomeTeam(Team team){
-        return repositoryTeam.esisteNomeTeam(team.getNome());
+        return repositoryTeam.existsByNome(team.getNome());
     }
 }
