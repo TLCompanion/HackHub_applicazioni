@@ -3,6 +3,8 @@ package com.example.hackhub.domain.implementazione;
 import com.example.hackhub.domain.RuoloStaff;
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 /**
  * Classe che gestisce un singolo membro dello staff per un'hackathon e lo associa all'hackathon
  * in cui lavora
@@ -41,6 +43,15 @@ public class Staff {
 
     public Staff() {}
 
+    //PrePersist serve per fare operazioni prima di salvare l'entità nel database, in questo caso per assegnare un id
+    // univoco all'hackathon se non è già stato assegnato, viene automaticamente chiamato da JPA/Hibernate quando si
+    // salva l'entità per la prima volta.
+    @PrePersist
+    private void assegnaId() {
+        if (this.id == null) {
+            this.id = "MS-" + UUID.randomUUID();
+        }
+    }
 
     //metodi getter
 

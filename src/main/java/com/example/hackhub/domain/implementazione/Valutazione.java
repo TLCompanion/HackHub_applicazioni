@@ -33,9 +33,17 @@ public class Valutazione {
     public Valutazione(int voto, String descrizione) {
         this.voto = voto;
         this.descrizione = descrizione;
-        this.idValutazione = "v" + UUID.randomUUID(); //generazione di un id univoco per la valutazione
     }
 
+    //PrePersist serve per fare operazioni prima di salvare l'entità nel database, in questo caso per assegnare un id
+    // univoco alla valutazione se non è già stato assegnato, viene automaticamente chiamato da JPA/Hibernate quando si
+    // salva l'entità per la prima volta.
+    @PrePersist
+    private void assegnaId() {
+        if (this.idValutazione == null) {
+            this.idValutazione = "V-" + UUID.randomUUID();
+        }
+    }
 
 
 

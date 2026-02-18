@@ -37,13 +37,22 @@ public class Sottomissione {
 
     /**
      * Creazine di una nuova sottomissione di un team
-     * @param idSottomissione l'identificativo della sottomissione
      * @param riferimentoFile il file allegato
      */
-    public Sottomissione(String idSottomissione, String riferimentoFile) {
+    public Sottomissione(String riferimentoFile) {
         this.riferimentoFile = riferimentoFile;
         this.valutazione = null; //all'inizio la valutazione non c'è
         this.idSottomissione = "v" + UUID.randomUUID();
+    }
+
+    //PrePersist serve per fare operazioni prima di salvare l'entità nel database, in questo caso per assegnare un id
+    // univoco all'hackathon se non è già stato assegnato, viene automaticamente chiamato da JPA/Hibernate quando si
+    // salva l'entità per la prima volta.
+    @PrePersist
+    private void assegnaId() {
+        if (this.idSottomissione == null) {
+            this.idSottomissione = "S-" + UUID.randomUUID();
+        }
     }
 
     /**

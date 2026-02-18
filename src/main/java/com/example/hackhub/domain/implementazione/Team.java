@@ -7,6 +7,7 @@ import java.text.CollationElementIterator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Un Team registrato nella piattaforma, di cui fanno parte un gruppo di Utenti, di cui uno è il Leader,
@@ -31,16 +32,20 @@ public class Team {
      * Metodo che crea un nuovo Team.
      *
      * @param nome il nome del Team
-     * @param id l'identificativo del team
      */
-    public Team(String nome, String id) {
+    public Team(String nome) {
         this.nome = nome;
-        this.idTeam = id;
         this.membri = new ArrayList<>();
     }
 
-    public Team(String nome) {
-        this.nome = nome;
+    //PrePersist serve per fare operazioni prima di salvare l'entità nel database, in questo caso per assegnare un id
+    // univoco al team se non è già stato assegnato, viene automaticamente chiamato da JPA/Hibernate quando si
+    // salva l'entità per la prima volta.
+    @PrePersist
+    private void assegnaId() {
+        if (this.idTeam == null) {
+            this.idTeam = "T-" + UUID.randomUUID();
+        }
     }
 
     /**

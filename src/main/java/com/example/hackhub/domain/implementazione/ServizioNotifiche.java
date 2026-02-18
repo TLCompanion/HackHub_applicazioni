@@ -1,8 +1,16 @@
 package com.example.hackhub.domain.implementazione;
 
+import com.example.hackhub.domain.RuoloStaff;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+
 /**
  * Pattern: Singleton, gestione delle notifiche
  */
+//TODO non so se serve l'implementazione del pattern singleton con @Service, da verificare
+@Service
 public class ServizioNotifiche {
 
     private ServizioNotifiche instance;
@@ -25,18 +33,20 @@ public class ServizioNotifiche {
     }
 
     /**
-     * Invio di una richiesta da parte di un mentore, un'organizzatore o un team
-     * @param richiesta la richiesta da inviare
+     * Invia una richiesta da parte di un mentore, un'organizzatore o un team
      */
-    public void inviaRichiesta (Richiesta richiesta){
+    public void inviaInvitoStaff (Hackathon hackathon, Map<Utente, RuoloStaff> destinatari){
+        //TODO IMPLEMENTARE
+    }
+
+    public void inviaPropostaCall (){
         //TODO IMPLEMENTARE
     }
 
     /**
-     * Invio di una notifica alla conclusione dell'hackathon
-     * @param notifica la notifica da inviare
+     * Invia una notifica a un utente, un team o un'organizzazione
      */
-    public void inviaNotifica(Notifica notifica){
+    public void inviaNotifica(){
         //TODO IMPLEMENTARE
     }
 }

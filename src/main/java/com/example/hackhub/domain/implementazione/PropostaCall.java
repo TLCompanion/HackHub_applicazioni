@@ -15,13 +15,13 @@ public class PropostaCall<T> extends Richiesta {
     /**
      * Crea una proposta di chiamata da parte di un mentore per un team
      * @param idRichiesta l'identificativo della richiesta
-     * @param mittente il mittente
+     * @param nomeMittente il mittente
      * @param stato lo stato della richiesta
      * @param hackathon l'hackathon associato alla call
      * @param periodo il periodo di tempo proposto
      */
-    public PropostaCall(String idRichiesta, T mittente, StatoRichiesta stato, Hackathon hackathon, Periodo periodo) {
-        super(idRichiesta, mittente);
+    public PropostaCall(String idRichiesta, String nomeMittente, StatoRichiesta stato, Hackathon hackathon, Periodo periodo) {
+        super(nomeMittente);
         this.hackathon= hackathon;
         this.periodo = periodo;
     }

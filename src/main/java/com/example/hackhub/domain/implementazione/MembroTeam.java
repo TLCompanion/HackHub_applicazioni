@@ -3,6 +3,8 @@ package com.example.hackhub.domain.implementazione;
 import com.example.hackhub.domain.RuoloTeam;
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 /**
  * Un utente registrato alla piattaforma che diventa parte di un team
  */
@@ -32,20 +34,6 @@ public class MembroTeam {
 
     /**
      * Creazione di un membro del team
-     * @param id l'identificativo univoco per il membro del team
-     * @param utente l'utente che diventa membro del team
-     * @param team il team a cui appartiene
-     * @param ruolo il ruolo del membro nel team
-     */
-    public MembroTeam(String id, Utente utente, Team team, RuoloTeam ruolo){
-        this.id = id;
-        this.utente = utente;
-        this.team = team;
-        this.ruolo = ruolo;
-    }
-
-    /**
-     * Creazione di un membro del team
      * @param utente l'utente che diventa membro del team
      * @param team il team a cui appartiene
      * @param ruoloTeam il ruolo del membro del team
@@ -56,6 +44,15 @@ public class MembroTeam {
         this.ruolo = ruoloTeam;
     }
 
+    //PrePersist serve per fare operazioni prima di salvare l'entità nel database, in questo caso per assegnare un id
+    // univoco al membro team se non è già stato assegnato, viene automaticamente chiamato da JPA/Hibernate quando si
+    // salva l'entità per la prima volta.
+    @PrePersist
+    private void assegnaId() {
+        if (this.id == null) {
+            this.id = "MT-" + UUID.randomUUID();
+        }
+    }
 
     // METODI GETTER
 

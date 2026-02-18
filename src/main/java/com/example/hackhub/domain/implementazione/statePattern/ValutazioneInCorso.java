@@ -1,6 +1,7 @@
-package com.example.hackhub.domain.implementazione;
+package com.example.hackhub.domain.implementazione.statePattern;
 
 import com.example.hackhub.domain.StatoHackathon;
+import com.example.hackhub.domain.implementazione.Hackathon;
 
 public class ValutazioneInCorso implements StatoHackathon {
 

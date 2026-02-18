@@ -2,6 +2,8 @@ package com.example.hackhub.domain.implementazione;
 
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 /**
  * Classe che gestisce l'iscrizione di un team ad un'hackathon
  */
@@ -33,12 +35,20 @@ public class IscrizioneTeam {
     /**
      * Crea un'iscrizione di un team
      * @param team il team associato all'iscrizione
-     * @param idIscrizione l'identificativo dell'iscrizione
      * @param hackathon l'hackathon a cui è associata l'iscrizione
      */
-    public IscrizioneTeam(Team team, String idIscrizione, Hackathon hackathon){
-        this.idIscrizione = idIscrizione;
+    public IscrizioneTeam(Team team, Hackathon hackathon){
         this.team = team;
         this.hackathon = hackathon;
+    }
+
+    //PrePersist serve per fare operazioni prima di salvare l'entità nel database, in questo caso per assegnare un id
+    // univoco all'iscrizione se non è già stato assegnato, viene automaticamente chiamato da JPA/Hibernate quando si
+    // salva l'entità per la prima volta.
+    @PrePersist
+    private void assegnaId() {
+        if (this.idIscrizione == null) {
+            this.idIscrizione = "I-" + UUID.randomUUID();
+        }
     }
 }

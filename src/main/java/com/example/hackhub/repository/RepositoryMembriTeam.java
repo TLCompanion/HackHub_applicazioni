@@ -10,6 +10,8 @@ public interface RepositoryMembriTeam extends JpaRepository<MembroTeam, String> 
 
     boolean existsByUtente(Utente utente);
 
+    boolean existsByIdUtente(String idUtente);
+
     /*Team getTeamByIdUtente(String idUtente);
 
     MembroTeam getMembroTeam(String idUtente);

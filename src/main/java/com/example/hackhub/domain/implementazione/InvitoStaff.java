@@ -16,12 +16,12 @@ public class InvitoStaff<T> extends Richiesta {
     /**
      * Crea un'invito da inviare ad un'utente per farlo diventare parte dello Staff di un'hackathon
      * @param idRichiesta l'identificativo della richiesta
-     * @param mittente il mittente dell'invito
+     * @param nomeMittente il mittente dell'invito
      * @param hackathon l'hackathon a cui è associato l'invito
      * @param ruoloOfferto il ruolo offerto dall'organizzatore
      */
-    public InvitoStaff(String idRichiesta, T mittente, Hackathon hackathon, RuoloStaff ruoloOfferto) {
-        super(idRichiesta, mittente);
+    public InvitoStaff(String idRichiesta, String nomeMittente, Hackathon hackathon, RuoloStaff ruoloOfferto) {
+        super(nomeMittente);
         this.hackathon = hackathon;
         this.ruoloOfferto = ruoloOfferto;
     }

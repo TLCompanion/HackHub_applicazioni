@@ -1,75 +1,60 @@
 package com.example.hackhub.controller;
 
-import com.example.hackhub.boundary.CreaTeamBoundary;
 import com.example.hackhub.domain.RuoloTeam;
 import com.example.hackhub.domain.implementazione.MembroTeam;
 import com.example.hackhub.domain.implementazione.Team;
 import com.example.hackhub.domain.implementazione.Utente;
-import com.example.hackhub.domain.implementazione.Validatore;
 import com.example.hackhub.repository.RepositoryMembriTeam;
 import com.example.hackhub.repository.RepositoryTeam;
+import com.example.hackhub.repository.RepositoryUtenti;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
+@Service
 public class CreaTeamHandler {
 
     private final RepositoryTeam repositoryTeam;
     private final RepositoryMembriTeam repositoryMembriTeam;
-    private final Validatore validatore;
-    private final CreaTeamBoundary boundary;
+    private final RepositoryUtenti repositoryUtenti;
 
     /**
-     * Costruisce un'entitò di CreaTeamHandler che gestisce la creazione di team
-     * @param repositoryTeam la repository per controllare se il team già esiste
-     * @param validatore per controllare se il nome del team è valido
-     * @param boundary per confermare la creazione
+     * Costruisce un'entità di CreaTeamHandler che gestisce la creazione di team
+     *
+     * @param repositoryTeam       la repository per controllare se il nome del team già esiste
+     * @param repositoryMembriTeam la repository per controllare se l'utente è già membro di un team
+     * @param repositoryUtenti     la repository per recuperare l'utente che vuole creare il team
      */
-    public CreaTeamHandler(RepositoryTeam repositoryTeam, RepositoryMembriTeam repositoryMembriTeam, Validatore validatore, CreaTeamBoundary boundary) {
+    public CreaTeamHandler(RepositoryTeam repositoryTeam, RepositoryMembriTeam repositoryMembriTeam, RepositoryUtenti
+            repositoryUtenti) {
         this.repositoryTeam = repositoryTeam;
         this.repositoryMembriTeam = repositoryMembriTeam;
-        this.validatore = validatore;
-        this.boundary = boundary;
+        this.repositoryUtenti = repositoryUtenti;
     }
 
     /**
-     * Avvia la creazione di un team da parte di un'utente. Se l'utente ha già un team o è già membro la creazione
-     * non va a buon fine, in tutti gli altri casi il membro del team viene associato al team con il ruolo di leader
+     * Avvia la creazione di un team, verificando che l'utente non sia già membro di un team e che il nome del team
+     * non sia già esistente. Se tutte le verifiche passano, crea un nuovo team e aggiunge l'utente come membro con
+     * ruolo di leader.
      *
+     * @param idUtente l'ID dell'utente che vuole creare il team
+     * @param nomeTeam il nome del team da creare
      */
-    /*
-    public void avviaCreazioneTeam(String idUtente, String nomeTeam){
-         Utente utente = new Utente();
-         utente.setId(idUtente);
-
-         Team team = new Team(nomeTeam);
-
-        //se il membro ha già un team all'interno della repository esce
-        if (repositoryMembriTeam.existsByUtente(utente)){
-            return;
+    @Transactional
+    public void avviaCreazioneTeam(String idUtente, String nomeTeam) {
+        if (repositoryMembriTeam.existsByIdUtente(idUtente)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Hai già un team");
         }
-
-        //altrimenti prende in considerazione una stringa per il nome
-        boolean nomeDisponibile = false;
-        Team team;
-
-        //l'utente inserisce il nome, il validatore controlla se esiste già un team chiamato così
-        do{
-            team = boundary.inserisciTeam();
-            nomeDisponibile = !validatore.verificaNomeTeam(team);
-
-            //se esiste e quindi il nome non è disponibile allora gli dice che non può usarlo altrimenti esce dal ciclo
-            if (!nomeDisponibile){
-                boundary.mostraErrore("Nome non disponibile");
-            }
-        }while (!nomeDisponibile);
-
-        //una volta che ha il nome del team crea il team con quel nome e associa a quel team il membro del team con il ruolo di leader
-        Team newTeam = new Team(team.getNome());
-        MembroTeam membroTeam = new MembroTeam(utente, team, RuoloTeam.LEADER);
-
+        if (repositoryTeam.existsByNome(nomeTeam)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Nome del team già esistente");
+        }
+        Team team = new Team(nomeTeam);
         repositoryTeam.save(team);
+        Utente utente = repositoryUtenti.findById(idUtente).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Utente non trovato"));
+        MembroTeam membroTeam = new MembroTeam(utente, team, RuoloTeam.LEADER);
         repositoryMembriTeam.save(membroTeam);
-
-        boundary.confermaCreazione();
     }
 
-     */
 }
