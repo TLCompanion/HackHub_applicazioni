@@ -4,13 +4,14 @@ import com.example.hackhub.domain.RuoloTeam;
 import com.example.hackhub.domain.implementazione.MembroTeam;
 import com.example.hackhub.domain.implementazione.Team;
 import com.example.hackhub.domain.implementazione.Utente;
+import com.example.hackhub.eccezioni.ConflictException;
+import com.example.hackhub.eccezioni.ForbiddenException;
+import com.example.hackhub.eccezioni.NotFoundException;
 import com.example.hackhub.repository.RepositoryMembriTeam;
 import com.example.hackhub.repository.RepositoryTeam;
 import com.example.hackhub.repository.RepositoryUtenti;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class CreaTeamHandler {
@@ -44,15 +45,15 @@ public class CreaTeamHandler {
     @Transactional
     public void avviaCreazioneTeam(String idUtente, String nomeTeam) {
         if (repositoryMembriTeam.existsByIdUtente(idUtente)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Hai già un team");
+            throw new ForbiddenException("L'utente è già membro di un team");
         }
         if (repositoryTeam.existsByNome(nomeTeam)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Nome del team già esistente");
+            throw new ConflictException("Esiste già un team con questo nome");
         }
         Team team = new Team(nomeTeam);
         repositoryTeam.save(team);
         Utente utente = repositoryUtenti.findById(idUtente).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Utente non trovato"));
+                new NotFoundException("Utente non trovato"));
         MembroTeam membroTeam = new MembroTeam(utente, team, RuoloTeam.LEADER);
         repositoryMembriTeam.save(membroTeam);
     }

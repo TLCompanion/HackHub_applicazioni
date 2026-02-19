@@ -2,13 +2,13 @@ package com.example.hackhub.controller;
 
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.implementazione.*;
+import com.example.hackhub.eccezioni.ForbiddenException;
+import com.example.hackhub.eccezioni.NotFoundException;
 import com.example.hackhub.repository.RepositoryHackathon;
 import com.example.hackhub.repository.RepositoryStaff;
 import com.example.hackhub.repository.RepositoryUtenti;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -54,15 +54,14 @@ public class CreaHackathonHandler {
      * @param regolamento il regolamento dell'hackathon, che deve essere una stringa non vuota //TODO come gestiamo il regolamento? è una stringa o un file?
      * @param nomeGiudice il nome dell'utente da invitare come giudice dell'hackathon, che deve esistere nel database
      * @param nomiMentori la lista dei nomi degli utenti da invitare come mentori dell'hackathon, che devono esistere nel database
-     * @throws ResponseStatusException se il nome dell'hackathon è già esistente, se l'utente organizzatore non esiste,
-     * se il giudice non esiste, o se uno dei mentori non esiste
+     * @throws ForbiddenException se esiste già un hackathon con lo stesso nome
      */
     @Transactional
     public void avviaCreazioneHackathon(String idUtente, String nomeHackathon, LocalDate dataInizio, LocalDate dataFine,
                                         String luogo, BigDecimal premio, int teamMin, int teamMax, int maxIscrizioni,
                                         String regolamento, String nomeGiudice, List<String> nomiMentori) {
         if (repositoryHackathon.existsByNome(nomeHackathon)){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Esiste già un hackathon con questo nome");
+            throw new ForbiddenException("Esiste già un hackathon con questo nome");
         }
         builder.impostaNome(nomeHackathon);
         Periodo periodo = new Periodo(dataInizio, dataFine);
@@ -82,15 +81,14 @@ public class CreaHackathonHandler {
     private void gestisciInvitiStaff(Hackathon hackathon, List<String> nomiMentori, String nomeGiudice) {
         ServizioNotifiche servizioNotifiche = new ServizioNotifiche();
         Map<Utente, RuoloStaff> destinatari = gestisciStaff(nomiMentori, nomeGiudice);
-        servizioNotifiche.inviaInvitoStaff(hackathon, destinatari);
+        servizioNotifiche.inviaInvitoStaff(hackathon.getNome(), destinatari);
     }
 
     private Map<Utente, RuoloStaff> gestisciStaff(List<String> nomiMentori, String nomeGiudice) {
-        List<Utente> mentori = nomiMentori.stream().map(nome -> repositoryUtenti.findByNome(nome).orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Il mentore specificato non esiste: " + nome)))
-                .toList();
-        Utente giudice = repositoryUtenti.findByNome(nomeGiudice).orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Il giudice specificato non esiste"));
+        List<Utente> mentori = nomiMentori.stream().map(nome -> repositoryUtenti.findByNome(nome).orElseThrow(() ->
+                new NotFoundException("Il mentore specificato non esiste: " + nome))).toList();
+        Utente giudice = repositoryUtenti.findByNome(nomeGiudice).orElseThrow(() ->
+                new NotFoundException("Il utente non esiste: " + nomeGiudice));
         return new HashMap<>(){{
             put(giudice, RuoloStaff.GIUDICE);
             mentori.forEach(mentore -> put(mentore, RuoloStaff.MENTORE));
@@ -98,8 +96,8 @@ public class CreaHackathonHandler {
     }
 
     private void gestisciOrganizzatore(String idUtente, Hackathon hackathon) {
-        Utente organizzatore = repositoryUtenti.findById(idUtente).orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "L'utente organizzatore non esiste"));
+        Utente organizzatore = repositoryUtenti.findById(idUtente).orElseThrow(() -> new NotFoundException("L' utente "
+                + "non esiste: " + idUtente));
         Staff staffOrganizzatore = new Staff(organizzatore, hackathon, RuoloStaff.ORGANIZZATORE);
         hackathon.aggiungiStaff(staffOrganizzatore);
         repositoryStaff.save(staffOrganizzatore);

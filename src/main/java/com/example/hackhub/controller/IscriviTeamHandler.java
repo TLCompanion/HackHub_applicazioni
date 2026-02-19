@@ -3,7 +3,9 @@ package com.example.hackhub.controller;
 import com.example.hackhub.domain.implementazione.Hackathon;
 import com.example.hackhub.domain.implementazione.MembroTeam;
 import com.example.hackhub.domain.implementazione.Utente;
+import org.springframework.stereotype.Service;
 
+@Service
 public class IscriviTeamHandler {
 
     public void avviaIscrizioneHackathon(){

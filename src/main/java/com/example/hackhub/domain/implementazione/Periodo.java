@@ -60,10 +60,13 @@ public class Periodo {
 
     }
 
-    //Aggiunta di un metodo di validazione per assicurarsi che la data e ora di inizio siano precedenti a quelle di fine
-    @AssertTrue(message = "La data e ora di inizio devono essere precedenti alla data e ora di fine")
-    private boolean validazione(LocalDate dataInizio, LocalDate dataFine, LocalTime oraInizio, LocalTime oraFine) {
-        return dataInizio.isBefore(dataFine) || (dataInizio.isEqual(dataFine) && oraInizio.isBefore(oraFine));
+    private void validazione(LocalDate dataInizio, LocalDate dataFine, LocalTime oraInizio, LocalTime oraFine) {
+        if (dataInizio.isBefore(dataFine) || (dataInizio.isEqual(dataFine) && oraInizio.isBefore(oraFine))) {
+            throw new IllegalArgumentException("La data e ora di inizio devono essere precedenti a quelle di fine");
+        }
+        if (dataInizio.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("La data di inizio deve essere futura a oggi");
+        }
     }
 
 

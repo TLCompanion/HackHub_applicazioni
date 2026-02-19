@@ -28,13 +28,9 @@ public class CreaTeamBoundary {
             @AuthenticationPrincipal Jwt jwt,
             String nomeTeam
             ){
-        // TODO in seguito questo sarà tolto, è per testare
-        if (jwt == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token mancante o non valido");
-        }
         String idUtente = jwt.getSubject(); // Ottieni l'ID dell'utente dal token JWT
         handler.avviaCreazioneTeam(nomeTeam, idUtente);
-        return ResponseEntity.status(201).build();
+        return ResponseEntity.noContent().build();
     }
 
 }

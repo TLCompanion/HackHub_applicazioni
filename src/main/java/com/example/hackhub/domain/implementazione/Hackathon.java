@@ -172,4 +172,8 @@ public class Hackathon implements Publisher {
         this.staff.add(staff);
     }
 
+    public Periodo getPeriodo() { return  this.periodo; }
+
+    public List<IscrizioneTeam> getIscrizioni() { return this.iscrizioni; }
+
 }

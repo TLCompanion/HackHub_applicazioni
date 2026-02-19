@@ -51,4 +51,6 @@ public class IscrizioneTeam {
             this.idIscrizione = "I-" + UUID.randomUUID();
         }
     }
+
+    public Team getTeam() { return team; }
 }

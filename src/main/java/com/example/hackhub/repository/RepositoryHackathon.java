@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface RepositoryHackathon extends JpaRepository<Hackathon, String> {
 
     boolean existsByNome(String nome);
+
 /*
     void salva(Hackathon hackathon);
 

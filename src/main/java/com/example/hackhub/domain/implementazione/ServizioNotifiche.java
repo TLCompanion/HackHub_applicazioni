@@ -35,11 +35,11 @@ public class ServizioNotifiche {
     /**
      * Invia una richiesta da parte di un mentore, un'organizzatore o un team
      */
-    public void inviaInvitoStaff (Hackathon hackathon, Map<Utente, RuoloStaff> destinatari){
+    public void inviaInvitoStaff (String nomeHackathon, Map<Utente, RuoloStaff> destinatari){
         //TODO IMPLEMENTARE
     }
 
-    public void inviaPropostaCall (){
+    public void inviaPropostaCall (String mittente, String nomeHackathon, Utente leaderTeam, Periodo periodo) {
         //TODO IMPLEMENTARE
     }
 
