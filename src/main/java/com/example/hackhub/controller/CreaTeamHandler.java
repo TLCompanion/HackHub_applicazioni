@@ -44,7 +44,8 @@ public class CreaTeamHandler {
      */
     @Transactional
     public void avviaCreazioneTeam(String idUtente, String nomeTeam) {
-        if (repositoryMembriTeam.existsByIdUtente(idUtente)) {
+        if (repositoryMembriTeam.existsByUtente(repositoryUtenti.findById(idUtente).
+                orElseThrow(() -> new NotFoundException("Utente non trovato")))) {
             throw new ForbiddenException("L'utente è già membro di un team");
         }
         if (repositoryTeam.existsByNome(nomeTeam)) {

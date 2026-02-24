@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 //TODO ricordarsi di usare swagger o cose simili per documentare le API, in modo da rendere chiaro quali sono i campi
@@ -24,6 +25,8 @@ import java.util.List;
  *                essere un intero compreso tra 3 e 6
  * @param maxIscrizioni il numero massimo di team che possono iscriversi all'hackathon, che deve essere un intero positivo
  * @param regolamento il regolamento dell'hackathon, che deve essere una stringa non vuota //TODO come gestiamo il regolamento? è una stringa o un file?
+ * @param scadenzaIscrizioni la data e ora di scadenza per le iscrizioni all'hackathon, che deve essere una data valida
+ *                           e non nulla
  * @param nomeGiudice il nome dell'utente da invitare come giudice dell'hackathon, che deve essere una stringa non vuota
  * @param nomeMentori la lista dei nomi degli utenti da invitare come mentori dell'hackathon, che deve essere una lista
  *                    non vuota di stringhe non vuote
@@ -38,6 +41,7 @@ public record HackathonRequest(
         @Max(6) @Min(3) int teamMax,
         @Min(1) int maxIscrizioni,
         @NotBlank String regolamento,
+        @NotNull LocalDateTime scadenzaIscrizioni,
         @NotBlank String nomeGiudice,
         @NotEmpty @NotNull @Size(min = 1) List<@NotBlank String> nomeMentori
 ) {

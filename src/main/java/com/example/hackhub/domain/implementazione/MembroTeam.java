@@ -63,4 +63,8 @@ public class MembroTeam {
     public String getIdTeam() { return team.getIdTeam(); }
 
     public RuoloTeam getRuolo() { return ruolo; }
+
+    public Utente getUtente() { return utente; }
+
+     public Team getTeam() { return team; }
 }

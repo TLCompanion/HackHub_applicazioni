@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,23 +20,24 @@ import java.util.Map;
 @Service
 public class CreaHackathonHandler {
 
-    private final HackathonBuilder builder;
     private final RepositoryUtenti repositoryUtenti;
     private final RepositoryHackathon repositoryHackathon;
     private final RepositoryStaff repositoryStaff;
+    private final ServizioNotifiche servizioNotifiche;
 
     /**
      * Crea un handler che si occupa di gestire tutte le operazioni necessarie per creare un hackathon
-     * @param builder il builder per creare l'hackathon
      * @param repositoryUtenti la repository per recuperare gli utenti che saranno organizzatori, mentori e giudici
      * @param repositoryHackathon la repository per salvare l'hackathon creato
      * @param repositoryStaff la repository per salvare i membri dello staff associati all'hackathon
+     * @param servizioNotifiche il servizio per inviare le notifiche agli utenti invitati come giudici e mentori
      */
-    public CreaHackathonHandler(HackathonBuilder builder, RepositoryUtenti repositoryUtenti, RepositoryHackathon repositoryHackathon, RepositoryStaff repositoryStaff) {
-        this.builder = builder;
+    public CreaHackathonHandler(RepositoryUtenti repositoryUtenti, RepositoryHackathon
+            repositoryHackathon, RepositoryStaff repositoryStaff, ServizioNotifiche servizioNotifiche) {
         this.repositoryUtenti = repositoryUtenti;
         this.repositoryHackathon = repositoryHackathon;
         this.repositoryStaff = repositoryStaff;
+        this.servizioNotifiche = servizioNotifiche;
     }
 
     /**
@@ -52,6 +54,7 @@ public class CreaHackathonHandler {
      * @param teamMax il numero massimo di persone che possono formare un team per partecipare all'hackathon
      * @param maxIscrizioni il numero massimo di team che possono iscriversi all'hackathon
      * @param regolamento il regolamento dell'hackathon, che deve essere una stringa non vuota //TODO come gestiamo il regolamento? è una stringa o un file?
+     * @param scadenzaIscrizioni la data e ora di scadenza per le iscrizioni all'hackathon, che deve essere una data valida
      * @param nomeGiudice il nome dell'utente da invitare come giudice dell'hackathon, che deve esistere nel database
      * @param nomiMentori la lista dei nomi degli utenti da invitare come mentori dell'hackathon, che devono esistere nel database
      * @throws ForbiddenException se esiste già un hackathon con lo stesso nome
@@ -59,10 +62,11 @@ public class CreaHackathonHandler {
     @Transactional
     public void avviaCreazioneHackathon(String idUtente, String nomeHackathon, LocalDate dataInizio, LocalDate dataFine,
                                         String luogo, BigDecimal premio, int teamMin, int teamMax, int maxIscrizioni,
-                                        String regolamento, String nomeGiudice, List<String> nomiMentori) {
+                                        String regolamento, LocalDateTime scadenzaIscrizioni, String nomeGiudice, List<String> nomiMentori) {
         if (repositoryHackathon.existsByNome(nomeHackathon)){
             throw new ForbiddenException("Esiste già un hackathon con questo nome");
         }
+        HackathonBuilder builder = new HackathonBuilder();
         builder.impostaNome(nomeHackathon);
         Periodo periodo = new Periodo(dataInizio, dataFine);
         builder.impostaPeriodo(periodo);
@@ -71,6 +75,7 @@ public class CreaHackathonHandler {
         builder.impostaTeamMin(teamMin);
         builder.impostaTeamMax(teamMax);
         builder.impostaRegolamento(regolamento);
+        builder.impostaScadenzaIscrizioni(scadenzaIscrizioni);
         builder.impostaMaxIscrizioni(maxIscrizioni);
         Hackathon hackathon = builder.getRisultato();
         gestisciOrganizzatore(idUtente, hackathon);
@@ -79,15 +84,14 @@ public class CreaHackathonHandler {
     }
 
     private void gestisciInvitiStaff(Hackathon hackathon, List<String> nomiMentori, String nomeGiudice) {
-        ServizioNotifiche servizioNotifiche = new ServizioNotifiche();
         Map<Utente, RuoloStaff> destinatari = gestisciStaff(nomiMentori, nomeGiudice);
         servizioNotifiche.inviaInvitoStaff(hackathon.getNome(), destinatari);
     }
 
     private Map<Utente, RuoloStaff> gestisciStaff(List<String> nomiMentori, String nomeGiudice) {
-        List<Utente> mentori = nomiMentori.stream().map(nome -> repositoryUtenti.findByNome(nome).orElseThrow(() ->
+        List<Utente> mentori = nomiMentori.stream().map(nome -> repositoryUtenti.findByNomeUtente(nome).orElseThrow(() ->
                 new NotFoundException("Il mentore specificato non esiste: " + nome))).toList();
-        Utente giudice = repositoryUtenti.findByNome(nomeGiudice).orElseThrow(() ->
+        Utente giudice = repositoryUtenti.findByNomeUtente(nomeGiudice).orElseThrow(() ->
                 new NotFoundException("Il utente non esiste: " + nomeGiudice));
         return new HashMap<>(){{
             put(giudice, RuoloStaff.GIUDICE);

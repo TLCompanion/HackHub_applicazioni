@@ -2,6 +2,7 @@ package com.example.hackhub.domain.implementazione;
 
 import com.example.hackhub.domain.*;
 import com.example.hackhub.domain.implementazione.statePattern.IscrizioniAperte;
+import com.example.hackhub.eccezioni.ConflictException;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -9,7 +10,6 @@ import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,7 +36,7 @@ public class Hackathon implements Publisher {
     @NotNull
     private BigDecimal premio;
 
-    @Transient
+    @NotBlank
     private String luogo;
 
     @Max(6)
@@ -49,13 +49,14 @@ public class Hackathon implements Publisher {
     private String regolamento;
 
     @Min(1)
-    private int maxIscrizioni;
+    private int maxIscrizioni; //Massimo numero di iscrizioni (team) che possono partecipare all'hackathon
 
     //TODO valutare se transient è giusto in questo caso, chat dice: "Se vuoi davvero State pattern con classi: allora
     // in persistenza memorizzi almeno un “codice stato” e ricostruisci l’oggetto stato a runtime (factory dello stato)."
     @Transient
     private StatoHackathon stato;
 
+    @NotNull
     private LocalDateTime scadenzaIscrizioni;
 
     @Transient
@@ -82,9 +83,11 @@ public class Hackathon implements Publisher {
      * @param teamMax numero massimo di team che possono partecipare all'hackathon, deve essere positivo
      * @param teamMin numero minimo di team che devono partecipare all'hackathon, deve essere positivo e minore o uguale a teamMax
      * @param regolamento
+     * @param scadenzaIscrizioni data e ora di scadenza per le iscrizioni all'hackathon, deve essere una data valida e futura
      */
-    public Hackathon(String nome, Periodo periodo, BigDecimal premio, String luogo, int teamMax, int teamMin, String regolamento) {
-        validazione(nome, periodo, premio, luogo, teamMax, teamMin, regolamento);
+    public Hackathon(String nome, Periodo periodo, BigDecimal premio, String luogo, int teamMax, int teamMin,
+                     LocalDateTime scadenzaIscrizioni, String regolamento, int maxIscrizioni) {
+        validazione(nome, periodo, premio, luogo, teamMax, teamMin, regolamento, scadenzaIscrizioni);
         this.nome = nome;
         this.periodo = periodo;
         this.premio = premio;
@@ -92,9 +95,9 @@ public class Hackathon implements Publisher {
         this.teamMax = teamMax;
         this.teamMin = teamMin;
         this.regolamento = regolamento;
+        this.scadenzaIscrizioni = scadenzaIscrizioni;
+        this.maxIscrizioni = maxIscrizioni;
         // valori di default / inizializzazioni
-        // esempio: scadenza iscrizioni 1 giorno prima della fine dell'hackathon
-        this.scadenzaIscrizioni = periodo.getDataFine().minusDays(1).atStartOfDay();
         this.stato = IscrizioniAperte.INSTANCE; // stato iniziale, ad esempio "Iscrizioni Aperte"
         this.subscriber = new ArrayList<>();
         this.staff = new ArrayList<>();
@@ -112,8 +115,18 @@ public class Hackathon implements Publisher {
     }
 
     //TODO da fare
-    private boolean validazione(String nome, Periodo periodo, BigDecimal premio, String luogo, int teamMax, int teamMin, String regolamento) {
+    private boolean validazione(String nome, Periodo periodo, BigDecimal premio, String luogo, int teamMax, int teamMin, String regolamento, LocalDateTime scadenzaIscrizioni) {
     return true;
+    }
+
+    public void aggiungiIscrizioneTeam(IscrizioneTeam iscrizione) {
+        if (iscrizioni.size() == maxIscrizioni) {
+            throw new ConflictException("Numero massimo di iscrizioni raggiunto");
+        }
+        if (stato != IscrizioniAperte.INSTANCE) {
+            throw new ConflictException("Non è possibile iscrivere un team, le iscrizioni non sono aperte");
+        }
+        this.iscrizioni.add(iscrizione);
     }
 
     //metodi da implementare
@@ -175,5 +188,15 @@ public class Hackathon implements Publisher {
     public Periodo getPeriodo() { return  this.periodo; }
 
     public List<IscrizioneTeam> getIscrizioni() { return this.iscrizioni; }
+
+    public BigDecimal getPremio() { return this.premio; }
+
+     public String getLuogo() { return this.luogo; }
+
+     public String getRegolamento() { return this.regolamento; }
+
+     public LocalDateTime getScadenzaIscrizioni() { return this.scadenzaIscrizioni; }
+
+    public int getMaxIscrizioni() { return this.maxIscrizioni; }
 
 }

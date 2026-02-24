@@ -5,6 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RepositoryValutazioni extends JpaRepository<Valutazione, String> {
 
-    //void salva(Valutazione valutazione);
 
 }

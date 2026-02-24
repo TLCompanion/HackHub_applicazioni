@@ -21,6 +21,7 @@ public class ServizioNotifiche {
     public ServizioNotifiche() {
     }
 
+    //TODO verificare se è necessario un costruttore privato per il pattern singleton, da verificare
     /**
      * Se l'istanza è nulla ne creo una nuuova
      * @return l'istanza creata se è null o quella precedentemente esistente se non è nulla

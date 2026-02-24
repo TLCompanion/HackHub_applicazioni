@@ -33,7 +33,7 @@ public class CreaHackathonBoundary {
         String idUtente = jwt.getSubject(); // Ottieni l'ID dell'utente dal token JWT
         handler.avviaCreazioneHackathon(idUtente, request.nome(), request.dataInizio(), request.dataFine(),
                 request.luogo(), request.premio(), request.teamMin(), request.teamMax(),  request.maxIscrizioni(),
-                request.regolamento(), request.nomeGiudice(), request.nomeMentori());
+                request.regolamento(), request.scadenzaIscrizioni(), request.nomeGiudice(), request.nomeMentori());
         return ResponseEntity.noContent().build();
     }
 

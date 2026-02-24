@@ -1,6 +1,7 @@
 package com.example.hackhub.domain.implementazione;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class HackathonBuilder {
 
@@ -11,6 +12,8 @@ public class HackathonBuilder {
     int teamMax;
     int teamMin;
     String regolamento;
+    LocalDateTime scadenzaIscrizioni;
+    int maxIscrizioni;
 
     public void impostaNome(String nome) {
         this.nome = nome;
@@ -40,12 +43,16 @@ public class HackathonBuilder {
         this.regolamento = regolamento;
     }
 
+    public void impostaScadenzaIscrizioni(LocalDateTime scadenza) {
+        this.scadenzaIscrizioni = scadenza;
+    }
+
     public void impostaMaxIscrizioni(int maxIscrizioni) {
-        this.teamMax = maxIscrizioni;
+        this.maxIscrizioni = maxIscrizioni;
     }
 
     public Hackathon getRisultato() {
         return new Hackathon(this.nome, this.periodo, this.premio, this.luogo, this.teamMax, this.teamMin,
-                this.regolamento);
+                this.scadenzaIscrizioni, this.regolamento, this.maxIscrizioni);
     }
 }

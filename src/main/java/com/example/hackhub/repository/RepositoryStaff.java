@@ -5,9 +5,5 @@ import com.example.hackhub.domain.implementazione.Staff;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RepositoryStaff extends JpaRepository<Staff, String> {
-/*
-    //String idUtente, String idHackathon
-    boolean isStaff(Utente utente, Hackathon hackathon, RuoloStaff ruolo);
 
-    void salva(Staff membroStaff);*/
 }
