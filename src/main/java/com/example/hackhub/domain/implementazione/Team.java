@@ -63,6 +63,7 @@ public class Team {
      * @throws Exception se il membro da aggiungere risulta LEADER
      */
     // TODO che ne pensate di questa implementazione? Exception è puramente indicativo
+    // Boh add lo aggiunge automaticamente anche al database e alla repository? Se si, top
     public void aggiungiMembro(MembroTeam membro) throws Exception {
         if (membro.getRuolo().equals(RuoloTeam.LEADER)) throw new Exception("Tentativo di aggiungere un" +
                 " Leader a un Team");

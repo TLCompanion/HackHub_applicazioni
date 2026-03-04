@@ -60,4 +60,8 @@ public class Staff {
     public String getIdHackathon() {return hackathon.getIdHackathon();}
 
     public String getIdUtente() {return utente.getIdUtente();}
+
+    public Utente getUtente() {
+        return utente;
+    }
 }

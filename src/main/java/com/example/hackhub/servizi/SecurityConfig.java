@@ -1,4 +1,4 @@
-package com.example.hackhub.domain.servizi;
+package com.example.hackhub.servizi;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

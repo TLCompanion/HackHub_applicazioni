@@ -1,32 +1,42 @@
 package com.example.hackhub.domain.implementazione;
 
 import com.example.hackhub.domain.StatoRichiesta;
+import com.example.hackhub.domain.TipoNotifica;
+import com.example.hackhub.domain.implementazione.FactoryPattern.Payload;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
-
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 /**
  * Classe che gestisce gli elementi generali di una richiesta
  */
-//TODO da sistemare tipo aggiungere i destinatari
-public abstract class Richiesta<T> {
+@Entity
+public class Richiesta {
 
+    @Id
     private String idRichiesta;
     private String nomeMittente;
-    private Collection<Utente> destinatari;
+    private List<Utente> destinatari;
     private StatoRichiesta stato;
+    private TipoNotifica tipo;
+    @Embedded
+    private Payload payload;
+
+    public Richiesta(){}
 
     /**
      * Creazione di una nuova richiesta
      * @param nomeMittente il mittente della richiesta
      */
-    public Richiesta(String nomeMittente) {
+    public Richiesta(String nomeMittente, Payload payload, TipoNotifica tipo, List<Utente> destinatari) {
         this.nomeMittente = nomeMittente;
-        this.destinatari = new ArrayList<>();
+        this.tipo = tipo;
+        this.destinatari = destinatari;
         this.stato = StatoRichiesta.INVIATO; //all'inizio quando ancora la richiesta non è stata valutata lo stato è sempre inviato
+        this.payload = payload;
     }
 
     //PrePersist serve per fare operazioni prima di salvare l'entità nel database, in questo caso per assegnare un id
@@ -45,4 +55,8 @@ public abstract class Richiesta<T> {
     public String getIdRichiesta() { return idRichiesta; }
 
     public StatoRichiesta getStato() { return stato; }
+
+    public void setStato(StatoRichiesta stato) {
+        this.stato = stato;
+    }
 }

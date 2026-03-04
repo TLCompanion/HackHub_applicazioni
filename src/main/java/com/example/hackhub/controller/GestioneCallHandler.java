@@ -1,9 +1,11 @@
 package com.example.hackhub.controller;
 
+import com.example.hackhub.boundary.dto.PropostaCallRequest;
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.RuoloTeam;
 import com.example.hackhub.domain.implementazione.*;
 import com.example.hackhub.domain.implementazione.statePattern.Concluso;
+import com.example.hackhub.servizi.ServizioNotifiche;
 import com.example.hackhub.eccezioni.ConflictException;
 import com.example.hackhub.eccezioni.ForbiddenException;
 import com.example.hackhub.eccezioni.NotFoundException;
@@ -11,8 +13,6 @@ import com.example.hackhub.repository.RepositoryHackathon;
 import com.example.hackhub.repository.RepositoryMembriTeam;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Service
 public class GestioneCallHandler {
@@ -35,27 +35,41 @@ public class GestioneCallHandler {
         this.repositoryHackathon = repositoryHackathon;
         this.servizioNotifiche = servizioNotifiche;
     }
+//
+//    /**
+//     * Avvia la proposta di una call da parte di un mentore per un team iscritto ad un hackathon. La call dura mezz'ora
+//     * e deve essere proposta prima della fine dell'hackathon.
+//     * @param idUtente l'ID dell'utente che propone la call, che deve essere un mentore autorizzato per l'hackathon
+//     * @param idHackathon l'ID dell'hackathon a cui è iscritto il team per cui si propone la call
+//     * @param idTeam l'ID del team per cui si propone la call, che deve essere iscritto all'hackathon
+//     * @param data la data in cui si propone la call, che deve essere prima della fine dell'hackathon
+//     * @param ora l'ora in cui si propone la call, che deve essere prima della fine dell'hackathon
+//     */
+//    @Transactional
+//    public void avviaPropostaCall(String idUtente, String idHackathon, String idTeam, LocalDate data, LocalTime ora) {
+//        Hackathon hackathon = repositoryHackathon.findById(idHackathon).orElseThrow( () ->
+//                new NotFoundException("Hackathon non esistente"));
+//        verificaMentoreAutorizzato(hackathon, idUtente);
+//        //Il periodo è fisso e dura mezz'ora
+//        Periodo periodo = new Periodo(data, ora, data, ora.plusMinutes(30));
+//        validazione(periodo, hackathon, idTeam);
+//        Utente leader = repositoryMembriTeam.findMembroTeamByRuolo(RuoloTeam.LEADER).orElseThrow(() ->
+//                new NotFoundException("Leader del team non trovato")).getUtente();
+//        servizioNotifiche.inviaPropostaCall(idUtente, hackathon.getNome(), leader, periodo);
+//
+//    }
 
-    /**
-     * Avvia la proposta di una call da parte di un mentore per un team iscritto ad un hackathon. La call dura mezz'ora
-     * e deve essere proposta prima della fine dell'hackathon.
-     * @param idUtente l'ID dell'utente che propone la call, che deve essere un mentore autorizzato per l'hackathon
-     * @param idHackathon l'ID dell'hackathon a cui è iscritto il team per cui si propone la call
-     * @param idTeam l'ID del team per cui si propone la call, che deve essere iscritto all'hackathon
-     * @param data la data in cui si propone la call, che deve essere prima della fine dell'hackathon
-     * @param ora l'ora in cui si propone la call, che deve essere prima della fine dell'hackathon
-     */
     @Transactional
-    public void avviaPropostaCall(String idUtente, String idHackathon, String idTeam, LocalDate data, LocalTime ora) {
-        Hackathon hackathon = repositoryHackathon.findById(idHackathon).orElseThrow( () ->
+    public void avviaPropostaCall(String idUtente, PropostaCallRequest request) {
+        Hackathon hackathon = repositoryHackathon.findById(request.idHackathon()).orElseThrow( () ->
                 new NotFoundException("Hackathon non esistente"));
         verificaMentoreAutorizzato(hackathon, idUtente);
         //Il periodo è fisso e dura mezz'ora
-        Periodo periodo = new Periodo(data, ora, data, ora.plusMinutes(30));
-        validazione(periodo, hackathon, idTeam);
+        Periodo periodo = new Periodo(request.data(), request.ora(), request.data(), request.ora().plusMinutes(30));
+        validazione(periodo, hackathon, request.idTeam());
         Utente leader = repositoryMembriTeam.findMembroTeamByRuolo(RuoloTeam.LEADER).orElseThrow(() ->
                 new NotFoundException("Leader del team non trovato")).getUtente();
-        servizioNotifiche.inviaPropostaCall(idUtente, hackathon.getNome(), leader, periodo);
+        servizioNotifiche.inviaPropostaCall(idUtente, hackathon, leader, periodo);
 
     }
 

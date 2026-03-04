@@ -82,7 +82,7 @@ public class Hackathon implements Publisher {
      * @param luogo luogo in cui si svolge l'hackathon
      * @param teamMax numero massimo di team che possono partecipare all'hackathon, deve essere positivo
      * @param teamMin numero minimo di team che devono partecipare all'hackathon, deve essere positivo e minore o uguale a teamMax
-     * @param regolamento
+     * @param regolamento il regolamento associato all'hackathon
      * @param scadenzaIscrizioni data e ora di scadenza per le iscrizioni all'hackathon, deve essere una data valida e futura
      */
     public Hackathon(String nome, Periodo periodo, BigDecimal premio, String luogo, int teamMax, int teamMin,
@@ -151,16 +151,40 @@ public class Hackathon implements Publisher {
         return this.regolamento;
     }
 
+    /**
+     * Aggiunge un subscriber alla lista dei subscriber se non è già presente
+     * @param subscriber il subscriber da aggiungere
+     */
     public void attach(Subscriber subscriber) {
-        //TODO IMPLEMENTARE
+        if (subscriber == null){
+            // TODO qui servirebbe un'eccezione diversa?
+            throw new NullPointerException("Il subscriber non può essere nullo");
+        }
+
+        if (!this.subscriber.contains(subscriber))
+            this.subscriber.add(subscriber);
     }
 
+    /**
+     * Toglie un subscriber dalla lista dei subscriber
+     * @param subscriber il subscriber da rimuovere
+     */
     public void detach(Subscriber subscriber) {
-        //TODO IMPLEMENTARE
+        if (subscriber == null){
+            throw new NullPointerException("Il subscriber non può essere nullo");
+        }
+
+        this.subscriber.remove(subscriber);
     }
 
+    /**
+     * Notifica tutti i subscriber dei cambiamenti
+     * @param evento l'evento da notificare
+     */
     public void notify(TipoNotifica evento) {
-        //TODO IMPLEMENTARE
+        for (Subscriber s : this.subscriber) {
+            s.update(evento);
+        }
     }
 
     public StatoHackathon getStato() {

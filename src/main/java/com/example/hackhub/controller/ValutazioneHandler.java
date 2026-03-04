@@ -1,5 +1,6 @@
 package com.example.hackhub.controller;
 
+import com.example.hackhub.boundary.dto.ValutazioneRequest;
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.implementazione.*;
 import com.example.hackhub.domain.implementazione.statePattern.Concluso;
@@ -31,9 +32,37 @@ public class ValutazioneHandler {
     buon fine, o se qualcosa esplode a metà, il DB torna com’era prima (rollback). È il modo standard per evitare dati
     incoerenti quando fai più operazioni collegate.
      */
+//    @Transactional
+//    public void avviaInserimentoValutazione(String idSottomissione, String idGiudice, String giudizio, int punteggio){
+//        if (punteggio < 0 || punteggio > 10) {
+//            throw new BadRequestException("Valutazione non valida: il punteggio deve essere compreso tra 0 e 10");
+//        }
+//        // 1) Recupero dati necessari (sottomissione + hackathon)
+//        Sottomissione sottomissione = repositorySottomissioni.findById(idSottomissione).orElseThrow(() ->
+//                new NotFoundException("Sottomissione non trovata"));
+//        Hackathon hackathon = caricaHackathonDellaSottomissioneOrFail(sottomissione);
+//        // 2) Validazioni di dominio e permessi
+//        // Se verificaValutazioneConsentita lancia RuntimeException/IllegalStateException,
+//        // traduciamola in una 409 sensata.
+//        try {
+//            hackathon.getStato().verificaValutazioneConsentita(hackathon);
+//        } catch (RuntimeException ex) {
+//            //è importante che usiamo il ResponseStatusException per restituire un codice HTTP specifico in caso
+//            // di errore, altrimenti Spring lo tradurrebbe in una 500 generica
+//            throw new ConflictException("Valutazione non consentita in questo stato dell'hackathon");
+//        }
+//        verificaGiudiceAutorizzato(hackathon, idGiudice);
+//        // 3) Upsert valutazione (crea se assente, aggiorna se presente)
+//        creaOAggiornaValutazione(sottomissione, punteggio, giudizio);
+//        // 4) Persistenza sottomissione aggiornata
+//        repositorySottomissioni.save(sottomissione);
+//        // 5) Se tutto è valutato, conclude l’hackathon
+//        concludiHackathonSeTutteValutate(hackathon);
+//    }
+
     @Transactional
-    public void avviaInserimentoValutazione(String idSottomissione, String idGiudice, String giudizio, int punteggio){
-        if (punteggio < 0 || punteggio > 10) {
+    public void avviaInserimentoValutazione(String idSottomissione, String idGiudice, ValutazioneRequest request){
+        if (request.punteggio() < 0 || request.punteggio() > 10) {
             throw new BadRequestException("Valutazione non valida: il punteggio deve essere compreso tra 0 e 10");
         }
         // 1) Recupero dati necessari (sottomissione + hackathon)
@@ -52,7 +81,7 @@ public class ValutazioneHandler {
         }
         verificaGiudiceAutorizzato(hackathon, idGiudice);
         // 3) Upsert valutazione (crea se assente, aggiorna se presente)
-        creaOAggiornaValutazione(sottomissione, punteggio, giudizio);
+        creaOAggiornaValutazione(sottomissione, request.punteggio(), request.giudizio());
         // 4) Persistenza sottomissione aggiornata
         repositorySottomissioni.save(sottomissione);
         // 5) Se tutto è valutato, conclude l’hackathon

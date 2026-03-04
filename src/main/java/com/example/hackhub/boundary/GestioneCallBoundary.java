@@ -29,7 +29,8 @@ public class GestioneCallBoundary {
             @RequestBody @Valid PropostaCallRequest request
             ){
             String idUtente = jwt.getSubject(); // Ottieni l'ID dell'utente dal token JWT
-            handler.avviaPropostaCall(idUtente, request.idHackathon(), request.idTeam(), request.data(), request.ora());
+//            handler.avviaPropostaCall(idUtente, request.idHackathon(), request.idTeam(), request.data(), request.ora());
+              handler.avviaPropostaCall(idUtente, request);
             return ResponseEntity.noContent().build();
     }
 }

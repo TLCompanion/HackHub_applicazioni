@@ -1,7 +1,6 @@
 package com.example.hackhub.domain.implementazione;
 
 import jakarta.persistence.*;
-
 import java.util.UUID;
 
 /**
