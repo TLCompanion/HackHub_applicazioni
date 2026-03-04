@@ -2,8 +2,7 @@ package com.example.hackhub.domain.implementazione;
 
 import com.example.hackhub.domain.TipoNotifica;
 import com.example.hackhub.domain.implementazione.FactoryPattern.Payload;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.PrePersist;
+import jakarta.persistence.*;
 
 import java.net.PasswordAuthentication;
 import java.util.ArrayList;
@@ -13,15 +12,20 @@ import java.util.UUID;
 /**
  * Classe che gestisce le notifiche da inviare alla fine dell'hackathon
  */
+@Entity
 public class Notifica {
 
+    @Id
     private String idNotifica;
     private String idMittente;
+    @Transient
     private List<Utente> destinatari;
+    @Column(insertable=false, updatable=false)
     private TipoNotifica tipo;
     @Embedded
     private Payload payload;
 
+    public Notifica() {}
     /**
      * Creazione di una notifica
      * @param idMittente il mittente

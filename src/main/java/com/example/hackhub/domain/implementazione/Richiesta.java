@@ -3,10 +3,8 @@ package com.example.hackhub.domain.implementazione;
 import com.example.hackhub.domain.StatoRichiesta;
 import com.example.hackhub.domain.TipoNotifica;
 import com.example.hackhub.domain.implementazione.FactoryPattern.Payload;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
+import jakarta.persistence.*;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -19,8 +17,10 @@ public class Richiesta {
     @Id
     private String idRichiesta;
     private String nomeMittente;
+    @Transient
     private List<Utente> destinatari;
     private StatoRichiesta stato;
+    @Column(insertable=false, updatable=false)
     private TipoNotifica tipo;
     @Embedded
     private Payload payload;
