@@ -3,12 +3,8 @@ package com.example.hackhub.controller;
 import com.example.hackhub.boundary.dto.PropostaCallRequest;
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.RuoloTeam;
-import com.example.hackhub.domain.TipoNotifica;
 import com.example.hackhub.domain.implementazione.*;
 import com.example.hackhub.domain.implementazione.statePattern.Concluso;
-import com.example.hackhub.observer.Evento;
-import com.example.hackhub.observer.GeneralPublisher;
-import com.example.hackhub.observer.Publisher;
 import com.example.hackhub.servizi.ServizioNotifiche;
 import com.example.hackhub.eccezioni.ConflictException;
 import com.example.hackhub.eccezioni.ForbiddenException;
@@ -24,7 +20,6 @@ public class GestioneCallHandler {
     private final RepositoryMembriTeam repositoryMembriTeam;
     private final RepositoryHackathon repositoryHackathon;
     private final ServizioNotifiche servizioNotifiche;
-    private final Publisher publisher;
 
     /**
      * Costruttore per GestioneCallHandler, che riceve in input i repository necessari per gestire le call proposte dai
@@ -35,11 +30,10 @@ public class GestioneCallHandler {
      *                            la call sia proposta prima della fine dell'hackathon
      * @param servizioNotifiche il servizio per inviare le notifiche al leader del team quando viene proposta una call
      */
-    public GestioneCallHandler(RepositoryMembriTeam repositoryMembroTeam, RepositoryHackathon repositoryHackathon, ServizioNotifiche servizioNotifiche, Publisher publisher) {
+    public GestioneCallHandler(RepositoryMembriTeam repositoryMembroTeam, RepositoryHackathon repositoryHackathon, ServizioNotifiche servizioNotifiche) {
         this.repositoryMembriTeam = repositoryMembroTeam;
         this.repositoryHackathon = repositoryHackathon;
         this.servizioNotifiche = servizioNotifiche;
-        this.publisher = publisher;
     }
 
     @Transactional
@@ -52,7 +46,7 @@ public class GestioneCallHandler {
         validazione(periodo, hackathon, request.idTeam());
         Utente leader = repositoryMembriTeam.findMembroTeamByRuolo(RuoloTeam.LEADER).orElseThrow(() ->
                 new NotFoundException("Leader del team non trovato")).getUtente();
-        servizioNotifiche.inviaPropostaCall(idUtente, hackathon, leader, periodo);
+       // servizioNotifiche.inviaPropostaCall(idUtente, hackathon, leader, periodo);
 
     }
 

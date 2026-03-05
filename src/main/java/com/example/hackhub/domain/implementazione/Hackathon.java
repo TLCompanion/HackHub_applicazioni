@@ -3,7 +3,6 @@ package com.example.hackhub.domain.implementazione;
 import com.example.hackhub.domain.*;
 import com.example.hackhub.domain.implementazione.statePattern.IscrizioniAperte;
 import com.example.hackhub.eccezioni.ConflictException;
-import com.example.hackhub.observer.Subscriber;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -63,9 +62,6 @@ public class Hackathon {
     @NotNull
     private LocalDateTime scadenzaIscrizioni;
 
-    @Transient
-    private List<Subscriber> subscriber;
-
     //TODO valutare se transient è giusto in questo caso
     @Transient
     private List<Staff> staff;
@@ -104,7 +100,6 @@ public class Hackathon {
         this.maxIscrizioni = maxIscrizioni;
         // valori di default / inizializzazioni
         this.stato = IscrizioniAperte.INSTANCE; // stato iniziale, ad esempio "Iscrizioni Aperte"
-        this.subscriber = new ArrayList<>();
         this.staff = new ArrayList<>();
         this.iscrizioni = new ArrayList<>();
     }
@@ -150,34 +145,6 @@ public class Hackathon {
 
     public String getInfo() {
         return this.regolamento;
-    }
-
-    /**
-     * Aggiunge un subscriber alla lista dei subscriber se non è già presente
-     *
-     * @param subscriber il subscriber da aggiungere
-     */
-    public void attach(Subscriber subscriber) {
-        if (subscriber == null) {
-            // TODO qui servirebbe un'eccezione diversa?
-            throw new NullPointerException("Il subscriber non può essere nullo");
-        }
-
-        if (!this.subscriber.contains(subscriber))
-            this.subscriber.add(subscriber);
-    }
-
-    /**
-     * Toglie un subscriber dalla lista dei subscriber
-     *
-     * @param subscriber il subscriber da rimuovere
-     */
-    public void detach(Subscriber subscriber) {
-        if (subscriber == null) {
-            throw new NullPointerException("Il subscriber non può essere nullo");
-        }
-
-        this.subscriber.remove(subscriber);
     }
 
     public StatoHackathon getStato() {

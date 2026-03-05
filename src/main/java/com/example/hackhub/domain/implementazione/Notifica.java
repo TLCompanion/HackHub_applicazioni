@@ -1,11 +1,8 @@
 package com.example.hackhub.domain.implementazione;
 
 import com.example.hackhub.domain.TipoNotifica;
-import com.example.hackhub.domain.implementazione.FactoryPattern.Payload;
 import jakarta.persistence.*;
 
-import java.net.PasswordAuthentication;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,7 +19,7 @@ public class Notifica {
     @Column(insertable=false, updatable=false)
     private TipoNotifica tipo;
     @Embedded
-    private Payload payload;
+    private String payload;
 
     public Notifica() {}
     /**
@@ -31,7 +28,7 @@ public class Notifica {
      * @param destinatari i destinatari
      * @param tipo il tipo di notifica
      */
-    public Notifica(Payload payload, List<Utente> destinatari, TipoNotifica tipo) {
+    public Notifica(String payload, List<Utente> destinatari, TipoNotifica tipo) {
         this.destinatari = destinatari;
         this.tipo = tipo;
         this.payload = payload;

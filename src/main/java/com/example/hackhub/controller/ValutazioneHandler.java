@@ -6,11 +6,10 @@ import com.example.hackhub.domain.TipoNotifica;
 import com.example.hackhub.domain.implementazione.*;
 import com.example.hackhub.domain.implementazione.statePattern.Concluso;
 import com.example.hackhub.eccezioni.*;
-import com.example.hackhub.observer.Evento;
-import com.example.hackhub.observer.GeneralPublisher;
 import com.example.hackhub.repository.RepositoryHackathon;
 import com.example.hackhub.repository.RepositorySottomissioni;
 import com.example.hackhub.repository.RepositoryStaff;
+import com.example.hackhub.servizi.ServizioNotifiche;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,14 +22,14 @@ public class ValutazioneHandler{
     private final RepositorySottomissioni repositorySottomissioni;
     private final RepositoryHackathon repositoryHackathon;
     private final RepositoryStaff repositoryStaff;
-    private final GeneralPublisher publisher;
+    private final ServizioNotifiche servizioNotifiche;
 
     public ValutazioneHandler(RepositorySottomissioni repositorySottomissioni, RepositoryHackathon repositoryHackathon,
-                              RepositoryStaff repositoryStaff, GeneralPublisher publisher) {
+                              RepositoryStaff repositoryStaff, ServizioNotifiche servizioNotifiche) {
         this.repositorySottomissioni = repositorySottomissioni;
         this.repositoryHackathon = repositoryHackathon;
         this.repositoryStaff = repositoryStaff;
-        this.publisher = publisher;
+        this.servizioNotifiche = servizioNotifiche;
     }
 
     @Transactional
@@ -93,7 +92,7 @@ public class ValutazioneHandler{
         if (tutteValutate) {
             hackathon.setStato(Concluso.INSTANCE);
             repositoryHackathon.save(hackathon);
-            publisher.notify(new Evento(TipoNotifica.VALUTAZIONE_CONCLUSA, Map.of( "hackathon", hackathon)));
+            servizioNotifiche.notify();
         }
     }
 
