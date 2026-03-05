@@ -61,7 +61,7 @@ public class ValutazioneHandler {
 //    }
 
     @Transactional
-    public void avviaInserimentoValutazione(String idSottomissione, String idGiudice, ValutazioneRequest request){
+    public void avviaInserimentoValutazione(String idHackathon, String idSottomissione, String idGiudice, ValutazioneRequest request){
         //Giagi questo non serve perchè c'è già il controllo sul DTO, e se il punteggio è fuori range, Spring restituirà
         // automaticamente un 400 Bad Request con un messaggio di errore dettagliato. Quindi non è necessario fare un
         // controllo manuale qui, a meno che tu non voglia personalizzare ulteriormente il messaggio di errore o gestire
@@ -73,7 +73,8 @@ public class ValutazioneHandler {
         // 1) Recupero dati necessari (sottomissione + hackathon)
         Sottomissione sottomissione = repositorySottomissioni.findById(idSottomissione).orElseThrow(() ->
                 new NotFoundException("Sottomissione non trovata"));
-        Hackathon hackathon = caricaHackathonDellaSottomissioneOrFail(sottomissione);
+        Hackathon hackathon = repositoryHackathon.findById(idHackathon).orElseThrow(() ->
+                new NotFoundException("Hackathon non trovato"));
         // 2) Validazioni di dominio e permessi
         // Se verificaValutazioneConsentita lancia RuntimeException/IllegalStateException,
         // traduciamola in una 409 sensata.
@@ -91,19 +92,6 @@ public class ValutazioneHandler {
         repositorySottomissioni.save(sottomissione);
         // 5) Se tutto è valutato, conclude l’hackathon
         concludiHackathonSeTutteValutate(hackathon);
-    }
-
-    private Hackathon caricaHackathonDellaSottomissioneOrFail(Sottomissione sottomissione) {
-        // Se sottomissione.getHackathon() fosse null è incoerenza -> 500
-        if (sottomissione.getHackathon() == null) {
-            throw new InternalServerException("Errore interno");
-        }
-        String hackathonId = sottomissione.getHackathon().getIdHackathon();
-        if (hackathonId == null || hackathonId.isBlank()) {
-            throw new InternalServerException("Errore interno");
-        }
-        return repositoryHackathon.findById(hackathonId).orElseThrow(() ->
-                new InternalServerException("Errore interno"));
     }
 
     private void verificaGiudiceAutorizzato(Hackathon hackathon, String idGiudice) {

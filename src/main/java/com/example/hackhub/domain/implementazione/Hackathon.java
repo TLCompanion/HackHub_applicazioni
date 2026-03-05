@@ -119,7 +119,7 @@ public class Hackathon implements Publisher {
     return true;
     }
 
-    public void aggiungiIscrizioneTeam(IscrizioneTeam iscrizione) {
+    public void aggiungiIscrizione(IscrizioneTeam iscrizione) {
         if (iscrizioni.size() == maxIscrizioni) {
             throw new ConflictException("Numero massimo di iscrizioni raggiunto");
         }
@@ -141,10 +141,6 @@ public class Hackathon implements Publisher {
 
     public int getTeamMin() {
         return teamMin;
-    }
-
-    public void aggiungiIscrizione(IscrizioneTeam iscrizione) {
-        this.iscrizioni.add(iscrizione);
     }
 
     public String getInfo() {

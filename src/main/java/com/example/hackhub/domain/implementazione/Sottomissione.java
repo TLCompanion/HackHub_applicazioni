@@ -24,15 +24,6 @@ public class Sottomissione {
     @JoinColumn(name = "id_valutazione")
     private Valutazione valutazione;
 
-    /*
-    Mi serve per verificare se ValutazioneHandler funziona o no, penso sia comunque comodo da aggiungere anche in UML
-    ma non so se è necessario, se non è necessario lo tolgo, ditemi voi
-    TODO: se decidiamo di tenerlo, aggiungere anche in UML e sistemare errore
-     */
-    @ManyToOne
-    @JoinColumn(name = "id_hackathon", nullable = false)
-    private Hackathon hackathon;
-
     public Sottomissione() {}
 
     /**
@@ -77,7 +68,4 @@ public class Sottomissione {
 
     //mi serve per verificare velocemente se questa sottomissione ha già una valutazione o meno
     public boolean haValutazione() { return this.valutazione != null; }
-
-    //metodo getter per l'hackathon, se decidiamo di tenerlo
-    public Hackathon getHackathon() { return hackathon; }
 }

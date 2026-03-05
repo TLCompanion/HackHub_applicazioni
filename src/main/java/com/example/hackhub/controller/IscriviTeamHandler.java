@@ -2,7 +2,6 @@ package com.example.hackhub.controller;
 
 import com.example.hackhub.domain.RuoloTeam;
 import com.example.hackhub.domain.implementazione.*;
-import com.example.hackhub.domain.implementazione.statePattern.Concluso;
 import com.example.hackhub.domain.implementazione.statePattern.IscrizioniChiuse;
 import com.example.hackhub.eccezioni.ConflictException;
 import com.example.hackhub.eccezioni.ForbiddenException;
@@ -10,7 +9,6 @@ import com.example.hackhub.eccezioni.NotFoundException;
 import com.example.hackhub.repository.RepositoryHackathon;
 import com.example.hackhub.repository.RepositoryIscrizioniTeam;
 import com.example.hackhub.repository.RepositoryMembriTeam;
-import com.example.hackhub.repository.RepositoryUtenti;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -51,7 +49,7 @@ public class IscriviTeamHandler {
             throw new ConflictException("Il numero massimo di iscrizioni è già stato raggiunto");
         }
         IscrizioneTeam iscrizione = new IscrizioneTeam(team, hackathon);
-        hackathon.aggiungiIscrizioneTeam(iscrizione);
+        hackathon.aggiungiIscrizione(iscrizione);
         repositoryHackathon.save(hackathon);
         repositoryIscrizioniTeam.save(iscrizione);
 
