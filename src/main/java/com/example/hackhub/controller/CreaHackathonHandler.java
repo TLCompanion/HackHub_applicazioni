@@ -2,6 +2,7 @@ package com.example.hackhub.controller;
 
 import com.example.hackhub.boundary.dto.HackathonRequest;
 import com.example.hackhub.domain.RuoloStaff;
+import com.example.hackhub.domain.TipoRichiesta;
 import com.example.hackhub.domain.implementazione.*;
 import com.example.hackhub.servizi.ServizioNotifiche;
 import com.example.hackhub.eccezioni.ForbiddenException;
@@ -67,11 +68,31 @@ public class CreaHackathonHandler {
         repositoryHackathon.save(hackathon);
     }
 
+    /**
+     * Gestione degli inviti allo staff per un hackathon
+     * @param hackathon l'hackathon
+     * @param nomiMentori i nomi degli utenti che si vogliono invitare come mentori
+     * @param nomeGiudice il nome dell'utente che si vuole invitare come giudice
+     */
     private void gestisciInvitiStaff(Hackathon hackathon, List<String> nomiMentori, String nomeGiudice) {
         Map<Utente, RuoloStaff> destinatari = gestisciStaff(nomiMentori, nomeGiudice);
-        servizioNotifiche.inviaInvitoStaff(hackathon, destinatari);
+        List<Utente> utentiDestinatari = destinatari.keySet().stream().toList();
+        Utente organizzatore = hackathon.getStaff().stream()
+                .filter(s -> s.getRuolo() == RuoloStaff.ORGANIZZATORE)
+                .map(Staff::getUtente)
+                .findFirst()
+                .orElseThrow(() ->
+                        new NotFoundException("Organizzatore non trovato"));
+        String messaggio = "Invito per diventare staff";
+        servizioNotifiche.creaRichiesta(organizzatore.getIdUtente(), utentiDestinatari, TipoRichiesta.INVITO_STAFF, messaggio, null);
     }
 
+    /**
+     * Controlla che i nomi degli utenti legati allo staff siano presenti nel sistema
+     * @param nomiMentori i nomi dei mentori
+     * @param nomeGiudice il nome del giudice
+     * @return una nuova HashMap che associa l'utente esistente al suo ruolo
+     */
     private Map<Utente, RuoloStaff> gestisciStaff(List<String> nomiMentori, String nomeGiudice) {
         List<Utente> mentori = nomiMentori.stream().map(nome -> repositoryUtenti.findByNomeUtente(nome).orElseThrow(() ->
                 new NotFoundException("Il mentore specificato non esiste: " + nome))).toList();
@@ -83,6 +104,11 @@ public class CreaHackathonHandler {
         }};
     }
 
+    /**
+     * Controlla che l'organizzatore esista come utente e lo aggiunge allo staff
+     * @param idUtente l'id dell'utente
+     * @param hackathon l'hackathon
+     */
     private void gestisciOrganizzatore(String idUtente, Hackathon hackathon) {
         Utente organizzatore = repositoryUtenti.findById(idUtente).orElseThrow(() -> new NotFoundException("L' utente "
                 + "non esiste: " + idUtente));

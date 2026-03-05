@@ -18,6 +18,12 @@ public class IscriviTeamHandler {
     private final RepositoryHackathon repositoryHackathon;
     private final RepositoryIscrizioniTeam repositoryIscrizioniTeam;
 
+    /**
+     * Crea una nuova istanza dell'handler che gestisce l'iscrizione dei team
+     * @param repositoryMembriTeam la repository dei membri del team
+     * @param repositoryHackathon la repository degli hackathon
+     * @param repositoryIscrizioniTeam la repository delle iscrizioni
+     */
     public IscriviTeamHandler(RepositoryMembriTeam repositoryMembriTeam, RepositoryHackathon repositoryHackathon, RepositoryIscrizioniTeam repositoryIscrizioniTeam) {
         this.repositoryMembriTeam = repositoryMembriTeam;
         this.repositoryHackathon = repositoryHackathon;

@@ -3,6 +3,7 @@ package com.example.hackhub.controller;
 import com.example.hackhub.boundary.dto.PropostaCallRequest;
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.RuoloTeam;
+import com.example.hackhub.domain.TipoRichiesta;
 import com.example.hackhub.domain.implementazione.*;
 import com.example.hackhub.domain.implementazione.statePattern.Concluso;
 import com.example.hackhub.servizi.ServizioNotifiche;
@@ -13,6 +14,8 @@ import com.example.hackhub.repository.RepositoryHackathon;
 import com.example.hackhub.repository.RepositoryMembriTeam;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class GestioneCallHandler {
@@ -36,6 +39,11 @@ public class GestioneCallHandler {
         this.servizioNotifiche = servizioNotifiche;
     }
 
+    /**
+     * Avvia una proposta di call da un mentore ad un team
+     * @param idUtente l'id utente del mentore
+     * @param request la richiesta contenente tutti i dettagli
+     */
     @Transactional
     public void avviaPropostaCall(String idUtente, PropostaCallRequest request) {
         Hackathon hackathon = repositoryHackathon.findById(request.idHackathon()).orElseThrow( () ->
@@ -46,10 +54,17 @@ public class GestioneCallHandler {
         validazione(periodo, hackathon, request.idTeam());
         Utente leader = repositoryMembriTeam.findMembroTeamByRuolo(RuoloTeam.LEADER).orElseThrow(() ->
                 new NotFoundException("Leader del team non trovato")).getUtente();
-       // servizioNotifiche.inviaPropostaCall(idUtente, hackathon, leader, periodo);
+        String messaggio = "Proposta di call";
+        servizioNotifiche.creaRichiesta(idUtente, List.of(leader), TipoRichiesta.PROPOSTA_CALL, messaggio, periodo);
 
     }
 
+    /**
+     * Controlla che sia possibile effettuare call
+     * @param periodo il periodo dell'hackathon
+     * @param hackathon l'hackathon
+     * @param idTeam l'id del Team
+     */
     private void validazione(Periodo periodo, Hackathon hackathon, String idTeam) {
         if (hackathon.getStato().equals(Concluso.INSTANCE)) {
             throw new ConflictException("Hackathon concluso, non è possibile proporre una call");
@@ -62,11 +77,16 @@ public class GestioneCallHandler {
         }
     }
 
+    /**
+     * Verifica che l'utente che vuole inviare le call sia un mentore dell'hackathon
+     * @param hackathon l'hackathon
+     * @param idMentore l'id del mentore
+     */
     private void verificaMentoreAutorizzato(Hackathon hackathon, String idMentore) {
         boolean autorizzato = hackathon.getStaff().stream()
-                .anyMatch(s -> s.getRuolo() == RuoloStaff.GIUDICE && s.getIdUtente().equals(idMentore));
+                .anyMatch(s -> s.getRuolo() == RuoloStaff.MENTORE && s.getIdUtente().equals(idMentore));
         if (!autorizzato) {
-            throw new ForbiddenException("Utente non autorizzato a valutare questa sottomissione");
+            throw new ForbiddenException("Utente non autorizzato a inviare call");
         }
     }
 }

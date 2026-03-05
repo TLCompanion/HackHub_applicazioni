@@ -24,6 +24,13 @@ public class ValutazioneHandler{
     private final RepositoryStaff repositoryStaff;
     private final ServizioNotifiche servizioNotifiche;
 
+    /**
+     * Crea una nuova istanza di un handler per la valutazione delle sottomissioni
+     * @param repositorySottomissioni la repository delle sottomissioni
+     * @param repositoryHackathon la repository degli hackathon
+     * @param repositoryStaff la repository dello staff
+     * @param servizioNotifiche il servizio per le notifiche
+     */
     public ValutazioneHandler(RepositorySottomissioni repositorySottomissioni, RepositoryHackathon repositoryHackathon,
                               RepositoryStaff repositoryStaff, ServizioNotifiche servizioNotifiche) {
         this.repositorySottomissioni = repositorySottomissioni;
@@ -32,6 +39,12 @@ public class ValutazioneHandler{
         this.servizioNotifiche = servizioNotifiche;
     }
 
+    /**
+     * Avvia l'inserimento di una nuova valutazione per una sottomissione
+     * @param idSottomissione l'id della sottomissione da valutare
+     * @param idGiudice l'id del giudice
+     * @param request la valutazione con i suoi componenti
+     */
     @Transactional
     public void avviaInserimentoValutazione(String idSottomissione, String idGiudice, ValutazioneRequest request){
         //Giagi questo non serve perchè c'è già il controllo sul DTO, e se il punteggio è fuori range, Spring restituirà
@@ -66,6 +79,11 @@ public class ValutazioneHandler{
         concludiHackathonSeTutteValutate(hackathon);
     }
 
+    /**
+     * Verifica che l'utente che vuole valutare le sottomissioni sia il giudice dell'hackathon
+     * @param hackathon l'hackathon
+     * @param idGiudice l'id del giudice
+     */
     private void verificaGiudiceAutorizzato(Hackathon hackathon, String idGiudice) {
         boolean autorizzato = hackathon.getStaff().stream()
                 .anyMatch(s -> s.getRuolo() == RuoloStaff.GIUDICE && s.getIdUtente().equals(idGiudice));
@@ -74,6 +92,12 @@ public class ValutazioneHandler{
         }
     }
 
+    /**
+     * Crea o aggiorna una valutazione per una sottomissione
+     * @param sottomissione la sottomissione da valutare
+     * @param punteggio il punteggio associato
+     * @param giudizio il giudizio associato
+     */
     private void creaOAggiornaValutazione(Sottomissione sottomissione, int punteggio, String giudizio) {
         Valutazione valutazione = sottomissione.getValutazione();
 
@@ -86,13 +110,24 @@ public class ValutazioneHandler{
         }
     }
 
+    /**
+     * Conclude l'hackathon se tutte le sottomissioni sono state valutate
+     * @param hackathon l'hackathon
+     */
     private void concludiHackathonSeTutteValutate(Hackathon hackathon) {
         List<Sottomissione> sottomissioni = repositorySottomissioni.findByHackathon(hackathon);
         boolean tutteValutate = sottomissioni.stream().allMatch(Sottomissione::haValutazione);
         if (tutteValutate) {
             hackathon.setStato(Concluso.INSTANCE);
             repositoryHackathon.save(hackathon);
-            servizioNotifiche.notify();
+            String messaggio = "L'hackathon è stato concluso, valutazioni terminate";
+            List<Utente> utentiDestinatari = hackathon.getIscrizioni().stream()
+                    .filter(i -> i.getHackathon().equals(hackathon))
+                    .map(IscrizioneTeam::getTeam)
+                    .flatMap(team -> team.getMembri().stream())
+                    .map(MembroTeam::getUtente)
+                    .toList();
+            servizioNotifiche.creaNotifica(utentiDestinatari, TipoNotifica.VALUTAZIONE_CONCLUSA, messaggio);
         }
     }
 

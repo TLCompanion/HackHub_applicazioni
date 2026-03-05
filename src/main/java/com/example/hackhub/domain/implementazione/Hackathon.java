@@ -196,5 +196,4 @@ public class Hackathon {
     public int getMaxIscrizioni() {
         return this.maxIscrizioni;
     }
-
 }

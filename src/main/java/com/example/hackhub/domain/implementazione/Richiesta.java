@@ -2,6 +2,7 @@ package com.example.hackhub.domain.implementazione;
 
 import com.example.hackhub.domain.StatoRichiesta;
 import com.example.hackhub.domain.TipoRichiesta;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -21,6 +22,8 @@ public class Richiesta {
     private StatoRichiesta stato;
     @Column(insertable=false, updatable=false)
     private TipoRichiesta tipo;
+    @Nullable
+    private Periodo periodo;
     @Embedded
     private String payload;
 
@@ -30,12 +33,13 @@ public class Richiesta {
      * Creazione di una nuova richiesta
      * @param nomeMittente il mittente della richiesta
      */
-    public Richiesta(String nomeMittente, String payload, TipoRichiesta tipo, List<Utente> destinatari) {
+    public Richiesta(String nomeMittente, String payload, TipoRichiesta tipo, List<Utente> destinatari, @org.jspecify.annotations.Nullable Periodo periodo) {
         this.nomeMittente = nomeMittente;
         this.tipo = tipo;
         this.destinatari = destinatari;
         this.stato = StatoRichiesta.INVIATO; //all'inizio quando ancora la richiesta non è stata valutata lo stato è sempre inviato
         this.payload = payload;
+        this.periodo = periodo;
     }
 
     //PrePersist serve per fare operazioni prima di salvare l'entità nel database, in questo caso per assegnare un id
