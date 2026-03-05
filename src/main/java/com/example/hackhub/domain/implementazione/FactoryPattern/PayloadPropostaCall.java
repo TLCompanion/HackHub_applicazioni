@@ -2,6 +2,7 @@ package com.example.hackhub.domain.implementazione.FactoryPattern;
 
 
 import com.example.hackhub.domain.TipoNotifica;
+import com.example.hackhub.domain.TipoRichiesta;
 import com.example.hackhub.domain.implementazione.Periodo;
 
 /**
@@ -19,13 +20,13 @@ public class PayloadPropostaCall extends Payload {
      * @param periodo il periodo di tempo proposto
      */
     public PayloadPropostaCall(String nomeHackathon, Periodo periodo) {
-        super(TipoNotifica.PROPOSTA_CALL);
+        super(TipoRichiesta.PROPOSTA_CALL);
         this.nomeHackathon= nomeHackathon;
         this.periodo = periodo;
     }
 
     @Override
-    public TipoNotifica getTipo(){
-        return TipoNotifica.PROPOSTA_CALL;
+    public TipoRichiesta getTipo(){
+        return TipoRichiesta.PROPOSTA_CALL;
     }
 }

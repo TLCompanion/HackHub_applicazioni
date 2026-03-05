@@ -10,6 +10,7 @@ public class PayloadNotificaGenerica extends Payload {
     /**
      * Crea una proposta di chiamata da parte di un mentore per un team
      */
+    //TODO questa non ho capito a cosa serve, non dovrebbe essere proposta di call?
     public PayloadNotificaGenerica(String messaggio) {
         super(TipoNotifica.NOTIFICA_GENERICA);
         this.messaggio = messaggio;

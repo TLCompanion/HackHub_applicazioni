@@ -62,9 +62,14 @@ public class ValutazioneHandler {
 
     @Transactional
     public void avviaInserimentoValutazione(String idSottomissione, String idGiudice, ValutazioneRequest request){
-        if (request.punteggio() < 0 || request.punteggio() > 10) {
+        //Giagi questo non serve perchè c'è già il controllo sul DTO, e se il punteggio è fuori range, Spring restituirà
+        // automaticamente un 400 Bad Request con un messaggio di errore dettagliato. Quindi non è necessario fare un
+        // controllo manuale qui, a meno che tu non voglia personalizzare ulteriormente il messaggio di errore o gestire
+        // il caso in modo specifico.
+        /*if (request.punteggio() < 0 || request.punteggio() > 10) {
             throw new BadRequestException("Valutazione non valida: il punteggio deve essere compreso tra 0 e 10");
         }
+         */
         // 1) Recupero dati necessari (sottomissione + hackathon)
         Sottomissione sottomissione = repositorySottomissioni.findById(idSottomissione).orElseThrow(() ->
                 new NotFoundException("Sottomissione non trovata"));

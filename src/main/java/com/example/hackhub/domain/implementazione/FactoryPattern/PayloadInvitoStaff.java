@@ -2,6 +2,7 @@ package com.example.hackhub.domain.implementazione.FactoryPattern;
 
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.TipoNotifica;
+import com.example.hackhub.domain.TipoRichiesta;
 
 /**
  * Gestione degli inviti da parte dell'organizzatore allo staff per l'hackathon
@@ -18,13 +19,13 @@ public class PayloadInvitoStaff extends Payload {
      * @param ruoloOfferto il ruolo offerto dall'organizzatore
      */
     public PayloadInvitoStaff(String nomeHackathon, RuoloStaff ruoloOfferto) {
-        super(TipoNotifica.INVITO_STAFF);
+        super(TipoRichiesta.INVITO_STAFF);
         this.nomeHackathon = nomeHackathon;
         this.ruoloOfferto = ruoloOfferto;
     }
 
     @Override
-    public TipoNotifica getTipo(){
-        return TipoNotifica.INVITO_STAFF;
+    public TipoRichiesta getTipo(){
+        return TipoRichiesta.INVITO_STAFF;
     }
 }

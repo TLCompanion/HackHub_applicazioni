@@ -2,6 +2,7 @@ package com.example.hackhub.servizi;
 
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.TipoNotifica;
+import com.example.hackhub.domain.TipoRichiesta;
 import com.example.hackhub.domain.implementazione.*;
 import com.example.hackhub.domain.implementazione.FactoryPattern.Payload;
 import com.example.hackhub.eccezioni.NotFoundException;
@@ -49,7 +50,7 @@ public class ServizioNotifiche {
 
             Payload payload = factoryPayload.creaPayloadInvitoStaff(hackathon.getNome(), ruolo);
 
-            Richiesta richiesta = new Richiesta(organizzatore.getIdUtente(), payload, TipoNotifica.INVITO_STAFF, List.of(destinatario));
+            Richiesta richiesta = new Richiesta(organizzatore.getIdUtente(), payload, TipoRichiesta.INVITO_STAFF, List.of(destinatario));
 
             repositoryRichiesta.save(richiesta);
         }
@@ -64,7 +65,7 @@ public class ServizioNotifiche {
      */
     public void inviaPropostaCall (String mittente, Hackathon hackathon, Utente leaderTeam, Periodo periodo) {
         Payload payload = factoryPayload.creaPayloadPropostaCall(hackathon.getNome(), periodo);
-        Richiesta richiesta = new Richiesta(mittente, payload, TipoNotifica.PROPOSTA_CALL, List.of(leaderTeam));
+        Richiesta richiesta = new Richiesta(mittente, payload, TipoRichiesta.PROPOSTA_CALL, List.of(leaderTeam));
         repositoryRichiesta.save(richiesta);
     }
 

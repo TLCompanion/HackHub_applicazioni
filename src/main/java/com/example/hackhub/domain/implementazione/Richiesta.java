@@ -2,6 +2,7 @@ package com.example.hackhub.domain.implementazione;
 
 import com.example.hackhub.domain.StatoRichiesta;
 import com.example.hackhub.domain.TipoNotifica;
+import com.example.hackhub.domain.TipoRichiesta;
 import com.example.hackhub.domain.implementazione.FactoryPattern.Payload;
 import jakarta.persistence.*;
 
@@ -21,7 +22,7 @@ public class Richiesta {
     private List<Utente> destinatari;
     private StatoRichiesta stato;
     @Column(insertable=false, updatable=false)
-    private TipoNotifica tipo;
+    private TipoRichiesta tipo;
     @Embedded
     private Payload payload;
 
@@ -31,7 +32,7 @@ public class Richiesta {
      * Creazione di una nuova richiesta
      * @param nomeMittente il mittente della richiesta
      */
-    public Richiesta(String nomeMittente, Payload payload, TipoNotifica tipo, List<Utente> destinatari) {
+    public Richiesta(String nomeMittente, Payload payload, TipoRichiesta tipo, List<Utente> destinatari) {
         this.nomeMittente = nomeMittente;
         this.tipo = tipo;
         this.destinatari = destinatari;
