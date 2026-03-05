@@ -25,16 +25,15 @@ public class ValutazioneBoundary {
         this.handler = handler;
     }
 
-    @PostMapping("{id}/{id}/valutazione")
+    @PostMapping("{id}/valutazione")
     public ResponseEntity<Void> inserisciValutazione(
-            @PathVariable("id") String idHackathon,
             @PathVariable("id") String idSottomissione,
             @Valid @RequestBody ValutazioneRequest request,
             @AuthenticationPrincipal Jwt jwt
     ) {
         String idGiudice = jwt.getSubject(); // Ottieni l'ID del giudice dal token JWT
 //        handler.avviaInserimentoValutazione(idSottomissione, idGiudice, request.giudizio(), request.punteggio());
-        handler.avviaInserimentoValutazione(idHackathon, idSottomissione, idGiudice, request);
+        handler.avviaInserimentoValutazione(idSottomissione, idGiudice, request);
         return ResponseEntity.noContent().build();
     }
     // Un endpoint di test per verificare che il controller sia raggiungibile

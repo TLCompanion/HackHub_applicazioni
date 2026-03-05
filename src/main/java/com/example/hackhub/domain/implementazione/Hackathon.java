@@ -3,6 +3,7 @@ package com.example.hackhub.domain.implementazione;
 import com.example.hackhub.domain.*;
 import com.example.hackhub.domain.implementazione.statePattern.IscrizioniAperte;
 import com.example.hackhub.eccezioni.ConflictException;
+import com.example.hackhub.observer.Subscriber;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -20,7 +21,7 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "hackathon", uniqueConstraints = @UniqueConstraint(columnNames = "nome"))
-public class Hackathon implements Publisher {
+public class Hackathon {
 
     @Id
     private String idHackathon;
@@ -30,7 +31,9 @@ public class Hackathon implements Publisher {
 
     //Valid serve per fare le valutazioni con le annotazioni di validazione presenti nella classe Periodo,
     // ad esempio per assicurarsi che la data di inizio sia precedente a quella di fine.
-    @Embedded @Valid @NotNull
+    @Embedded
+    @Valid
+    @NotNull
     private Periodo periodo;
 
     @NotNull
@@ -45,7 +48,8 @@ public class Hackathon implements Publisher {
     @Min(3)
     private int teamMin;
 
-    @Lob @NotBlank
+    @Lob
+    @NotBlank
     private String regolamento;
 
     @Min(1)
@@ -76,13 +80,14 @@ public class Hackathon implements Publisher {
 
     /**
      * Creazione di un hackathon con tutti i suoi elementi, con valori di default per scadenza iscrizioni e stato iniziale
-     * @param nome nome dell'hackathon, deve essere univoco
-     * @param periodo periodo di svolgimento dell'hackathon
-     * @param premio premio in denaro per il team vincitore, deve essere positivo
-     * @param luogo luogo in cui si svolge l'hackathon
-     * @param teamMax numero massimo di team che possono partecipare all'hackathon, deve essere positivo
-     * @param teamMin numero minimo di team che devono partecipare all'hackathon, deve essere positivo e minore o uguale a teamMax
-     * @param regolamento il regolamento associato all'hackathon
+     *
+     * @param nome               nome dell'hackathon, deve essere univoco
+     * @param periodo            periodo di svolgimento dell'hackathon
+     * @param premio             premio in denaro per il team vincitore, deve essere positivo
+     * @param luogo              luogo in cui si svolge l'hackathon
+     * @param teamMax            numero massimo di team che possono partecipare all'hackathon, deve essere positivo
+     * @param teamMin            numero minimo di team che devono partecipare all'hackathon, deve essere positivo e minore o uguale a teamMax
+     * @param regolamento        il regolamento associato all'hackathon
      * @param scadenzaIscrizioni data e ora di scadenza per le iscrizioni all'hackathon, deve essere una data valida e futura
      */
     public Hackathon(String nome, Periodo periodo, BigDecimal premio, String luogo, int teamMax, int teamMin,
@@ -116,7 +121,7 @@ public class Hackathon implements Publisher {
 
     //TODO da fare
     private boolean validazione(String nome, Periodo periodo, BigDecimal premio, String luogo, int teamMax, int teamMin, String regolamento, LocalDateTime scadenzaIscrizioni) {
-    return true;
+        return true;
     }
 
     public void aggiungiIscrizione(IscrizioneTeam iscrizione) {
@@ -149,10 +154,11 @@ public class Hackathon implements Publisher {
 
     /**
      * Aggiunge un subscriber alla lista dei subscriber se non è già presente
+     *
      * @param subscriber il subscriber da aggiungere
      */
     public void attach(Subscriber subscriber) {
-        if (subscriber == null){
+        if (subscriber == null) {
             // TODO qui servirebbe un'eccezione diversa?
             throw new NullPointerException("Il subscriber non può essere nullo");
         }
@@ -163,24 +169,15 @@ public class Hackathon implements Publisher {
 
     /**
      * Toglie un subscriber dalla lista dei subscriber
+     *
      * @param subscriber il subscriber da rimuovere
      */
     public void detach(Subscriber subscriber) {
-        if (subscriber == null){
+        if (subscriber == null) {
             throw new NullPointerException("Il subscriber non può essere nullo");
         }
 
         this.subscriber.remove(subscriber);
-    }
-
-    /**
-     * Notifica tutti i subscriber dei cambiamenti
-     * @param evento l'evento da notificare
-     */
-    public void notify(TipoNotifica evento) {
-        for (Subscriber s : this.subscriber) {
-            s.update(evento);
-        }
     }
 
     public StatoHackathon getStato() {
@@ -205,18 +202,32 @@ public class Hackathon implements Publisher {
         this.staff.add(staff);
     }
 
-    public Periodo getPeriodo() { return  this.periodo; }
+    public Periodo getPeriodo() {
+        return this.periodo;
+    }
 
-    public List<IscrizioneTeam> getIscrizioni() { return this.iscrizioni; }
+    public List<IscrizioneTeam> getIscrizioni() {
+        return this.iscrizioni;
+    }
 
-    public BigDecimal getPremio() { return this.premio; }
+    public BigDecimal getPremio() {
+        return this.premio;
+    }
 
-     public String getLuogo() { return this.luogo; }
+    public String getLuogo() {
+        return this.luogo;
+    }
 
-     public String getRegolamento() { return this.regolamento; }
+    public String getRegolamento() {
+        return this.regolamento;
+    }
 
-     public LocalDateTime getScadenzaIscrizioni() { return this.scadenzaIscrizioni; }
+    public LocalDateTime getScadenzaIscrizioni() {
+        return this.scadenzaIscrizioni;
+    }
 
-    public int getMaxIscrizioni() { return this.maxIscrizioni; }
+    public int getMaxIscrizioni() {
+        return this.maxIscrizioni;
+    }
 
 }

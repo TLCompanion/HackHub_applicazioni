@@ -72,10 +72,11 @@ public class ServizioNotifiche {
     /**
      * Invia una notifica generica a un utente, un team o un'organizzazione
      */
-    public void inviaNotifica(String mittente, List<Utente> destinatari){
-        //todo again ho messo un messaggio generico per ora
-        Payload payload = factoryPayload.creaPayloadNotificaGenerica("Notifica");
-        Notifica notifica = new Notifica(mittente, payload, destinatari, TipoNotifica.NOTIFICA_GENERICA);
+    public void inviaNotifica(List<Utente> destinatari, TipoNotifica tipoNotifica) {
+        //todo ho fatto così per fare prima anche se questo messaggio andrebbe creato nella factory
+        Payload payload = factoryPayload.creaPayloadNotificaGenerica("L'hackathon a cui ti sei iscritto è " +
+                "concluso, grazie per aver partecipato!");
+        Notifica notifica = new Notifica(payload, destinatari, tipoNotifica);
         repositoryNotifica.save(notifica);
     }
 }

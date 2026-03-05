@@ -1,7 +1,5 @@
 package com.example.hackhub.domain.implementazione;
 
-import com.example.hackhub.domain.Subscriber;
-import com.example.hackhub.domain.TipoNotifica;
 import jakarta.persistence.*;
 
 import java.util.UUID;

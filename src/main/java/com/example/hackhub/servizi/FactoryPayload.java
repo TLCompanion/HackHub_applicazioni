@@ -3,7 +3,6 @@ package com.example.hackhub.servizi;
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.implementazione.FactoryPattern.Payload;
 import com.example.hackhub.domain.implementazione.FactoryPattern.PayloadInvitoStaff;
-import com.example.hackhub.domain.implementazione.FactoryPattern.PayloadNotificaGenerica;
 import com.example.hackhub.domain.implementazione.FactoryPattern.PayloadPropostaCall;
 import com.example.hackhub.domain.implementazione.Periodo;
 import org.springframework.stereotype.Service;

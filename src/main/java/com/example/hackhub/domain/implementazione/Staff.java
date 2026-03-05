@@ -64,4 +64,8 @@ public class Staff {
     public Utente getUtente() {
         return utente;
     }
+
+    public Hackathon getHackathon() {
+        return hackathon;
+    }
 }

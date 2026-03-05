@@ -25,7 +25,7 @@ public class Team {
     private String nome; // nome del team, unico nella piattaforma
 
     @Transient
-    private Collection<MembroTeam> membri; //insieme degli utenti che fanno parte del team
+    private List<MembroTeam> membri; //insieme degli utenti che fanno parte del team
 
     public Team() {} // Costruttore vuoto richiesto per la persistenza nel DB
     /**
@@ -77,5 +77,5 @@ public class Team {
 
     public String getIdTeam() { return idTeam; }
 
-    public Collection<MembroTeam> getMembri() { return membri;}
+    public List<MembroTeam> getMembri() { return membri;}
 }
