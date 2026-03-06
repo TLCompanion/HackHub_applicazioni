@@ -51,6 +51,8 @@ public class IscrizioneTeam {
         }
     }
 
+    public String getId() { return idIscrizione; }
+
     public Team getTeam() { return team; }
 
     public Hackathon getHackathon() { return hackathon; }

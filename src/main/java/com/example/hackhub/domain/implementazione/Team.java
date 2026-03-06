@@ -3,9 +3,7 @@ package com.example.hackhub.domain.implementazione;
 import com.example.hackhub.domain.RuoloTeam;
 import jakarta.persistence.*;
 
-import java.text.CollationElementIterator;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 

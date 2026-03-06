@@ -18,7 +18,7 @@ public class Richiesta {
     private String idRichiesta;
     private String nomeMittente;
     @Transient
-    private List<Utente> destinatari;
+    private Utente destinatario;
     private StatoRichiesta stato;
     @Column(insertable=false, updatable=false)
     private TipoRichiesta tipo;
@@ -33,10 +33,10 @@ public class Richiesta {
      * Creazione di una nuova richiesta
      * @param nomeMittente il mittente della richiesta
      */
-    public Richiesta(String nomeMittente, String payload, TipoRichiesta tipo, List<Utente> destinatari, @org.jspecify.annotations.Nullable Periodo periodo) {
+    public Richiesta(String nomeMittente, String payload, TipoRichiesta tipo, Utente destinatario, @org.jspecify.annotations.Nullable Periodo periodo) {
         this.nomeMittente = nomeMittente;
         this.tipo = tipo;
-        this.destinatari = destinatari;
+        this.destinatario = destinatario;
         this.stato = StatoRichiesta.INVIATO; //all'inizio quando ancora la richiesta non è stata valutata lo stato è sempre inviato
         this.payload = payload;
         this.periodo = periodo;
@@ -54,10 +54,19 @@ public class Richiesta {
 
     // METODI GETTER
 
-
     public String getIdRichiesta() { return idRichiesta; }
 
+    public String getMittente() { return nomeMittente; }
+
+    public Utente getDestinatario() { return destinatario; }
+
     public StatoRichiesta getStato() { return stato; }
+
+    public TipoRichiesta getTipo() { return tipo; }
+
+    public Periodo getPeriodo() { return periodo; }
+
+    public String getPayload() { return payload; }
 
     public void setStato(StatoRichiesta stato) {
         this.stato = stato;

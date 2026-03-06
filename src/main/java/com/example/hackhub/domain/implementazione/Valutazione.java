@@ -1,6 +1,5 @@
 package com.example.hackhub.domain.implementazione;
 
-import com.example.hackhub.repository.RepositoryValutazioni;
 import jakarta.persistence.*;
 
 import java.util.UUID;
