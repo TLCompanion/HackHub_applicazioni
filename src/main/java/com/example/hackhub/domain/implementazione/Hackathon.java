@@ -1,7 +1,7 @@
 package com.example.hackhub.domain.implementazione;
 
-import com.example.hackhub.domain.*;
 import com.example.hackhub.domain.implementazione.statePattern.IscrizioniAperte;
+import com.example.hackhub.domain.implementazione.statePattern.StatoHackathon;
 import com.example.hackhub.eccezioni.ConflictException;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
@@ -142,6 +142,10 @@ public class Hackathon {
 
     public void setStato(StatoHackathon stato) {
         this.stato = stato;
+    }
+
+    public void conludiHackathon() {
+        this.stato.concludiHackathon(this);
     }
 
     public int getTeamMax() {

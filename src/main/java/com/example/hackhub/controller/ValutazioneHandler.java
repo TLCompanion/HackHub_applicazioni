@@ -6,10 +6,7 @@ import com.example.hackhub.domain.TipoNotifica;
 import com.example.hackhub.domain.implementazione.*;
 import com.example.hackhub.domain.implementazione.statePattern.Concluso;
 import com.example.hackhub.eccezioni.*;
-import com.example.hackhub.repository.RepositoryHackathon;
-import com.example.hackhub.repository.RepositoryIscrizioniTeam;
-import com.example.hackhub.repository.RepositorySottomissioni;
-import com.example.hackhub.repository.RepositoryStaff;
+import com.example.hackhub.repository.*;
 import com.example.hackhub.servizi.ServizioNotifiche;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +23,7 @@ public class ValutazioneHandler{
     private final RepositoryStaff repositoryStaff;
     private final ServizioNotifiche servizioNotifiche;
     private final RepositoryIscrizioniTeam repositoryIscrizioniTeam;
+    private final RepositoryValutazioni repositoryValutazioni;
 
     /**
      * Crea una nuova istanza di un handler per la valutazione delle sottomissioni
@@ -35,12 +33,13 @@ public class ValutazioneHandler{
      * @param servizioNotifiche il servizio per le notifiche
      */
     public ValutazioneHandler(RepositorySottomissioni repositorySottomissioni, RepositoryHackathon repositoryHackathon,
-                              RepositoryStaff repositoryStaff, ServizioNotifiche servizioNotifiche, RepositoryIscrizioniTeam repositoryIscrizioniTeam) {
+                              RepositoryStaff repositoryStaff, ServizioNotifiche servizioNotifiche, RepositoryIscrizioniTeam repositoryIscrizioniTeam, RepositoryValutazioni repositoryValutazioni) {
         this.repositorySottomissioni = repositorySottomissioni;
         this.repositoryHackathon = repositoryHackathon;
         this.repositoryStaff = repositoryStaff;
         this.servizioNotifiche = servizioNotifiche;
         this.repositoryIscrizioniTeam = repositoryIscrizioniTeam;
+        this.repositoryValutazioni = repositoryValutazioni;
     }
 
     /**
@@ -108,9 +107,11 @@ public class ValutazioneHandler{
         if (valutazione == null) {
             valutazione = new Valutazione(punteggio, giudizio);
             sottomissione.impostaValutazione(valutazione);
+            repositoryValutazioni.save(valutazione);
         } else {
             valutazione.setVoto(punteggio);
             valutazione.setDescrizione(giudizio);
+            repositoryValutazioni.save(valutazione);
         }
     }
 
@@ -123,7 +124,7 @@ public class ValutazioneHandler{
                 map(IscrizioneTeam::getSottomissione).filter(Objects::nonNull).toList();
         boolean tutteValutate = sottomissioni.stream().allMatch(Sottomissione::haValutazione);
         if (tutteValutate) {
-            hackathon.setStato(Concluso.INSTANCE);
+            hackathon.conludiHackathon();
             repositoryHackathon.save(hackathon);
             String messaggio = "L'hackathon è stato concluso, valutazioni terminate";
             List<Utente> utentiDestinatari = hackathon.getIscrizioni().stream()

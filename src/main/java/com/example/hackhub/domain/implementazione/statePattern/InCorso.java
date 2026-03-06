@@ -1,6 +1,5 @@
 package com.example.hackhub.domain.implementazione.statePattern;
 
-import com.example.hackhub.domain.StatoHackathon;
 import com.example.hackhub.domain.implementazione.Hackathon;
 
 public class InCorso implements StatoHackathon {
@@ -10,7 +9,6 @@ public class InCorso implements StatoHackathon {
     @Override
     public void avviaValutazione(Hackathon hackathon) {
         hackathon.setStato(ValutazioneInCorso.INSTANCE);
-        // notifica nel service che gestisce l’evento
     }
 
     @Override
