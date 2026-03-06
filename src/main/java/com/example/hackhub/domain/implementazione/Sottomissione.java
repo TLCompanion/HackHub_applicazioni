@@ -33,7 +33,6 @@ public class Sottomissione {
     public Sottomissione(String riferimentoFile) {
         this.riferimentoFile = riferimentoFile;
         this.valutazione = null; //all'inizio la valutazione non c'è
-        this.idSottomissione = "v" + UUID.randomUUID();
     }
 
     //PrePersist serve per fare operazioni prima di salvare l'entità nel database, in questo caso per assegnare un id
@@ -41,9 +40,7 @@ public class Sottomissione {
     // salva l'entità per la prima volta.
     @PrePersist
     private void assegnaId() {
-        if (this.idSottomissione == null) {
-            this.idSottomissione = "S-" + UUID.randomUUID();
-        }
+        if (this.idSottomissione == null) this.idSottomissione = "S-" + UUID.randomUUID();
     }
 
     /**

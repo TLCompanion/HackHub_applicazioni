@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-// TODO persistenza sospesa
-
 /**
  * Classe che gestisce un'hackathon e tutti i suoi elementi
  */
@@ -54,20 +52,16 @@ public class Hackathon {
     @Min(1)
     private int maxIscrizioni; //Massimo numero di iscrizioni (team) che possono partecipare all'hackathon
 
-    //TODO valutare se transient è giusto in questo caso, chat dice: "Se vuoi davvero State pattern con classi: allora
-    // in persistenza memorizzi almeno un “codice stato” e ricostruisci l’oggetto stato a runtime (factory dello stato)."
     @Transient
     private StatoHackathon stato;
 
     @NotNull
     private LocalDateTime scadenzaIscrizioni;
 
-    //TODO valutare se transient è giusto in questo caso
     @Transient
     private List<Staff> staff;
 
     //private List<String>
-    //TODO valutare se transient è giusto in questo caso
     @Transient
     private List<IscrizioneTeam> iscrizioni;
 
@@ -114,9 +108,24 @@ public class Hackathon {
         }
     }
 
-    //TODO da fare
-    private boolean validazione(String nome, Periodo periodo, BigDecimal premio, String luogo, int teamMax, int teamMin, String regolamento, LocalDateTime scadenzaIscrizioni) {
-        return true;
+    // Metodo che lancia eccezioni se ci sono incongruenze nei campi passati alla creazione, altrimenti non
+    // fa niente
+    private void validazione(String nome, Periodo periodo, BigDecimal premio, String luogo, int teamMax, int teamMin, String regolamento, LocalDateTime scadenzaIscrizioni) throws IllegalArgumentException, NullPointerException {
+
+        if (nome == null || periodo == null || premio == null || luogo == null || regolamento == null || scadenzaIscrizioni == null)
+            throw new NullPointerException("Non sono ammessi valori nulli");
+
+        if (nome.length() < 3) throw new IllegalArgumentException("Il nome deve avere almeno 3 caratteri di lunghezza");
+
+        if (premio.longValue() <= 0) throw new IllegalArgumentException("Il premio deve avere valore positivo");
+
+        if (luogo.length() < 3) throw new IllegalArgumentException("Il luogo deve avere almeno 3 caratteri");
+
+        if (teamMin < 3) throw new IllegalArgumentException("Il numero minimo di membri per team deve essere almeno 3");
+        if (teamMax < teamMin) throw new IllegalArgumentException("Il numero massimo di membri deve essere almeno il numero minimo");
+
+        if (scadenzaIscrizioni.isEqual(LocalDateTime.now()) || scadenzaIscrizioni.isBefore(LocalDateTime.now()))
+            throw new IllegalArgumentException("Data oppure orario inseriti non validi");
     }
 
     public void aggiungiIscrizione(IscrizioneTeam iscrizione) {
@@ -129,7 +138,7 @@ public class Hackathon {
         this.iscrizioni.add(iscrizione);
     }
 
-    //metodi da implementare
+    //metodi getter
 
     public void setStato(StatoHackathon stato) {
         this.stato = stato;

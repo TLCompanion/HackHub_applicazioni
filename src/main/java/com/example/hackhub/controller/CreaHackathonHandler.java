@@ -52,6 +52,7 @@ public class CreaHackathonHandler {
             throw new ForbiddenException("Esiste già un hackathon con questo nome");
         }
         HackathonBuilder builder = new HackathonBuilder();
+        builder.reset();
         builder.impostaNome(request.nome());
         Periodo periodo = new Periodo(request.dataInizio(), request.dataFine());
         builder.impostaPeriodo(periodo);

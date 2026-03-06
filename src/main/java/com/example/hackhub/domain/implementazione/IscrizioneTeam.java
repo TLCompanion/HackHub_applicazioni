@@ -24,8 +24,6 @@ public class IscrizioneTeam {
     @JoinColumn(name = "id_team")
     private Team team;
 
-    //TODO aggiungere riferimento alla sottomissione, poi nell'handler modificare il modo in cui si prende la
-    // sottomissione (attualmente si prende da hackathon)
     @OneToOne(optional = false)
     private Sottomissione sottomissione;
 
@@ -50,6 +48,8 @@ public class IscrizioneTeam {
             this.idIscrizione = "I-" + UUID.randomUUID();
         }
     }
+
+    public String getId() { return idIscrizione; }
 
     public Team getTeam() { return team; }
 

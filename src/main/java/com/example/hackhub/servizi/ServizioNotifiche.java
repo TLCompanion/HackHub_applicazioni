@@ -1,11 +1,8 @@
 package com.example.hackhub.servizi;
 
-import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.TipoNotifica;
 import com.example.hackhub.domain.TipoRichiesta;
 import com.example.hackhub.domain.implementazione.*;
-import com.example.hackhub.eccezioni.NotFoundException;
-import com.example.hackhub.repository.RepositoryHackathon;
 import com.example.hackhub.repository.RepositoryNotifica;
 import com.example.hackhub.repository.RepositoryRichiesta;
 import org.springframework.stereotype.Service;
@@ -38,8 +35,10 @@ public class ServizioNotifiche {
      * @param messaggio il messaggio da inviare
      */
     public void creaNotifica(List<Utente> destinatari, TipoNotifica tipo, String messaggio){
-        Notifica notifica = new Notifica(messaggio, destinatari, tipo);
-        repositoryNotifica.save(notifica);
+        for (Utente d : destinatari) {
+            Notifica notifica = new Notifica(messaggio, d, tipo);
+            repositoryNotifica.save(notifica);
+        }
     }
 
     /**
@@ -49,7 +48,9 @@ public class ServizioNotifiche {
      * @param messaggio il messaggio della richiesta
      */
     public void creaRichiesta(String mittente, List<Utente> destinatari, TipoRichiesta tipo, String messaggio, Periodo periodo){
-        Richiesta richiesta = new Richiesta(mittente, messaggio, TipoRichiesta.PROPOSTA_CALL, destinatari, periodo);
-        repositoryRichiesta.save(richiesta);
+        for (Utente d : destinatari) {
+            Richiesta richiesta = new Richiesta(mittente, messaggio, TipoRichiesta.PROPOSTA_CALL, d, periodo);
+            repositoryRichiesta.save(richiesta);
+        }
     }
 }

@@ -8,6 +8,7 @@ class HackHubApplicationTests {
 
     @Test
     void contextLoads() {
+
     }
 
 }
