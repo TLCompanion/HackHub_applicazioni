@@ -41,6 +41,7 @@ public class IscriviTeamHandler {
         Team team = membroTeam.getTeam();
         Hackathon hackathon = repositoryHackathon.findByNome(nomeHackathon).orElseThrow(() ->
                 new NotFoundException("Hackathon non trovato"));
+        hackathon.getStato().verificaIscrizioneConsentita(hackathon);
         if (team.getNumMembri()<hackathon.getTeamMin() || team.getNumMembri()>hackathon.getTeamMax()) {
             throw new ConflictException("Il numero di membri del team non è compatibile con i requisiti dell'hackathon");
         }

@@ -24,7 +24,7 @@ import java.util.List;
  * @param teamMax il numero massimo di persone che possono formare un team per partecipare all'hackathon, che deve
  *                essere un intero compreso tra 3 e 6
  * @param maxIscrizioni il numero massimo di team che possono iscriversi all'hackathon, che deve essere un intero positivo
- * @param regolamento il regolamento dell'hackathon, che deve essere una stringa non vuota //TODO come gestiamo il regolamento? è una stringa o un file?
+ * @param regolamento il regolamento dell'hackathon, che deve essere una stringa non vuota
  * @param scadenzaIscrizioni la data e ora di scadenza per le iscrizioni all'hackathon, che deve essere una data valida
  *                           e non nulla
  * @param nomeGiudice il nome dell'utente da invitare come giudice dell'hackathon, che deve essere una stringa non vuota
