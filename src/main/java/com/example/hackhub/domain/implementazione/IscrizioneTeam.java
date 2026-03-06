@@ -54,4 +54,6 @@ public class IscrizioneTeam {
     public Team getTeam() { return team; }
 
     public Hackathon getHackathon() { return hackathon; }
+
+    public Sottomissione getSottomissione() { return sottomissione; }
 }

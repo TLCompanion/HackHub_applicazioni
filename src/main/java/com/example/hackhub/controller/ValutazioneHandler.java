@@ -7,6 +7,7 @@ import com.example.hackhub.domain.implementazione.*;
 import com.example.hackhub.domain.implementazione.statePattern.Concluso;
 import com.example.hackhub.eccezioni.*;
 import com.example.hackhub.repository.RepositoryHackathon;
+import com.example.hackhub.repository.RepositoryIscrizioniTeam;
 import com.example.hackhub.repository.RepositorySottomissioni;
 import com.example.hackhub.repository.RepositoryStaff;
 import com.example.hackhub.servizi.ServizioNotifiche;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class ValutazioneHandler{
@@ -23,6 +25,7 @@ public class ValutazioneHandler{
     private final RepositoryHackathon repositoryHackathon;
     private final RepositoryStaff repositoryStaff;
     private final ServizioNotifiche servizioNotifiche;
+    private final RepositoryIscrizioniTeam repositoryIscrizioniTeam;
 
     /**
      * Crea una nuova istanza di un handler per la valutazione delle sottomissioni
@@ -32,11 +35,12 @@ public class ValutazioneHandler{
      * @param servizioNotifiche il servizio per le notifiche
      */
     public ValutazioneHandler(RepositorySottomissioni repositorySottomissioni, RepositoryHackathon repositoryHackathon,
-                              RepositoryStaff repositoryStaff, ServizioNotifiche servizioNotifiche) {
+                              RepositoryStaff repositoryStaff, ServizioNotifiche servizioNotifiche, RepositoryIscrizioniTeam repositoryIscrizioniTeam) {
         this.repositorySottomissioni = repositorySottomissioni;
         this.repositoryHackathon = repositoryHackathon;
         this.repositoryStaff = repositoryStaff;
         this.servizioNotifiche = servizioNotifiche;
+        this.repositoryIscrizioniTeam = repositoryIscrizioniTeam;
     }
 
     /**
@@ -115,7 +119,8 @@ public class ValutazioneHandler{
      * @param hackathon l'hackathon
      */
     private void concludiHackathonSeTutteValutate(Hackathon hackathon) {
-        List<Sottomissione> sottomissioni = repositorySottomissioni.findByHackathon(hackathon);
+        List<Sottomissione> sottomissioni = repositoryIscrizioniTeam.findAllByHackathon(hackathon).stream().
+                map(IscrizioneTeam::getSottomissione).filter(Objects::nonNull).toList();
         boolean tutteValutate = sottomissioni.stream().allMatch(Sottomissione::haValutazione);
         if (tutteValutate) {
             hackathon.setStato(Concluso.INSTANCE);

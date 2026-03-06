@@ -18,7 +18,6 @@ public class Notifica {
     private List<Utente> destinatari;
     @Column(insertable=false, updatable=false)
     private TipoNotifica tipo;
-    @Embedded
     private String payload;
 
     public Notifica() {}

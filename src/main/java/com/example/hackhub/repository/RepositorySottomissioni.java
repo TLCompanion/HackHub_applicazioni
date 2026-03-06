@@ -8,7 +8,4 @@ import java.util.List;
 
 public interface RepositorySottomissioni extends JpaRepository<Sottomissione, String> {
 
-    List<Sottomissione> findByHackathon_IdHackathon(String idHackathon);
-
-    List<Sottomissione> findByHackathon(Hackathon hackathon);
 }

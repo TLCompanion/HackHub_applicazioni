@@ -24,7 +24,6 @@ public class Richiesta {
     private TipoRichiesta tipo;
     @Nullable
     private Periodo periodo;
-    @Embedded
     private String payload;
 
     public Richiesta(){}
