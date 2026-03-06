@@ -66,5 +66,5 @@ public class MembroTeam {
 
     public Utente getUtente() { return utente; }
 
-     public Team getTeam() { return team; }
+    public Team getTeam() { return team; }
 }

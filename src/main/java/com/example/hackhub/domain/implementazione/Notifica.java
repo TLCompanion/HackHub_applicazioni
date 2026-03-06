@@ -15,7 +15,7 @@ public class Notifica {
     @Id
     private String idNotifica;
     @Transient
-    private List<Utente> destinatari;
+    private Utente destinatario;
     @Column(insertable=false, updatable=false)
     private TipoNotifica tipo;
     private String payload;
@@ -24,11 +24,11 @@ public class Notifica {
     /**
      * Creazione di una notifica
      * @param payload il payload associato
-     * @param destinatari i destinatari
+     * @param destinatario i destinatari
      * @param tipo il tipo di notifica
      */
-    public Notifica(String payload, List<Utente> destinatari, TipoNotifica tipo) {
-        this.destinatari = destinatari;
+    public Notifica(String payload, Utente destinatario, TipoNotifica tipo) {
+        this.destinatario = destinatario;
         this.tipo = tipo;
         this.payload = payload;
     }

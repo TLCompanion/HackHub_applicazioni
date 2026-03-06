@@ -1,7 +1,6 @@
 package com.example.hackhub.domain.implementazione;
 
 import jakarta.persistence.Embeddable;
-import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
@@ -61,7 +60,7 @@ public class Periodo {
     }
 
     private void validazione(LocalDate dataInizio, LocalDate dataFine, LocalTime oraInizio, LocalTime oraFine) {
-        if (dataInizio.isBefore(dataFine) || (dataInizio.isEqual(dataFine) && oraInizio.isBefore(oraFine))) {
+        if (dataInizio.isAfter(dataFine) || (dataInizio.isEqual(dataFine) && oraInizio.isAfter(oraFine))) {
             throw new IllegalArgumentException("La data e ora di inizio devono essere precedenti a quelle di fine");
         }
         if (dataInizio.isBefore(LocalDate.now())) {
