@@ -66,6 +66,8 @@ public class Hackathon {
     private List<IscrizioneTeam> iscrizioni;
 
     public Hackathon() {
+        this.staff = new ArrayList<>();
+        this.iscrizioni = new ArrayList<>();
     }
 
     /**

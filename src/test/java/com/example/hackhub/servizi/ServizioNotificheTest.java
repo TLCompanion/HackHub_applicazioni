@@ -61,8 +61,8 @@ class ServizioNotificheTest {
         Utente u1 = new Utente("user1");
         Utente u2 = new Utente("user2");
 
-        Periodo periodo = new Periodo(LocalDate.now().plusDays(1), LocalTime.of(10,0),
-                LocalDate.now().plusDays(2), LocalTime.of(18,0));
+        Periodo periodo = new Periodo(LocalDate.now().plusDays(1), LocalTime.of(10, 0),
+                LocalDate.now().plusDays(2), LocalTime.of(18, 0));
 
         servizio.creaRichiesta("Mentore1", List.of(u1, u2), TipoRichiesta.PROPOSTA_CALL,
                 "Richiesta di partecipazione", periodo);
