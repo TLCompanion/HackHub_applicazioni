@@ -30,38 +30,40 @@ public class IscriviTeamHandler {
         this.repositoryIscrizioniTeam = repositoryIscrizioniTeam;
     }
 
-    //TODO separare in più metodi privati per leggibilità e gestione
     @Transactional
     public void avviaIscrizioneHackathon(String idUtente, String nomeHackathon) {
         MembroTeam membroTeam = repositoryMembriTeam.findByUtente_IdUtente(idUtente).orElseThrow(() ->
                 new NotFoundException("L'utente non è membro di nessun team"));
-        if (!membroTeam.getRuolo().equals(RuoloTeam.LEADER)) {
+
+        if (!membroTeam.getRuolo().equals(RuoloTeam.LEADER))
             throw new ForbiddenException("L'utente non è il leader del team");
-        }
+
         Team team = membroTeam.getTeam();
         Hackathon hackathon = repositoryHackathon.findByNome(nomeHackathon).orElseThrow(() ->
                 new NotFoundException("Hackathon non trovato"));
-        hackathon.getStato().verificaIscrizioneConsentita(hackathon);
-        if (team.getNumMembri()<hackathon.getTeamMin() || team.getNumMembri()>hackathon.getTeamMax()) {
-            throw new ConflictException("Il numero di membri del team non è compatibile con i requisiti dell'hackathon");
-        }
-        IscrizioneTeam iscrizioneEsistente = repositoryIscrizioniTeam.findByTeamAndHackathon(team, hackathon).
-                orElse(null);
-        if (iscrizioneEsistente != null) {
-            if (iscrizioneEsistente.getHackathon().equals(hackathon)) {
-                throw new ConflictException("Il team è già iscritto a questo hackathon");
-            }
-        }
-        if (hackathon.getIscrizioni().size()>=hackathon.getMaxIscrizioni()) {
-            throw new ConflictException("Il numero massimo di iscrizioni è già stato raggiunto");
-        }
+        checkIscrizioneInHackathon(hackathon, team);
+
         IscrizioneTeam iscrizione = new IscrizioneTeam(team, hackathon);
         hackathon.aggiungiIscrizione(iscrizione);
         repositoryHackathon.save(hackathon);
         repositoryIscrizioniTeam.save(iscrizione);
 
-        if (hackathon.getIscrizioni().size()==hackathon.getMaxIscrizioni()) {
+        if (hackathon.getIscrizioni().size()==hackathon.getMaxIscrizioni())
             hackathon.setStato(IscrizioniChiuse.INSTANCE);
-        }
+    }
+
+    private void checkIscrizioneInHackathon(Hackathon hackathon, Team team) {
+        hackathon.getStato().verificaIscrizioneConsentita(hackathon);
+        if (team.getNumMembri()<hackathon.getTeamMin() || team.getNumMembri()>hackathon.getTeamMax())
+            throw new ConflictException("Il numero di membri del team non è compatibile con i requisiti dell'hackathon");
+
+        IscrizioneTeam iscrizioneEsistente = repositoryIscrizioniTeam.findByTeamAndHackathon(team, hackathon).
+                orElse(null);
+        if (iscrizioneEsistente != null)
+            if (iscrizioneEsistente.getHackathon().equals(hackathon))
+                throw new ConflictException("Il team è già iscritto a questo hackathon");
+
+        if (hackathon.getIscrizioni().size()>=hackathon.getMaxIscrizioni())
+            throw new ConflictException("Il numero massimo di iscrizioni è già stato raggiunto");
     }
 }

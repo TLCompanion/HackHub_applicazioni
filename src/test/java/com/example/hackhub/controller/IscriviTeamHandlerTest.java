@@ -71,8 +71,9 @@ class IscriviTeamHandlerTest {
         assegnaId(utente, "assegnaId");
         assegnaId(team, "assegnaId");
 
-        MembroTeam leader = new MembroTeam(utente, team, RuoloTeam.LEADER);
-        //TODO STESSA COSA QUI PER LO STESSO PROBLEMA
+        MembroTeam leader = new MembroTeam(utente, team, RuoloTeam.MEMBRO);
+        team.aggiungiMembro(leader);
+        team.setLeader(leader);
         MembroTeam membro1 = new MembroTeam(new Utente("Luigi"), team, RuoloTeam.MEMBRO);
         MembroTeam membro2 = new MembroTeam(new Utente("Anna"), team, RuoloTeam.MEMBRO);
 
@@ -197,8 +198,9 @@ class IscriviTeamHandlerTest {
         assegnaId(utente, "assegnaId");
         assegnaId(team, "assegnaId");
 
-        MembroTeam leader = new MembroTeam(utente, team, RuoloTeam.LEADER);
-        //TODO il problema è qui perchè il leader non ci sta all'interno del team
+        MembroTeam leader = new MembroTeam(utente, team, RuoloTeam.MEMBRO);
+        team.aggiungiMembro(leader);
+        team.setLeader(leader);
         team.aggiungiMembro(new MembroTeam(new Utente("Luigi"), team, RuoloTeam.MEMBRO));
         team.aggiungiMembro(new MembroTeam(new Utente("Anna"), team, RuoloTeam.MEMBRO));
 

@@ -67,4 +67,8 @@ public class MembroTeam {
     public Utente getUtente() { return utente; }
 
     public Team getTeam() { return team; }
+
+    // METODO SETTER
+
+    public void setRuolo(RuoloTeam r) { this.ruolo = r; }
 }

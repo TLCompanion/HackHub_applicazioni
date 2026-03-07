@@ -4,7 +4,6 @@ import com.example.hackhub.boundary.dto.ValutazioneRequest;
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.TipoNotifica;
 import com.example.hackhub.domain.implementazione.*;
-import com.example.hackhub.domain.implementazione.statePattern.Concluso;
 import com.example.hackhub.eccezioni.*;
 import com.example.hackhub.repository.*;
 import com.example.hackhub.servizi.ServizioNotifiche;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -50,35 +48,19 @@ public class ValutazioneHandler{
      */
     @Transactional
     public void avviaInserimentoValutazione(String idSottomissione, String idGiudice, ValutazioneRequest request){
-        //Giagi questo non serve perchè c'è già il controllo sul DTO, e se il punteggio è fuori range, Spring restituirà
-        // automaticamente un 400 Bad Request con un messaggio di errore dettagliato. Quindi non è necessario fare un
-        // controllo manuale qui, a meno che tu non voglia personalizzare ulteriormente il messaggio di errore o gestire
-        // il caso in modo specifico.
-        /*if (request.punteggio() < 0 || request.punteggio() > 10) {
-            throw new BadRequestException("Valutazione non valida: il punteggio deve essere compreso tra 0 e 10");
-        }
-         */
-        // 1) Recupero dati necessari (sottomissione + hackathon)
         Sottomissione sottomissione = repositorySottomissioni.findById(idSottomissione).orElseThrow(() ->
                 new NotFoundException("Sottomissione non trovata"));
         Hackathon hackathon = repositoryStaff.findById(idGiudice).orElseThrow( () ->
                 new NotFoundException("Giudice non trovato")).getHackathon();
-        // 2) Validazioni di dominio e permessi
-        // Se verificaValutazioneConsentita lancia RuntimeException/IllegalStateException,
-        // traduciamola in una 409 sensata.
+
         try {
             hackathon.getStato().verificaValutazioneConsentita(hackathon);
         } catch (RuntimeException ex) {
-            //è importante che usiamo il ResponseStatusException per restituire un codice HTTP specifico in caso
-            // di errore, altrimenti Spring lo tradurrebbe in una 500 generica
             throw new ConflictException("Valutazione non consentita in questo stato dell'hackathon");
         }
         verificaGiudiceAutorizzato(hackathon, idGiudice);
-        // 3) Upsert valutazione (crea se assente, aggiorna se presente)
         creaOAggiornaValutazione(sottomissione, request.punteggio(), request.giudizio());
-        // 4) Persistenza sottomissione aggiornata
         repositorySottomissioni.save(sottomissione);
-        // 5) Se tutto è valutato, conclude l’hackathon
         concludiHackathonSeTutteValutate(hackathon);
     }
 

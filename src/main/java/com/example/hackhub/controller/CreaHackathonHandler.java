@@ -53,6 +53,14 @@ public class CreaHackathonHandler {
         }
         HackathonBuilder builder = new HackathonBuilder();
         builder.reset();
+        buildSteps(builder, request);
+        Hackathon hackathon = builder.getRisultato();
+        gestisciOrganizzatore(idUtente, hackathon);
+        gestisciInvitiStaff(hackathon, request.nomeMentori(), request.nomeGiudice());
+        repositoryHackathon.save(hackathon);
+    }
+
+    private void buildSteps(HackathonBuilder builder, HackathonRequest request) {
         builder.impostaNome(request.nome());
         Periodo periodo = new Periodo(request.dataInizio(), request.dataFine());
         builder.impostaPeriodo(periodo);
@@ -63,10 +71,6 @@ public class CreaHackathonHandler {
         builder.impostaRegolamento(request.regolamento());
         builder.impostaScadenzaIscrizioni(request.scadenzaIscrizioni());
         builder.impostaMaxIscrizioni(request.maxIscrizioni());
-        Hackathon hackathon = builder.getRisultato();
-        gestisciOrganizzatore(idUtente, hackathon);
-        gestisciInvitiStaff(hackathon, request.nomeMentori(), request.nomeGiudice());
-        repositoryHackathon.save(hackathon);
     }
 
     /**

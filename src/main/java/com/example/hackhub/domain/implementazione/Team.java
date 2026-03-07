@@ -1,6 +1,7 @@
 package com.example.hackhub.domain.implementazione;
 
 import com.example.hackhub.domain.RuoloTeam;
+import com.example.hackhub.eccezioni.ForbiddenException;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -60,13 +61,24 @@ public class Team {
      *
      * @throws Exception se il membro da aggiungere risulta LEADER
      */
-    // TODO che ne pensate di questa implementazione? Exception è puramente indicativo
-    // Boh add lo aggiunge automaticamente anche al database e alla repository? Se si, top
     public void aggiungiMembro(MembroTeam membro) throws Exception {
         if (membro.getRuolo().equals(RuoloTeam.LEADER)) throw new Exception("Tentativo di aggiungere un" +
                 " Leader a un Team");
 
         membri.add(membro);
+    }
+
+    public void setLeader(MembroTeam membro) throws ForbiddenException {
+        if (this.hasLeader()) throw new ForbiddenException("Il team ha già un leader");
+
+        for (MembroTeam m : membri)
+            if (m.equals(membro)) m.setRuolo(RuoloTeam.LEADER);
+    }
+
+    private boolean hasLeader() {
+        for (MembroTeam m : membri)
+            if (m.getRuolo() == RuoloTeam.LEADER) return true;
+        return false;
     }
 
     // DI SEGUITO SONO RIPORTATI TUTTI I METODI GETTER

@@ -74,4 +74,22 @@ class TeamTest {
         assertEquals(1, team.getMembri().size());
         assertEquals(membro, team.getMembri().get(0));
     }
+
+    @Test
+    void aggiungiImpostaLeader() throws Exception {
+        Utente utente = new Utente("Mario");
+        Team team = new Team("HackMasters");
+
+        MembroTeam membro = new MembroTeam(utente, team, RuoloTeam.MEMBRO);
+
+        team.aggiungiMembro(membro);
+
+        assertEquals(1, team.getNumMembri());
+        assertTrue(team.getMembri().contains(membro));
+
+        team.setLeader(membro);
+
+        assertEquals(1, team.getNumMembri());
+        assertEquals(RuoloTeam.LEADER, membro.getRuolo());
+    }
 }

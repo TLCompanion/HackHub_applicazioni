@@ -86,4 +86,18 @@ class MembroTeamTest {
 
         assertEquals(team, membro.getTeam());
     }
+
+    @Test
+    void addAndSetRuolo() {
+        Utente utente = new Utente("Mario");
+        Team team = new Team("TeamX");
+
+        MembroTeam membro = new MembroTeam(utente, team, RuoloTeam.MEMBRO);
+
+        assertEquals(RuoloTeam.MEMBRO, membro.getRuolo());
+
+        membro.setRuolo(RuoloTeam.LEADER);
+
+        assertEquals(RuoloTeam.LEADER, membro.getRuolo());
+    }
 }
