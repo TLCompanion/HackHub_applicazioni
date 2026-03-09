@@ -29,8 +29,10 @@ public class ValutazioneBoundary {
             @Valid @RequestBody ValutazioneRequest request,
             @AuthenticationPrincipal Jwt jwt
     ) {
+        //TODO 2° iterazione: al posto di idGiudice è meglio mettere idUtenteAutenticato perchè
+        // a questo punto non si sa ancora se è effettivamente il giudice, poi controllare che nel
+        // jwt si passi l'id perchè se nel jwt c'è l'username e qui si prende l'id sarebbe sbagliato
         String idGiudice = jwt.getSubject(); // Ottieni l'ID del giudice dal token JWT
-//        handler.avviaInserimentoValutazione(idSottomissione, idGiudice, request.giudizio(), request.punteggio());
         handler.avviaInserimentoValutazione(idSottomissione, idGiudice, request);
         return ResponseEntity.noContent().build();
     }

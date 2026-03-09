@@ -1,5 +1,6 @@
 package com.example.hackhub.servizi;
 
+import com.example.hackhub.domain.StatoRichiesta;
 import com.example.hackhub.domain.TipoNotifica;
 import com.example.hackhub.domain.TipoRichiesta;
 import com.example.hackhub.domain.implementazione.*;
@@ -47,7 +48,8 @@ public class ServizioNotifiche {
      * @param destinatari i destinatari
      * @param messaggio il messaggio della richiesta
      */
-    public void creaRichiesta(String mittente, List<Utente> destinatari, TipoRichiesta tipo, String messaggio, Periodo periodo){
+    public void creaRichiesta(String mittente, List<Utente> destinatari, TipoRichiesta tipo, String messaggio,
+                              Periodo periodo){
         for (Utente d : destinatari) {
             Richiesta richiesta = new Richiesta(mittente, messaggio, TipoRichiesta.PROPOSTA_CALL, d, periodo);
             repositoryRichiesta.save(richiesta);

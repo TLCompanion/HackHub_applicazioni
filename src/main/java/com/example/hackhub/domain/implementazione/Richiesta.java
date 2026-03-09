@@ -32,7 +32,7 @@ public class Richiesta {
      * Creazione di una nuova richiesta
      * @param nomeMittente il mittente della richiesta
      */
-    public Richiesta(String nomeMittente, String payload, TipoRichiesta tipo, Utente destinatario, @org.jspecify.annotations.Nullable Periodo periodo) {
+    public Richiesta(String nomeMittente, String payload, TipoRichiesta tipo, Utente destinatario, @Nullable Periodo periodo) {
         this.nomeMittente = nomeMittente;
         this.tipo = tipo;
         this.destinatario = destinatario;
