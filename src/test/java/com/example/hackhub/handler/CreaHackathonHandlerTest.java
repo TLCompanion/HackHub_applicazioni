@@ -1,4 +1,4 @@
-package com.example.hackhub.controller;
+package com.example.hackhub.handler;
 
 import com.example.hackhub.boundary.dto.HackathonRequest;
 import com.example.hackhub.domain.RuoloStaff;
@@ -69,9 +69,9 @@ class CreaHackathonHandlerTest {
 
         HackathonRequest request = requestValida();
 
-        Utente organizzatore = new Utente("Mario");
-        Utente mentore = new Utente("Luigi");
-        Utente giudice = new Utente("Anna");
+        Utente organizzatore = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
+        Utente mentore = new Utente("Luigi", "luigi@gmail.com", "vndla7o0");
+        Utente giudice = new Utente("Anna", "anna@gmail.com", "walevns08");
 
         when(repoHackathon.existsByNome("HackFest")).thenReturn(false);
         when(repoUtenti.findById("U1")).thenReturn(Optional.of(organizzatore));
@@ -98,7 +98,7 @@ class CreaHackathonHandlerTest {
     @Test
     void gestisciOrganizzatore() throws Exception {
 
-        Utente organizzatore = new Utente("Mario");
+        Utente organizzatore = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Hackathon hackathon = new Hackathon();
 
         when(repoUtenti.findById("U1")).thenReturn(Optional.of(organizzatore));
@@ -138,8 +138,8 @@ class CreaHackathonHandlerTest {
     @Test
     void gestisciStaff() throws Exception {
 
-        Utente mentore = new Utente("Luigi");
-        Utente giudice = new Utente("Anna");
+        Utente mentore = new Utente("Luigi", "luigi@gmail.com", "vndla7o0");
+        Utente giudice = new Utente("Anna", "anna@gmail.com", "walevns08");
 
         when(repoUtenti.findByNomeUtente("Luigi")).thenReturn(Optional.of(mentore));
         when(repoUtenti.findByNomeUtente("Anna")).thenReturn(Optional.of(giudice));
@@ -178,7 +178,7 @@ class CreaHackathonHandlerTest {
     @Test
     void gestisciStaff_giudiceNonTrovato() throws Exception {
 
-        Utente mentore = new Utente("Luigi");
+        Utente mentore = new Utente("Luigi", "luigi@gmail.com", "vndla7o0");
 
         when(repoUtenti.findByNomeUtente("Luigi")).thenReturn(Optional.of(mentore));
         when(repoUtenti.findByNomeUtente("Anna")).thenReturn(Optional.empty());

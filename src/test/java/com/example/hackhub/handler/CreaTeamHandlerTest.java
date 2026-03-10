@@ -1,4 +1,4 @@
-package com.example.hackhub.controller;
+package com.example.hackhub.handler;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,7 +8,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-import com.example.hackhub.controller.CreaTeamHandler;
 import com.example.hackhub.domain.implementazione.MembroTeam;
 import com.example.hackhub.domain.implementazione.Team;
 import com.example.hackhub.domain.implementazione.Utente;
@@ -38,7 +37,7 @@ class CreaTeamHandlerTest {
 
     @Test
     void avviaCreazioneTeam() {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
 
         when(repoUtenti.findById("U1")).thenReturn(Optional.of(utente));
         when(repoMembriTeam.existsByUtente(utente)).thenReturn(false);
@@ -60,7 +59,7 @@ class CreaTeamHandlerTest {
 
     @Test
     void avviaCreazioneTeam_utenteGiaMembroDiUnTeam() {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
 
         when(repoUtenti.findById("U1")).thenReturn(Optional.of(utente));
         when(repoMembriTeam.existsByUtente(utente)).thenReturn(true);
@@ -71,7 +70,7 @@ class CreaTeamHandlerTest {
 
     @Test
     void avviaCreazioneTeam_nomeTeamGiaEsistente() {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
 
         when(repoUtenti.findById("U1")).thenReturn(Optional.of(utente));
         when(repoMembriTeam.existsByUtente(utente)).thenReturn(false);

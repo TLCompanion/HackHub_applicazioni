@@ -83,7 +83,7 @@ class HackathonTest {
     @Test
     void aggiungiStaff_eGetter() {
         Hackathon h = creaHackathonDiTest();
-        Utente u = new Utente("Mario");
+        Utente u = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Staff s = new Staff(u, h, RuoloStaff.MENTORE);
 
         h.aggiungiStaff(s);

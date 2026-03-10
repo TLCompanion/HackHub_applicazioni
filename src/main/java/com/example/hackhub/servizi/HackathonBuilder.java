@@ -1,4 +1,7 @@
-package com.example.hackhub.domain.implementazione;
+package com.example.hackhub.servizi;
+
+import com.example.hackhub.domain.implementazione.Hackathon;
+import com.example.hackhub.domain.implementazione.Periodo;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

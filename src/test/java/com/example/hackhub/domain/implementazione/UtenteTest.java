@@ -10,14 +10,14 @@ class UtenteTest {
 
     @Test
     void getNomeUtente() {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
 
         assertEquals("Mario", utente.getNomeUtente());
     }
 
     @Test
     void getIdUtente() throws Exception {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
 
         // Richiamo manuale del metodo @PrePersist
         Method method = Utente.class.getDeclaredMethod("assegnaId");

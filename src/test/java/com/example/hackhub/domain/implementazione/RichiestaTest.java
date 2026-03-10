@@ -14,7 +14,7 @@ class RichiestaTest {
 
     @Test
     void getIdRichiesta_generatoDaPrePersist() throws Exception {
-        Utente destinatario = new Utente("Mario");
+        Utente destinatario = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Richiesta richiesta = new Richiesta("Luca", "payloadData", TipoRichiesta.PROPOSTA_CALL, destinatario, null);
 
         Method m = Richiesta.class.getDeclaredMethod("assegnaId");
@@ -27,7 +27,7 @@ class RichiestaTest {
 
     @Test
     void getMittente() {
-        Utente destinatario = new Utente("Mario");
+        Utente destinatario = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Richiesta richiesta = new Richiesta("Luca", "payloadData", TipoRichiesta.PROPOSTA_CALL, destinatario, null);
 
         assertEquals("Luca", richiesta.getMittente());
@@ -35,7 +35,7 @@ class RichiestaTest {
 
     @Test
     void getDestinatario() {
-        Utente destinatario = new Utente("Mario");
+        Utente destinatario = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Richiesta richiesta = new Richiesta("Luca", "payloadData", TipoRichiesta.PROPOSTA_CALL, destinatario, null);
 
         assertEquals(destinatario, richiesta.getDestinatario());
@@ -43,7 +43,7 @@ class RichiestaTest {
 
     @Test
     void getTipo_copreEntrambiITipi() {
-        Utente destinatario = new Utente("Mario");
+        Utente destinatario = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
 
         Richiesta r1 = new Richiesta("Luca", "p", TipoRichiesta.PROPOSTA_CALL, destinatario, null);
         Richiesta r2 = new Richiesta("Anna", "p2", TipoRichiesta.INVITO_STAFF, destinatario, null);
@@ -54,7 +54,7 @@ class RichiestaTest {
 
     @Test
     void getPeriodo() {
-        Utente destinatario = new Utente("Mario");
+        Utente destinatario = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Periodo periodo = new Periodo(LocalDate.now().plusDays(1), LocalTime.of(9,0),
                 LocalDate.now().plusDays(2), LocalTime.of(18,0));
 
@@ -65,7 +65,7 @@ class RichiestaTest {
 
     @Test
     void getPayload() {
-        Utente destinatario = new Utente("Mario");
+        Utente destinatario = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Richiesta richiesta = new Richiesta("Luca", "payloadData", TipoRichiesta.PROPOSTA_CALL, destinatario, null);
 
         assertEquals("payloadData", richiesta.getPayload());
@@ -73,7 +73,7 @@ class RichiestaTest {
 
     @Test
     void getStato_inizialmenteInviato() {
-        Utente destinatario = new Utente("Mario");
+        Utente destinatario = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Richiesta richiesta = new Richiesta("Luca", "payloadData", TipoRichiesta.PROPOSTA_CALL, destinatario, null);
 
         assertEquals(StatoRichiesta.INVIATO, richiesta.getStato());
@@ -81,7 +81,7 @@ class RichiestaTest {
 
     @Test
     void setStato_modificaStato() {
-        Utente destinatario = new Utente("Mario");
+        Utente destinatario = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Richiesta richiesta = new Richiesta("Luca", "payloadData", TipoRichiesta.PROPOSTA_CALL, destinatario, null);
 
         richiesta.setStato(StatoRichiesta.ACCETTATO);
@@ -93,7 +93,7 @@ class RichiestaTest {
 
     @Test
     void costruttoreInizializzaTuttiICampi() {
-        Utente destinatario = new Utente("Mario");
+        Utente destinatario = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Periodo periodo = new Periodo(LocalDate.now().plusDays(1), LocalTime.of(9,0),
                 LocalDate.now().plusDays(2), LocalTime.of(18,0));
         Richiesta richiesta = new Richiesta("Luca", "payloadData", TipoRichiesta.INVITO_STAFF, destinatario, periodo);

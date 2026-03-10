@@ -1,4 +1,4 @@
-package com.example.hackhub.controller;
+package com.example.hackhub.handler;
 
 import com.example.hackhub.domain.RuoloTeam;
 import com.example.hackhub.domain.implementazione.*;
@@ -64,7 +64,7 @@ class IscriviTeamHandlerTest {
 
     @Test
     void avviaIscrizioneHackathon() throws Exception {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Team team = new Team("TeamAlpha");
         Hackathon hackathon = creaHackathonDiTest();
 
@@ -74,8 +74,8 @@ class IscriviTeamHandlerTest {
         MembroTeam leader = new MembroTeam(utente, team, RuoloTeam.MEMBRO);
         team.aggiungiMembro(leader);
         team.setLeader(leader);
-        MembroTeam membro1 = new MembroTeam(new Utente("Luigi"), team, RuoloTeam.MEMBRO);
-        MembroTeam membro2 = new MembroTeam(new Utente("Anna"), team, RuoloTeam.MEMBRO);
+        MembroTeam membro1 = new MembroTeam(new Utente("Luigi", "luigi@gmail.com", "vndla7o0"), team, RuoloTeam.MEMBRO);
+        MembroTeam membro2 = new MembroTeam(new Utente("Anna", "anna@gmail.com", "walevns08"), team, RuoloTeam.MEMBRO);
 
         team.aggiungiMembro(membro1);
         team.aggiungiMembro(membro2);
@@ -101,7 +101,7 @@ class IscriviTeamHandlerTest {
 
     @Test
     void avviaIscrizioneHackathon_utenteNonLeader() {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Team team = new Team("TeamAlpha");
         MembroTeam membro = new MembroTeam(utente, team, RuoloTeam.MEMBRO);
 
@@ -113,7 +113,7 @@ class IscriviTeamHandlerTest {
 
     @Test
     void avviaIscrizioneHackathon_hackathonNonTrovato() {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Team team = new Team("TeamAlpha");
         MembroTeam leader = new MembroTeam(utente, team, RuoloTeam.LEADER);
 
@@ -126,7 +126,7 @@ class IscriviTeamHandlerTest {
 
     @Test
     void avviaIscrizioneHackathon_numeroMembriNonCompatibile() throws Exception {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Team team = new Team("TeamAlpha");
         Hackathon hackathon = creaHackathonDiTest();
 
@@ -143,7 +143,7 @@ class IscriviTeamHandlerTest {
 
     @Test
     void avviaIscrizioneHackathon_teamGiaIscritto() throws Exception {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Team team = new Team("TeamAlpha");
         Hackathon hackathon = creaHackathonDiTest();
 
@@ -151,8 +151,8 @@ class IscriviTeamHandlerTest {
         assegnaId(team, "assegnaId");
 
         MembroTeam leader = new MembroTeam(utente, team, RuoloTeam.LEADER);
-        team.aggiungiMembro(new MembroTeam(new Utente("Luigi"), team, RuoloTeam.MEMBRO));
-        team.aggiungiMembro(new MembroTeam(new Utente("Anna"), team, RuoloTeam.MEMBRO));
+        team.aggiungiMembro(new MembroTeam(new Utente("Luigi", "luigi@gmail.com", "vndla7o0"), team, RuoloTeam.MEMBRO));
+        team.aggiungiMembro(new MembroTeam(new Utente("Anna", "anna@gmail.com", "walevns08"), team, RuoloTeam.MEMBRO));
 
         IscrizioneTeam iscrizioneEsistente = new IscrizioneTeam(team, hackathon);
 
@@ -166,7 +166,7 @@ class IscriviTeamHandlerTest {
 
     @Test
     void avviaIscrizioneHackathon_maxIscrizioniRaggiunto() throws Exception {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Team team = new Team("TeamAlpha");
         Hackathon hackathon = creaHackathonDiTest();
 
@@ -174,8 +174,8 @@ class IscriviTeamHandlerTest {
         assegnaId(team, "assegnaId");
 
         MembroTeam leader = new MembroTeam(utente, team, RuoloTeam.LEADER);
-        team.aggiungiMembro(new MembroTeam(new Utente("Luigi"), team, RuoloTeam.MEMBRO));
-        team.aggiungiMembro(new MembroTeam(new Utente("Anna"), team, RuoloTeam.MEMBRO));
+        team.aggiungiMembro(new MembroTeam(new Utente("Luigi", "luigi@gmail.com", "vndla7o0"), team, RuoloTeam.MEMBRO));
+        team.aggiungiMembro(new MembroTeam(new Utente("Anna", "anna@gmail.com", "walevns08"), team, RuoloTeam.MEMBRO));
 
         for (int i = 0; i < hackathon.getMaxIscrizioni(); i++) {
             hackathon.aggiungiIscrizione(new IscrizioneTeam(new Team("Team" + i), hackathon));
@@ -191,7 +191,7 @@ class IscriviTeamHandlerTest {
 
     @Test
     void avviaIscrizioneHackathon_chiudeIscrizioniAlRaggiungimentoDelMassimo() throws Exception {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Team team = new Team("TeamAlpha");
         Hackathon hackathon = creaHackathonDiTest();
 
@@ -201,8 +201,8 @@ class IscriviTeamHandlerTest {
         MembroTeam leader = new MembroTeam(utente, team, RuoloTeam.MEMBRO);
         team.aggiungiMembro(leader);
         team.setLeader(leader);
-        team.aggiungiMembro(new MembroTeam(new Utente("Luigi"), team, RuoloTeam.MEMBRO));
-        team.aggiungiMembro(new MembroTeam(new Utente("Anna"), team, RuoloTeam.MEMBRO));
+        team.aggiungiMembro(new MembroTeam(new Utente("Luigi", "luigi@gmail.com", "vndla7o0"), team, RuoloTeam.MEMBRO));
+        team.aggiungiMembro(new MembroTeam(new Utente("Anna", "anna@gmail.com", "walevns08"), team, RuoloTeam.MEMBRO));
 
         for (int i = 0; i < hackathon.getMaxIscrizioni() - 1; i++) {
             hackathon.aggiungiIscrizione(new IscrizioneTeam(new Team("Team" + i), hackathon));

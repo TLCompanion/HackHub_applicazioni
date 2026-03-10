@@ -1,7 +1,7 @@
 package com.example.hackhub.boundary;
 
 import com.example.hackhub.boundary.dto.PropostaCallRequest;
-import com.example.hackhub.controller.GestioneCallHandler;
+import com.example.hackhub.handler.GestioneCallHandler;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

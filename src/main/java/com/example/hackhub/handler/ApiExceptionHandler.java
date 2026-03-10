@@ -1,4 +1,4 @@
-package com.example.hackhub.controller;
+package com.example.hackhub.handler;
 
 import com.example.hackhub.eccezioni.*;
 import org.springframework.http.HttpStatus;
