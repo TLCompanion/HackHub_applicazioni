@@ -1,4 +1,4 @@
-package com.example.hackhub.controller;
+package com.example.hackhub.handler;
 
 import com.example.hackhub.domain.RuoloTeam;
 import com.example.hackhub.domain.implementazione.MembroTeam;

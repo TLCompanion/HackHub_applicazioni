@@ -1,7 +1,7 @@
 package com.example.hackhub.boundary;
 
 import com.example.hackhub.boundary.dto.ValutazioneRequest;
-import com.example.hackhub.controller.ValutazioneHandler;
+import com.example.hackhub.handler.ValutazioneHandler;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

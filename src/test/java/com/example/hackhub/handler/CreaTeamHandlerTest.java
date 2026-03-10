@@ -1,4 +1,4 @@
-package com.example.hackhub.controller;
+package com.example.hackhub.handler;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,7 +8,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-import com.example.hackhub.controller.CreaTeamHandler;
 import com.example.hackhub.domain.implementazione.MembroTeam;
 import com.example.hackhub.domain.implementazione.Team;
 import com.example.hackhub.domain.implementazione.Utente;

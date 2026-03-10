@@ -19,13 +19,20 @@ public class Utente {
     @Column(nullable = false, unique = true)
     private String nomeUtente; // Nome identificativo dell'Utente, unico in tutta la piattaforma
 
+    @Column(nullable = false)
+    private String email; // Email dell'utente
+
+    @Column(nullable = false)
+    private String passwordHash; // password hashata
     /**
      * Crea un Utente, dato un nome, un id e un ruolo.
      *
      * @param nome -> Il nomeUtente inserito dal nuovo Utente
      */
-    public Utente(String nome) {
+    public Utente(String nome, String email, String passwordHash) {
         this.nomeUtente = nome;
+        this.email = email;
+        this.passwordHash = passwordHash;
     }
 
     public Utente() {
@@ -48,5 +55,7 @@ public class Utente {
 
     public String getIdUtente() { return idUtente; }
 
+    public String getEmail() { return email; }
 
+    public String getPasswordHash() { return passwordHash; }
 }

@@ -1,5 +1,7 @@
-package com.example.hackhub.domain.implementazione;
+package com.example.hackhub.servizi;
 
+import com.example.hackhub.domain.implementazione.Hackathon;
+import com.example.hackhub.domain.implementazione.Periodo;
 import com.example.hackhub.domain.implementazione.statePattern.*;
 import org.junit.jupiter.api.Test;
 

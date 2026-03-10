@@ -1,6 +1,6 @@
 package com.example.hackhub.boundary;
 
-import com.example.hackhub.controller.CreaTeamHandler;
+import com.example.hackhub.handler.CreaTeamHandler;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
