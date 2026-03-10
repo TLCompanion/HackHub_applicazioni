@@ -41,7 +41,7 @@ class TeamTest {
 
     @Test
     void aggiungiMembro() throws Exception {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Team team = new Team("HackMasters");
 
         MembroTeam membro = new MembroTeam(utente, team, RuoloTeam.MEMBRO);
@@ -54,7 +54,7 @@ class TeamTest {
 
     @Test
     void aggiungiLeaderLanciaEccezione() {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Team team = new Team("HackMasters");
 
         MembroTeam leader = new MembroTeam(utente, team, RuoloTeam.LEADER);
@@ -64,7 +64,7 @@ class TeamTest {
 
     @Test
     void getMembri() throws Exception {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Team team = new Team("HackMasters");
 
         MembroTeam membro = new MembroTeam(utente, team, RuoloTeam.MEMBRO);
@@ -77,7 +77,7 @@ class TeamTest {
 
     @Test
     void aggiungiImpostaLeader() throws Exception {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Team team = new Team("HackMasters");
 
         MembroTeam membro = new MembroTeam(utente, team, RuoloTeam.MEMBRO);

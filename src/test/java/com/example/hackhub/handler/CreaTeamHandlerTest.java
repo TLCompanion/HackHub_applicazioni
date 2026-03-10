@@ -37,7 +37,7 @@ class CreaTeamHandlerTest {
 
     @Test
     void avviaCreazioneTeam() {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
 
         when(repoUtenti.findById("U1")).thenReturn(Optional.of(utente));
         when(repoMembriTeam.existsByUtente(utente)).thenReturn(false);
@@ -59,7 +59,7 @@ class CreaTeamHandlerTest {
 
     @Test
     void avviaCreazioneTeam_utenteGiaMembroDiUnTeam() {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
 
         when(repoUtenti.findById("U1")).thenReturn(Optional.of(utente));
         when(repoMembriTeam.existsByUtente(utente)).thenReturn(true);
@@ -70,7 +70,7 @@ class CreaTeamHandlerTest {
 
     @Test
     void avviaCreazioneTeam_nomeTeamGiaEsistente() {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
 
         when(repoUtenti.findById("U1")).thenReturn(Optional.of(utente));
         when(repoMembriTeam.existsByUtente(utente)).thenReturn(false);

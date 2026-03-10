@@ -71,8 +71,8 @@ class GestioneCallHandlerTest {
     void avviaPropostaCall() throws Exception {
         Hackathon hackathon = hackathonValido();
 
-        Utente mentore = new Utente("Luigi");
-        Utente leader = new Utente("Mario");
+        Utente mentore = new Utente("Luigi", "luigi@gmail.com", "vndla7o0");
+        Utente leader = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Team team = new Team("TeamAlpha");
 
         assegnaId(mentore, "assegnaId");
@@ -127,7 +127,7 @@ class GestioneCallHandlerTest {
     void avviaPropostaCall_leaderNonTrovato() throws Exception {
         Hackathon hackathon = hackathonValido();
 
-        Utente mentore = new Utente("Luigi");
+        Utente mentore = new Utente("Luigi", "luigi@gmail.com", "vndla7o0");
         Team team = new Team("TeamAlpha");
 
         assegnaId(mentore, "assegnaId");
@@ -156,7 +156,7 @@ class GestioneCallHandlerTest {
     @Test
     void verificaMentoreAutorizzato() throws Exception {
         Hackathon hackathon = hackathonValido();
-        Utente mentore = new Utente("Luigi");
+        Utente mentore = new Utente("Luigi", "luigi@gmail.com", "vndla7o0");
 
         assegnaId(mentore, "assegnaId");
 

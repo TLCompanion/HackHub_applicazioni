@@ -34,8 +34,8 @@ class ServizioNotificheTest {
 
     @Test
     void creaNotifica() {
-        Utente u1 = new Utente("user1");
-        Utente u2 = new Utente("user2");
+        Utente u1 = new Utente("user1", "mario@gmail.com", "huvsonvsui5");
+        Utente u2 = new Utente("user2", "luigi@gmail.com", "vndla7o0");
 
         servizio.creaNotifica(List.of(u1, u2), TipoNotifica.VALUTAZIONE_CONCLUSA, "Messaggio di prova");
 
@@ -58,8 +58,8 @@ class ServizioNotificheTest {
 
     @Test
     void creaRichiesta() {
-        Utente u1 = new Utente("user1");
-        Utente u2 = new Utente("user2");
+        Utente u1 = new Utente("user1", "mario@gmail.com", "huvsonvsui5");
+        Utente u2 = new Utente("user2", "luigi@gmail.com", "vndla7o0");
 
         Periodo periodo = new Periodo(LocalDate.now().plusDays(1), LocalTime.of(10, 0),
                 LocalDate.now().plusDays(2), LocalTime.of(18, 0));

@@ -95,7 +95,7 @@ class ValutazioneHandlerTest {
         Hackathon hackathon = creaHackathonDiTest();
         hackathon.setStato(ValutazioneInCorso.INSTANCE);
 
-        Utente giudice = new Utente("Anna");
+        Utente giudice = new Utente("Anna", "anna@gmail.com", "walevns08");
         assegnaId(giudice, "assegnaId");
 
         Staff staff = new Staff(giudice, hackathon, RuoloStaff.GIUDICE);
@@ -142,7 +142,7 @@ class ValutazioneHandlerTest {
         Hackathon hackathon = creaHackathonDiTest();
         hackathon.setStato(IscrizioniAperte.INSTANCE);
 
-        Utente giudice = new Utente("Anna");
+        Utente giudice = new Utente("Anna", "anna@gmail.com", "walevns08");
         assegnaId(giudice, "assegnaId");
 
         Sottomissione sottomissione = new Sottomissione("file.zip");
@@ -159,7 +159,7 @@ class ValutazioneHandlerTest {
     void verificaGiudiceAutorizzato() throws Exception {
         Hackathon hackathon = creaHackathonDiTest();
 
-        Utente giudice = new Utente("Anna");
+        Utente giudice = new Utente("Anna", "anna@gmail.com", "walevns08");
         assegnaId(giudice, "assegnaId");
 
         Staff staff = new Staff(giudice, hackathon, RuoloStaff.GIUDICE);
@@ -228,7 +228,7 @@ class ValutazioneHandlerTest {
         hackathon.setStato(ValutazioneInCorso.INSTANCE);
 
         Team team = new Team("TeamAlpha");
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
 
         MembroTeam membro = new MembroTeam(utente, team, RuoloTeam.MEMBRO);
         team.aggiungiMembro(membro);
@@ -238,13 +238,6 @@ class ValutazioneHandlerTest {
         sottomissione.impostaValutazione(new Valutazione(8, "Ottimo"));
 
         impostaCampo(iscrizione, "sottomissione", sottomissione);
-
-        /*
-           Questo da errore e secondo me è anche sbagliato perchè se la valutazione è in corso lui non si può iscrivere, quindi
-           è giusto che se lo metto da errore, probabilmente è un errore del test generato ma ne dubbio lo lascio come
-           TODO da rigurdare, senza funziona tutto
-         */
-//        hackathon.aggiungiIscrizione(iscrizione);
 
         when(repoIscrizioniTeam.findAllByHackathon(hackathon)).thenReturn(List.of(iscrizione));
 

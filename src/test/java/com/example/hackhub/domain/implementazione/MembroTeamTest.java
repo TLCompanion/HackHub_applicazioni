@@ -17,7 +17,7 @@ class MembroTeamTest {
 
     @Test
     void getId() throws Exception {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Team team = new Team("TeamX");
 
         assegnaId(utente, "assegnaId");
@@ -33,7 +33,7 @@ class MembroTeamTest {
 
     @Test
     void getIdUtente() throws Exception {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Team team = new Team("TeamX");
 
         assegnaId(utente, "assegnaId");
@@ -46,7 +46,7 @@ class MembroTeamTest {
 
     @Test
     void getIdTeam() throws Exception {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Team team = new Team("TeamX");
 
         assegnaId(utente, "assegnaId");
@@ -59,7 +59,7 @@ class MembroTeamTest {
 
     @Test
     void getRuolo() {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Team team = new Team("TeamX");
 
         MembroTeam membro = new MembroTeam(utente, team, RuoloTeam.MEMBRO);
@@ -69,7 +69,7 @@ class MembroTeamTest {
 
     @Test
     void getUtente() {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Team team = new Team("TeamX");
 
         MembroTeam membro = new MembroTeam(utente, team, RuoloTeam.MEMBRO);
@@ -79,7 +79,7 @@ class MembroTeamTest {
 
     @Test
     void getTeam() {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Team team = new Team("TeamX");
 
         MembroTeam membro = new MembroTeam(utente, team, RuoloTeam.MEMBRO);
@@ -89,7 +89,7 @@ class MembroTeamTest {
 
     @Test
     void addAndSetRuolo() {
-        Utente utente = new Utente("Mario");
+        Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Team team = new Team("TeamX");
 
         MembroTeam membro = new MembroTeam(utente, team, RuoloTeam.MEMBRO);

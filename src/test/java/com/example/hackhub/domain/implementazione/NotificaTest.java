@@ -11,7 +11,7 @@ class NotificaTest {
 
     @Test
     void getIdNotifica_generatoDaPrePersist() throws Exception {
-        Utente destinatario = new Utente("Mario");
+        Utente destinatario = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Notifica notifica = new Notifica("Messaggio importante", destinatario, TipoNotifica.VALUTAZIONE_CONCLUSA);
 
         Method m = Notifica.class.getDeclaredMethod("assegnaId");
@@ -24,7 +24,7 @@ class NotificaTest {
 
     @Test
     void getDestinatario() {
-        Utente destinatario = new Utente("Mario");
+        Utente destinatario = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Notifica notifica = new Notifica("Messaggio", destinatario, TipoNotifica.VALUTAZIONE_CONCLUSA);
 
         assertEquals(destinatario, notifica.getDestinatario());
@@ -32,7 +32,7 @@ class NotificaTest {
 
     @Test
     void getTipo() {
-        Utente destinatario = new Utente("Mario");
+        Utente destinatario = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Notifica notifica = new Notifica("Messaggio", destinatario, TipoNotifica.VALUTAZIONE_CONCLUSA);
 
         assertEquals(TipoNotifica.VALUTAZIONE_CONCLUSA, notifica.getTipo());
@@ -40,7 +40,7 @@ class NotificaTest {
 
     @Test
     void getPayload() {
-        Utente destinatario = new Utente("Mario");
+        Utente destinatario = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Notifica notifica = new Notifica("Messaggio", destinatario, TipoNotifica.VALUTAZIONE_CONCLUSA);
 
         assertEquals("Messaggio", notifica.getPayload());
@@ -48,7 +48,7 @@ class NotificaTest {
 
     @Test
     void costruttoreInizializzaTuttiICampi() {
-        Utente destinatario = new Utente("Mario");
+        Utente destinatario = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
         Notifica notifica = new Notifica("Valutazione conclusa!", destinatario, TipoNotifica.VALUTAZIONE_CONCLUSA);
 
         assertAll(
