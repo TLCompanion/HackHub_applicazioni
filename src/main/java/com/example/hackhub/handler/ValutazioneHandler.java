@@ -115,7 +115,7 @@ public class ValutazioneHandler{
                     .flatMap(team -> team.getMembri().stream())
                     .map(MembroTeam::getUtente)
                     .toList();
-            servizioNotifiche.creaNotifica(utentiDestinatari, TipoNotifica.VALUTAZIONE_CONCLUSA, messaggio);
+            for (Utente u : utentiDestinatari) servizioNotifiche.creaNotifica(u, TipoNotifica.VALUTAZIONE_CONCLUSA, messaggio);
         }
     }
 

@@ -17,9 +17,8 @@ public class Sottomissione {
     private String idSottomissione;
 
     @Column(nullable = false)
-    private String riferimentoFile; //allegato al file con il progetto richiesto dall'hackathon
+    private String link; //allegato al file con il progetto richiesto dall'hackathon
 
-    //private String idValutazione
     @OneToOne
     @JoinColumn(name = "id_valutazione")
     private Valutazione valutazione;
@@ -28,10 +27,10 @@ public class Sottomissione {
 
     /**
      * Creazine di una nuova sottomissione di un team
-     * @param riferimentoFile il file allegato
+     * @param link il file allegato
      */
-    public Sottomissione(String riferimentoFile) {
-        this.riferimentoFile = riferimentoFile;
+    public Sottomissione(String link) {
+        this.link = link;
     }
 
     //PrePersist serve per fare operazioni prima di salvare l'entità nel database, in questo caso per assegnare un id
@@ -58,7 +57,7 @@ public class Sottomissione {
 
     public String getIdSottomissione() { return idSottomissione; }
 
-    public String getRiferimentoFile() { return riferimentoFile; }
+    public String getLink() { return link; }
 
     public Valutazione getValutazione() { return valutazione; }
 
