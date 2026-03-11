@@ -42,6 +42,10 @@ public class IscrizioneTeam {
     //PrePersist serve per fare operazioni prima di salvare l'entità nel database, in questo caso per assegnare un id
     // univoco all'iscrizione se non è già stato assegnato, viene automaticamente chiamato da JPA/Hibernate quando si
     // salva l'entità per la prima volta.
+
+    /**
+     * Assegna un id univoco ad ogni iscrizione
+     */
     @PrePersist
     private void assegnaId() {
         if (this.idIscrizione == null) {

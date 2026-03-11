@@ -17,11 +17,11 @@ public class InvitoTeam extends Richiesta {
     public InvitoTeam() {}
     /**
      * Costruttore che inizializza un invito ad entrare in un team
-     * @param nomeMittente
-     * @param payload
-     * @param destinatario
-     * @param scadenza
-     * @param team
+     * @param nomeMittente il nome del mittente
+     * @param payload il messaggio
+     * @param destinatario il destinatario
+     * @param scadenza la scadenza dell'invito
+     * @param team il team
      */
     public InvitoTeam(String nomeMittente, String payload, Utente destinatario, LocalDateTime scadenza, Team team) {
         super(nomeMittente, payload, destinatario, scadenza);

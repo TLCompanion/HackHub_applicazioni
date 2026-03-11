@@ -1,9 +1,9 @@
 package com.example.hackhub.domain.implementazione;
 
-import com.example.hackhub.domain.StatoRichiesta;
-import com.example.hackhub.servizi.esterni.Calendario;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Transient;
+import org.aspectj.weaver.ast.Call;
 
 import java.time.LocalDateTime;
 
@@ -17,14 +17,18 @@ public class PropostaCall extends Richiesta {
 
     /**
      * Costruttore che istanzia una Proposta di call
-     * @param nomeMittente
-     * @param payload
-     * @param destinatario
-     * @param scadenza
-     * @param periodo
+     * @param nomeMittente il nome del mittente
+     * @param payload il messaggio
+     * @param destinatario il destinatario
+     * @param scadenza la scadenza dell'invito
+     * @param periodo il periodo
      */
     public PropostaCall(String nomeMittente, String payload, Utente destinatario, LocalDateTime scadenza, Periodo periodo) {
         super(nomeMittente, payload, destinatario, scadenza);
         this.periodo = periodo;
+    }
+
+    public Periodo getPeriodo() {
+        return periodo;
     }
 }

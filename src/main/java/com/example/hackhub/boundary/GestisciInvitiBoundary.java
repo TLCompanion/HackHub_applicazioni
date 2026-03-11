@@ -19,54 +19,31 @@ public class GestisciInvitiBoundary {
 
     /**
      * Metodo del boundary che ritorna la lista di inviti pendenti di un utente
-     * @param idUtente
-     * @return
+     * @param idUtente l'identificativo dell'utente
+     * @return la lista di inviti
      */
     public List<InvitiDTO> viewInviti(String idUtente) {
         return handler.viewInviti(idUtente);
     }
 
     /**
-     * Metodo del boundary che accetta una richiesta di invito Staff
-     * @param idUtente
-     * @param idRichiesta
-     * @return
+     * Metodo del boundary che accetta una richiesta di invito Staff, Team o una propostaCall
+     * @param idUtente l'identificativo dell'utente
+     * @param idRichiesta l'identificativo della richiesta
+     * @return una nuova risposta accettata per lo staff
      */
-    public ResponseEntity<Void> accettaInvitoStaff(String idUtente, String idRichiesta) {
-        handler.accettaInvitoStaff(idUtente, idRichiesta);
+    public ResponseEntity<Void> accettaRichiesta(String idUtente, String idRichiesta) {
+        handler.accettaRichiesta(idUtente, idRichiesta);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     /**
-     * Metodo del boundary che accetta una richiesta di invito Team
-     * @param idUtente
-     * @param idRichiesta
-     * @return
+     * Metodo del boundary che rifiuta una richiesta di invito Staff, Team o una proposta di call
+     * @param idRichiesta l'identificativo della richiesta
+     * @return una nuova risposta rifiutata per lo staff
      */
-    public ResponseEntity<Void> accettaInvitoTeam(String idUtente, String idRichiesta) {
-        handler.accettaInvitoTeam(idUtente, idRichiesta);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-    }
-
-    /**
-     * Metodo del boundary che rifiuta una richiesta di invito Staff
-     * @param idUtente
-     * @param idRichiesta
-     * @return
-     */
-    public ResponseEntity<Void> rifiutaInvitoStaff(String idUtente, String idRichiesta) {
-        handler.accettaInvitoStaff(idUtente, idRichiesta);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    /**
-     * Metodo del boundary che rifiuta una richiesta di invito Team
-     * @param idUtente
-     * @param idRichiesta
-     * @return
-     */
-    public ResponseEntity<Void> rifiutaInvitoTeam(String idUtente, String idRichiesta) {
-        handler.accettaInvitoTeam(idUtente, idRichiesta);
+    public ResponseEntity<Void> rifiutaInvito(String idRichiesta) {
+        handler.rifiutaRichiesta(idRichiesta);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

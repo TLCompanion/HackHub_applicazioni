@@ -30,6 +30,11 @@ public class IscriviTeamHandler {
         this.repositoryIscrizioniTeam = repositoryIscrizioniTeam;
     }
 
+    /**
+     * Avvia un iscrizione di un team ad un hackathon
+     * @param idUtente l'id dell'utente che vuole iscriversi
+     * @param nomeHackathon il nome dell'hackathon
+     */
     @Transactional
     public void avviaIscrizioneHackathon(String idUtente, String nomeHackathon) {
         MembroTeam membroTeam = repositoryMembriTeam.findByUtente_IdUtente(idUtente).orElseThrow(() ->
@@ -52,6 +57,11 @@ public class IscriviTeamHandler {
             hackathon.setStato(IscrizioniChiuse.INSTANCE);
     }
 
+    /**
+     * Controlla che un team si possa iscrivere ad un hackathon
+     * @param hackathon l'hackathon
+     * @param team il team
+     */
     private void checkIscrizioneInHackathon(Hackathon hackathon, Team team) {
         hackathon.getStato().verificaIscrizioneConsentita(hackathon);
         if (team.getNumMembri()<hackathon.getTeamMin() || team.getNumMembri()>hackathon.getTeamMax())

@@ -103,6 +103,10 @@ public class Hackathon {
     //PrePersist serve per fare operazioni prima di salvare l'entità nel database, in questo caso per assegnare un id
     // univoco all'hackathon se non è già stato assegnato, viene automaticamente chiamato da JPA/Hibernate quando si
     // salva l'entità per la prima volta.
+
+    /**
+     * Assegna un id univoco ad un hackathon
+     */
     @PrePersist
     private void assegnaId() {
         if (this.idHackathon == null) {
@@ -112,6 +116,20 @@ public class Hackathon {
 
     // Metodo che lancia eccezioni se ci sono incongruenze nei campi passati alla creazione, altrimenti non
     // fa niente
+
+    /**
+     * Lancia eccezioni se ci sono dei parametri sbagliati dell'hackathon
+     * @param nome il nome
+     * @param periodo il periodo di svolgimento
+     * @param premio il premio
+     * @param luogo il luogo dove si svolge
+     * @param teamMax il numero massimo dei membri che un team deve avere per iscriversi
+     * @param teamMin il numero minimo di membri che un team deve avere per iscriversi
+     * @param regolamento il regolamente
+     * @param scadenzaIscrizioni la scadenza delle iscrizioni
+     * @throws IllegalArgumentException se alcuni dati non sono validi
+     * @throws NullPointerException se alcuni dati non sono stati inseriti
+     */
     private void validazione(String nome, Periodo periodo, BigDecimal premio, String luogo, int teamMax, int teamMin, String regolamento, LocalDateTime scadenzaIscrizioni) throws IllegalArgumentException, NullPointerException {
 
         if (nome == null || periodo == null || premio == null || luogo == null || regolamento == null || scadenzaIscrizioni == null)
@@ -130,6 +148,10 @@ public class Hackathon {
             throw new IllegalArgumentException("Data oppure orario inseriti non validi");
     }
 
+    /**
+     * Aggiunge un iscrizione se i parametri di iscrizione sono validi
+     * @param iscrizione l'iscrizione
+     */
     public void aggiungiIscrizione(IscrizioneTeam iscrizione) {
         if (iscrizioni.size() == maxIscrizioni) {
             throw new ConflictException("Numero massimo di iscrizioni raggiunto");

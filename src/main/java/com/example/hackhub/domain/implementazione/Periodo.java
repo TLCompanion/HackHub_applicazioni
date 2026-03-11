@@ -59,6 +59,13 @@ public class Periodo {
 
     }
 
+    /**
+     * Controlla che i dati inseriti siano validi
+     * @param dataInizio la data di inizio
+     * @param dataFine la data di fine
+     * @param oraInizio l'ora di inizio
+     * @param oraFine l'ora di fine
+     */
     private void validazione(LocalDate dataInizio, LocalDate dataFine, LocalTime oraInizio, LocalTime oraFine) {
         if (dataInizio.isAfter(dataFine) || (dataInizio.isEqual(dataFine) && oraInizio.isAfter(oraFine))) {
             throw new IllegalArgumentException("La data e ora di inizio devono essere precedenti a quelle di fine");

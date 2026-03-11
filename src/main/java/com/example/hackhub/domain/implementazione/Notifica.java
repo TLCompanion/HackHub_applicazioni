@@ -36,6 +36,10 @@ public class Notifica {
     //PrePersist serve per fare operazioni prima di salvare l'entità nel database, in questo caso per assegnare un id
     // univoco alla notifica se non è già stato assegnato, viene automaticamente chiamato da JPA/Hibernate quando si
     // salva l'entità per la prima volta.
+
+    /**
+     * Assegna un id univoco ad ogni notifica
+     */
     @PrePersist
     private void assegnaId() {
         if (this.idNotifica == null) {

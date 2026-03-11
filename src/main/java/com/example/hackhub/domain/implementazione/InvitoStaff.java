@@ -20,12 +20,12 @@ public class InvitoStaff extends Richiesta {
 
     /**
      * Costruttore che instanzia un invito ad unirsi allo Staff di un Hackathon
-     * @param nomeMittente
-     * @param payload
-     * @param destinatario
-     * @param scadenza
-     * @param hackathon
-     * @param ruolo
+     * @param nomeMittente il nome del mittente
+     * @param payload il messaggio
+     * @param destinatario il destinatario
+     * @param scadenza la scadenza dell'invito
+     * @param hackathon l'hackathon associato
+     * @param ruolo il ruolo che l'utente dovrebbe ricoprire
      */
     public InvitoStaff(String nomeMittente, String payload, Utente destinatario, LocalDateTime scadenza, Hackathon hackathon, RuoloStaff ruolo) {
         super(nomeMittente, payload, destinatario, scadenza);

@@ -88,7 +88,6 @@ public class CreaHackathonHandler {
                 .findFirst()
                 .orElseThrow(() ->
                         new NotFoundException("Organizzatore non trovato"));
-        String messaggio = "Invito per diventare staff";
         for (Utente d : utentiDestinatari)
             servizioNotifiche.creaInvitoStaff(organizzatore.getNomeUtente(), d, hackathon, destinatari.get(d));
     }

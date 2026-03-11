@@ -46,8 +46,8 @@ public class ServizioNotifiche {
 
     /**
      * Crea una proposta di call
-     * @param nomeMittente
-     * @param destinatario
+     * @param nomeMittente il nome del mittente
+     * @param destinatario il nome del destinatario
      * @param periodo la durata della call
      */
     public void creaPropostaCall(String nomeMittente, Utente destinatario, Periodo periodo) {
@@ -61,9 +61,9 @@ public class ServizioNotifiche {
 
     /**
      * Metodo che istanzia un Invito allo Staff di un hackathon
-     * @param nomeMittente
-     * @param destinatario
-     * @param hackathon
+     * @param nomeMittente il nome del mittente
+     * @param destinatario il destinatario
+     * @param hackathon l'hackathon associato
      * @param ruolo il ruolo offerto
      */
     public void creaInvitoStaff(String nomeMittente, Utente destinatario, Hackathon hackathon, RuoloStaff ruolo) {
@@ -80,6 +80,12 @@ public class ServizioNotifiche {
         repositoryRichiesta.save(invitoStaff);
     }
 
+    /**
+     * Crea un invito da inviare per entrare in un team
+     * @param nomeMittente il nome del mittente
+     * @param destinatario il destinatario
+     * @param team il team associato
+     */
     public void creaInvitoTeam(String nomeMittente, Utente destinatario, Team team) {
         InvitoTeam invitoTeam = new InvitoTeam(
                 nomeMittente,
