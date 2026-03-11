@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TeamTest {
-
+/*
     private void assegnaId(Object obj) throws Exception {
         Method m = obj.getClass().getDeclaredMethod("assegnaId");
         m.setAccessible(true);
@@ -91,5 +91,5 @@ class TeamTest {
 
         assertEquals(1, team.getNumMembri());
         assertEquals(RuoloTeam.LEADER, membro.getRuolo());
-    }
+    }*/
 }

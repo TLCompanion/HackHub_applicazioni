@@ -1,10 +1,9 @@
 package com.example.hackhub.domain.implementazione;
 
 import com.example.hackhub.domain.StatoRichiesta;
-import com.example.hackhub.domain.TipoRichiesta;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,6 +11,8 @@ import java.util.UUID;
  * Classe che gestisce gli elementi generali di una richiesta
  */
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo")
 public class Richiesta {
 
     @Id
@@ -20,11 +21,8 @@ public class Richiesta {
     @Transient
     private Utente destinatario;
     private StatoRichiesta stato;
-    @Column(insertable=false, updatable=false)
-    private TipoRichiesta tipo;
-    @Nullable
-    private Periodo periodo;
     private String payload;
+    private LocalDateTime scadenza;
 
     public Richiesta(){}
 
@@ -32,13 +30,12 @@ public class Richiesta {
      * Creazione di una nuova richiesta
      * @param nomeMittente il mittente della richiesta
      */
-    public Richiesta(String nomeMittente, String payload, TipoRichiesta tipo, Utente destinatario, @Nullable Periodo periodo) {
+    public Richiesta(String nomeMittente, String payload, Utente destinatario, LocalDateTime scadenza) {
         this.nomeMittente = nomeMittente;
-        this.tipo = tipo;
         this.destinatario = destinatario;
         this.stato = StatoRichiesta.INVIATO; //all'inizio quando ancora la richiesta non è stata valutata lo stato è sempre inviato
         this.payload = payload;
-        this.periodo = periodo;
+        this.scadenza = scadenza;
     }
 
     //PrePersist serve per fare operazioni prima di salvare l'entità nel database, in questo caso per assegnare un id
@@ -51,6 +48,20 @@ public class Richiesta {
         }
     }
 
+    /**
+     * Metodo vuoto che consente di accettare quanto indicato nella richiesta
+     */
+    public void accetta() {
+        this.setStato(StatoRichiesta.ACCETTATO);
+    }
+
+    /**
+     * Metodo vuoto che consente di rifiutare quando indicato nella richiesta
+     */
+    public void rifiuta() {
+        this.setStato(StatoRichiesta.RIFIUTATO);
+    }
+
     // METODI GETTER
 
     public String getIdRichiesta() { return idRichiesta; }
@@ -61,11 +72,9 @@ public class Richiesta {
 
     public StatoRichiesta getStato() { return stato; }
 
-    public TipoRichiesta getTipo() { return tipo; }
-
-    public Periodo getPeriodo() { return periodo; }
-
     public String getPayload() { return payload; }
+
+    public LocalDateTime getScadenza() { return scadenza; }
 
     public void setStato(StatoRichiesta stato) {
         this.stato = stato;

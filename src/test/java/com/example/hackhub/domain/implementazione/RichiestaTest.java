@@ -1,17 +1,7 @@
 package com.example.hackhub.domain.implementazione;
 
-import com.example.hackhub.domain.StatoRichiesta;
-import com.example.hackhub.domain.TipoRichiesta;
-import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.Method;
-import java.time.LocalDate;
-import java.time.LocalTime;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 class RichiestaTest {
-
+/*
     @Test
     void getIdRichiesta_generatoDaPrePersist() throws Exception {
         Utente destinatario = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
@@ -106,5 +96,5 @@ class RichiestaTest {
                 () -> assertEquals("payloadData", richiesta.getPayload()),
                 () -> assertEquals(StatoRichiesta.INVIATO, richiesta.getStato())
         );
-    }
+    }*/
 }

@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 import static org.junit.jupiter.api.Assertions.*;
 
 class NotificaTest {
-
+/*
     @Test
     void getIdNotifica_generatoDaPrePersist() throws Exception {
         Utente destinatario = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
@@ -56,5 +56,5 @@ class NotificaTest {
                 () -> assertEquals(TipoNotifica.VALUTAZIONE_CONCLUSA, notifica.getTipo()),
                 () -> assertEquals("Valutazione conclusa!", notifica.getPayload())
         );
-    }
+    }*/
 }

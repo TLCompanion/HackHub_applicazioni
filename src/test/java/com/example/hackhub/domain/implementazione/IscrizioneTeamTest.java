@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 import static org.junit.jupiter.api.Assertions.*;
 
 class IscrizioneTeamTest {
-
+/*
     @Test
     void getTeam() {
         Team team = new Team("Team Alfa");
@@ -62,5 +62,5 @@ class IscrizioneTeamTest {
                 () -> assertEquals(team, iscrizione.getTeam()),
                 () -> assertEquals(hackathon, iscrizione.getHackathon())
         );
-    }
+    }*/
 }

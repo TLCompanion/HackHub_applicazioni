@@ -3,7 +3,6 @@ package com.example.hackhub.handler;
 import com.example.hackhub.boundary.dto.PropostaCallRequest;
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.RuoloTeam;
-import com.example.hackhub.domain.TipoRichiesta;
 import com.example.hackhub.domain.implementazione.*;
 import com.example.hackhub.domain.implementazione.statePattern.Concluso;
 import com.example.hackhub.eccezioni.ConflictException;

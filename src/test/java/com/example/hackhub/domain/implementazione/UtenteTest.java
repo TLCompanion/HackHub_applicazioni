@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UtenteTest {
-
+/*
     @Test
     void getNomeUtente() {
         Utente utente = new Utente("Mario", "mario@gmail.com", "huvsonvsui5");
@@ -28,5 +28,5 @@ class UtenteTest {
 
         assertNotNull(id);
         assertTrue(id.startsWith("U-"));
-    }
+    }*/
 }

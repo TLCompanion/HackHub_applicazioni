@@ -3,7 +3,6 @@ package com.example.hackhub.handler;
 import com.example.hackhub.boundary.dto.PropostaCallRequest;
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.RuoloTeam;
-import com.example.hackhub.domain.TipoRichiesta;
 import com.example.hackhub.domain.implementazione.*;
 import com.example.hackhub.domain.implementazione.statePattern.Concluso;
 import com.example.hackhub.servizi.ServizioNotifiche;
@@ -54,9 +53,7 @@ public class GestioneCallHandler {
         validazione(periodo, hackathon, request.idTeam());
         Utente leader = repositoryMembriTeam.findMembroTeamByRuolo(RuoloTeam.LEADER).orElseThrow(() ->
                 new NotFoundException("Leader del team non trovato")).getUtente();
-        String messaggio = "Proposta di call";
-        servizioNotifiche.creaRichiesta(idUtente, List.of(leader), TipoRichiesta.PROPOSTA_CALL, messaggio, periodo);
-
+        servizioNotifiche.creaPropostaCall(idUtente, leader, periodo);
     }
 
     /**

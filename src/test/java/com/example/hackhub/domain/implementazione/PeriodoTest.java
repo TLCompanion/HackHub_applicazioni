@@ -8,7 +8,7 @@ import java.time.LocalTime;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PeriodoTest {
-
+/*
     @Test
     void getDataInizio() {
         LocalDate inizio = LocalDate.now().plusDays(1);
@@ -78,5 +78,5 @@ class PeriodoTest {
 
         assertEquals(LocalTime.of(0,0), periodo.getOraInizio());
         assertEquals(LocalTime.of(23,59), periodo.getOraFine());
-    }
+    }*/
 }

@@ -1,13 +1,15 @@
 package com.example.hackhub.servizi;
 
-import com.example.hackhub.domain.StatoRichiesta;
+import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.TipoNotifica;
-import com.example.hackhub.domain.TipoRichiesta;
 import com.example.hackhub.domain.implementazione.*;
 import com.example.hackhub.repository.RepositoryNotifica;
 import com.example.hackhub.repository.RepositoryRichiesta;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 /**
@@ -43,16 +45,49 @@ public class ServizioNotifiche {
     }
 
     /**
-     * Invia una richiesta da parte di un mentore, un'organizzatore o un team
-     * @param mittente il mittente associato
-     * @param destinatari i destinatari
-     * @param messaggio il messaggio della richiesta
+     * Crea una proposta di call
+     * @param nomeMittente
+     * @param destinatario
+     * @param periodo la durata della call
      */
-    public void creaRichiesta(String mittente, List<Utente> destinatari, TipoRichiesta tipo, String messaggio,
-                              Periodo periodo){
-        for (Utente d : destinatari) {
-            Richiesta richiesta = new Richiesta(mittente, messaggio, TipoRichiesta.PROPOSTA_CALL, d, periodo);
-            repositoryRichiesta.save(richiesta);
-        }
+    public void creaPropostaCall(String nomeMittente, Utente destinatario, Periodo periodo) {
+        PropostaCall propostaCall = new PropostaCall(nomeMittente,
+                "Proposta di Call",
+                destinatario,
+                LocalDateTime.of(periodo.getDataInizio().minusDays(1), periodo.getOraInizio()),
+                periodo);
+        repositoryRichiesta.save(propostaCall);
+    }
+
+    /**
+     * Metodo che istanzia un Invito allo Staff di un hackathon
+     * @param nomeMittente
+     * @param destinatario
+     * @param hackathon
+     * @param ruolo il ruolo offerto
+     */
+    public void creaInvitoStaff(String nomeMittente, Utente destinatario, Hackathon hackathon, RuoloStaff ruolo) {
+        if (ruolo.equals(RuoloStaff.ORGANIZZATORE))
+            throw new IllegalArgumentException("Ruolo non assegnabile");
+
+        InvitoStaff invitoStaff = new InvitoStaff(
+                nomeMittente,
+                "Invito nello Staff di " + hackathon.getNome(),
+                destinatario,
+                LocalDateTime.now(),
+                hackathon,
+                ruolo);
+        repositoryRichiesta.save(invitoStaff);
+    }
+
+    public void creaInvitoTeam(String nomeMittente, Utente destinatario, Team team) {
+        InvitoTeam invitoTeam = new InvitoTeam(
+                nomeMittente,
+                "Invito ad entrare nel team: " + team.getNome(),
+                destinatario,
+                LocalDateTime.now().plusDays(3),
+                team
+        );
+        repositoryRichiesta.save(invitoTeam);
     }
 }

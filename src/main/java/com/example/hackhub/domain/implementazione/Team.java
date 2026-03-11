@@ -61,9 +61,9 @@ public class Team {
      *
      * @throws Exception se il membro da aggiungere risulta LEADER
      */
-    public void aggiungiMembro(MembroTeam membro) throws Exception {
-        if (membro.getRuolo().equals(RuoloTeam.LEADER)) throw new Exception("Tentativo di aggiungere un" +
-                " Leader a un Team");
+    public void aggiungiMembro(MembroTeam membro) {
+        if (membro.getRuolo().equals(RuoloTeam.LEADER))
+            throw new IllegalArgumentException("Tentativo di aggiungere un Leader a un Team");
 
         membri.add(membro);
     }

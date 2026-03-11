@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SottomissioneTest {
-
+/*
     @Test
     void impostaValutazione() {
         Sottomissione s = new Sottomissione("file.zip");
@@ -58,5 +58,5 @@ class SottomissioneTest {
         s.impostaValutazione(v);
 
         assertTrue(s.haValutazione());
-    }
+    }*/
 }

@@ -2,7 +2,6 @@ package com.example.hackhub.handler;
 
 import com.example.hackhub.boundary.dto.HackathonRequest;
 import com.example.hackhub.domain.RuoloStaff;
-import com.example.hackhub.domain.TipoRichiesta;
 import com.example.hackhub.domain.implementazione.*;
 import com.example.hackhub.servizi.HackathonBuilder;
 import com.example.hackhub.servizi.ServizioNotifiche;
@@ -90,7 +89,8 @@ public class CreaHackathonHandler {
                 .orElseThrow(() ->
                         new NotFoundException("Organizzatore non trovato"));
         String messaggio = "Invito per diventare staff";
-        servizioNotifiche.creaRichiesta(organizzatore.getIdUtente(), utentiDestinatari, TipoRichiesta.INVITO_STAFF, messaggio, null);
+        for (Utente d : utentiDestinatari)
+            servizioNotifiche.creaInvitoStaff(organizzatore.getNomeUtente(), d, hackathon, destinatari.get(d));
     }
 
     /**
@@ -121,6 +121,5 @@ public class CreaHackathonHandler {
         Staff staffOrganizzatore = new Staff(organizzatore, hackathon, RuoloStaff.ORGANIZZATORE);
         hackathon.aggiungiStaff(staffOrganizzatore);
         repositoryStaff.save(staffOrganizzatore);
-
     }
 }

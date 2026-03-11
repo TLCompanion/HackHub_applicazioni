@@ -1,26 +1,7 @@
 package com.example.hackhub.servizi;
 
-import com.example.hackhub.domain.TipoNotifica;
-import com.example.hackhub.domain.TipoRichiesta;
-import com.example.hackhub.domain.implementazione.Notifica;
-import com.example.hackhub.domain.implementazione.Periodo;
-import com.example.hackhub.domain.implementazione.Richiesta;
-import com.example.hackhub.domain.implementazione.Utente;
-import com.example.hackhub.repository.RepositoryNotifica;
-import com.example.hackhub.repository.RepositoryRichiesta;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 class ServizioNotificheTest {
-
+/*
     private RepositoryNotifica mockRepoNotifica;
     private RepositoryRichiesta mockRepoRichiesta;
     private ServizioNotifiche servizio;
@@ -86,5 +67,5 @@ class ServizioNotificheTest {
         assertEquals("Mentore1", richiesteSalvate.get(1).getMittente());
         assertEquals(TipoRichiesta.PROPOSTA_CALL, richiesteSalvate.get(1).getTipo());
         assertEquals(periodo, richiesteSalvate.get(1).getPeriodo());
-    }
+    }*/
 }

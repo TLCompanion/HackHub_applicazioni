@@ -28,5 +28,4 @@ public class CreaTeamBoundary {
         handler.avviaCreazioneTeam(nomeTeam, idUtente);
         return ResponseEntity.noContent().build();
     }
-
 }
