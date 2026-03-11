@@ -57,8 +57,8 @@ public class CreaTeamHandler {
         repositoryTeam.save(team);
         Utente utente = repositoryUtenti.findById(idUtente).orElseThrow(() ->
                 new NotFoundException("Utente non trovato"));
-        MembroTeam membroTeam = new MembroTeam(utente, team, RuoloTeam.MEMBRO);
-        team.setLeader(membroTeam);
-        repositoryMembriTeam.save(membroTeam);
+        MembroTeam leader = new MembroTeam(utente, team, RuoloTeam.LEADER);
+        team.setLeader(leader);
+        repositoryMembriTeam.save(leader);
     }
 }

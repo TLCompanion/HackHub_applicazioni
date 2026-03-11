@@ -51,10 +51,6 @@ public class IscriviTeamHandler {
         IscrizioneTeam iscrizione = new IscrizioneTeam(team, hackathon);
         hackathon.aggiungiIscrizione(iscrizione);
         repositoryHackathon.save(hackathon);
-        repositoryIscrizioniTeam.save(iscrizione);
-
-        if (hackathon.getIscrizioni().size()==hackathon.getMaxIscrizioni())
-            hackathon.setStato(IscrizioniChiuse.INSTANCE);
     }
 
     /**

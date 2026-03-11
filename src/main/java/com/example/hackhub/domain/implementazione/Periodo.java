@@ -56,7 +56,6 @@ public class Periodo {
         this.oraInizio = LocalTime.of(0, 0);
         this.oraFine = LocalTime.of(23, 59);
         this.dataFine = dataFine;
-
     }
 
     /**

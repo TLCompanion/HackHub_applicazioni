@@ -100,9 +100,9 @@ public class CreaHackathonHandler {
      */
     private Map<Utente, RuoloStaff> gestisciStaff(List<String> nomiMentori, String nomeGiudice) {
         List<Utente> mentori = nomiMentori.stream().map(nome -> repositoryUtenti.findByNomeUtente(nome).orElseThrow(() ->
-                new NotFoundException("Il mentore specificato non esiste: " + nome))).toList();
+                new NotFoundException("L'utente specificato non esiste: " + nome))).toList();
         Utente giudice = repositoryUtenti.findByNomeUtente(nomeGiudice).orElseThrow(() ->
-                new NotFoundException("Il utente non esiste: " + nomeGiudice));
+                new NotFoundException("L'utente specificato non esiste: " + nomeGiudice));
         return new HashMap<>(){{
             put(giudice, RuoloStaff.GIUDICE);
             mentori.forEach(mentore -> put(mentore, RuoloStaff.MENTORE));
@@ -115,8 +115,7 @@ public class CreaHackathonHandler {
      * @param hackathon l'hackathon
      */
     private void gestisciOrganizzatore(String idUtente, Hackathon hackathon) {
-        Utente organizzatore = repositoryUtenti.findById(idUtente).orElseThrow(() -> new NotFoundException("L' utente "
-                + "non esiste: " + idUtente));
+        Utente organizzatore = repositoryUtenti.findById(idUtente).orElseThrow(() -> new NotFoundException("L' utente non esiste: " + idUtente));
         Staff staffOrganizzatore = new Staff(organizzatore, hackathon, RuoloStaff.ORGANIZZATORE);
         hackathon.aggiungiStaff(staffOrganizzatore);
         repositoryStaff.save(staffOrganizzatore);
