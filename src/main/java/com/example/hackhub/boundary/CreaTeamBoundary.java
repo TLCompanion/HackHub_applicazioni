@@ -5,9 +5,7 @@ import com.example.hackhub.handler.CreaTeamHandler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/team")
@@ -19,13 +17,13 @@ public class CreaTeamBoundary {
         this.handler = handler;
     }
 
-    @PostMapping("/creaTeam")
+    @PostMapping("/{nomeTeam}")
     public ResponseEntity<Void> avviaCreazioneTeam(
             @AuthenticationPrincipal Jwt jwt,
-            String nomeTeam
+            @PathVariable String nomeTeam
             ){
         String idUtente = jwt.getSubject(); // Ottieni l'ID dell'utente dal token JWT
-        handler.avviaCreazioneTeam(nomeTeam, idUtente);
+        handler.avviaCreazioneTeam(idUtente, nomeTeam);
         return ResponseEntity.noContent().build();
     }
 }

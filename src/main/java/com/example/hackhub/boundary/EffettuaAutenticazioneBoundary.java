@@ -4,10 +4,13 @@ import com.example.hackhub.boundary.dto.AuthResponse;
 import com.example.hackhub.boundary.dto.LoginRequest;
 import com.example.hackhub.boundary.dto.RegisterRequest;
 import com.example.hackhub.handler.EffettuaAutenticazioneHandler;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,9 +32,11 @@ public class EffettuaAutenticazioneBoundary {
     /**
      * Metodo che attiva la procedura di registrazione alla piattaforma
      * @param request il JSON di richiesta di registrazione
-     * @return
+     * @return la risposta
      */
-    public ResponseEntity<Void> attivaRegistrazione(RegisterRequest request) {
+    @PostMapping
+    public ResponseEntity<Void> attivaRegistrazione(
+            @Valid @RequestBody RegisterRequest request) {
         handler.attivaRegistrazione(request); // Avvio la registrazione
         return ResponseEntity.status(HttpStatus.CREATED).build(); // Ritorno il codice di stato created
     }
@@ -39,9 +44,11 @@ public class EffettuaAutenticazioneBoundary {
     /**
      * Metodo che attiva la procedura di login alla piattaforma
      * @param request il JSON di richiesta di login
-     * @return
+     * @return la risposta
      */
-    public ResponseEntity<AuthResponse> attivaAutenticazione(LoginRequest request) {
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> attivaAutenticazione(
+            @Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(handler.attivaAutenticazione(request));
     }
 }

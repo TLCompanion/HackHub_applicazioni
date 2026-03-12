@@ -1,7 +1,6 @@
 package com.example.hackhub.handler;
 
-import com.example.hackhub.boundary.dto.InvitiDTO;
-import com.example.hackhub.boundary.dto.PropostaCallRequest;
+import com.example.hackhub.boundary.dto.InvitoDTO;
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.RuoloTeam;
 import com.example.hackhub.domain.TipoNotifica;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class GestisciInvitiHandler {
@@ -49,9 +47,9 @@ public class GestisciInvitiHandler {
      */
     // TODO questo metodo sarà da estendere con tutti gli altri tipi di Richiesta, assieme al metodo privato in basso
     // TODO questo avverrà con l'implementazione del use case "gestisce proposta di call"
-    public List<InvitiDTO> viewInviti(String idUtente) {
+    public List<InvitoDTO> viewInviti(String idUtente) {
         List<Richiesta> listRichieste = repositoryRichiesta.findByDestinatario(idUtente);
-        List<InvitiDTO> dtoList = new ArrayList<>();
+        List<InvitoDTO> dtoList = new ArrayList<>();
         for (Richiesta r : listRichieste) dtoList.add(toDto(r));
         return dtoList;
     }
@@ -147,12 +145,12 @@ public class GestisciInvitiHandler {
      * @param richiesta la richiesta
      * @return un nuovo dto, null se il tipo della richiesta non corrisponde con nessun tipo esistente
      */
-    private InvitiDTO toDto(Richiesta richiesta) {
+    private InvitoDTO toDto(Richiesta richiesta) {
         if (richiesta instanceof InvitoStaff is)
-            return new InvitiDTO(is.getDestinatario().getIdUtente(), "INVITO_STAFF", null, is.getHackathon().getNome(), is.getRuolo());
+            return new InvitoDTO(is.getDestinatario().getIdUtente(), "INVITO_STAFF", null, is.getHackathon().getNome(), is.getRuolo());
 
         if (richiesta instanceof InvitoTeam it)
-            return new InvitiDTO(it.getDestinatario().getIdUtente(), "INVITO_TEAM", it.getTeam().getNome(), null, null);
+            return new InvitoDTO(it.getDestinatario().getIdUtente(), "INVITO_TEAM", it.getTeam().getNome(), null, null);
 
         return null;
     }

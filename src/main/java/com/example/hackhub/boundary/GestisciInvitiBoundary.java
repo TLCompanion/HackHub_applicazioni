@@ -1,14 +1,17 @@
 package com.example.hackhub.boundary;
 
-import com.example.hackhub.boundary.dto.InvitiDTO;
+import com.example.hackhub.boundary.dto.InvitoDTO;
 import com.example.hackhub.handler.GestisciInvitiHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/api/inviti")
 public class GestisciInvitiBoundary {
@@ -19,20 +22,27 @@ public class GestisciInvitiBoundary {
 
     /**
      * Metodo del boundary che ritorna la lista di inviti pendenti di un utente
-     * @param idUtente l'identificativo dell'utente
      * @return la lista di inviti
      */
-    public List<InvitiDTO> viewInviti(String idUtente) {
-        return handler.viewInviti(idUtente);
+    @GetMapping
+    public ResponseEntity<List<InvitoDTO>> viewInviti(
+            @AuthenticationPrincipal Jwt jwt
+    ) {
+        String idUtente = jwt.getSubject();
+        return ResponseEntity.ok(handler.viewInviti(idUtente));
     }
 
     /**
      * Metodo del boundary che accetta una richiesta di invito Staff, Team o una propostaCall
-     * @param idUtente l'identificativo dell'utente
      * @param idRichiesta l'identificativo della richiesta
      * @return una nuova risposta accettata per lo staff
      */
-    public ResponseEntity<Void> accettaRichiesta(String idUtente, String idRichiesta) {
+    @PostMapping("/{idRichiesta}/accetta")
+    public ResponseEntity<Void> accettaRichiesta(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable String idRichiesta
+    ) {
+        String idUtente = jwt.getSubject();
         handler.accettaRichiesta(idUtente, idRichiesta);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
@@ -42,7 +52,11 @@ public class GestisciInvitiBoundary {
      * @param idRichiesta l'identificativo della richiesta
      * @return una nuova risposta rifiutata per lo staff
      */
-    public ResponseEntity<Void> rifiutaInvito(String idRichiesta) {
+    @PostMapping("/{idRichiesta}/rifiuta")
+    public ResponseEntity<Void> rifiutaInvito(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable String idRichiesta
+    ) {
         handler.rifiutaRichiesta(idRichiesta);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

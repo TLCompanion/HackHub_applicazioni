@@ -22,9 +22,9 @@ public class EffettuaAutenticazioneHandler {
 
     /**
      * Costruttore che inizializza questo handler
-     * @param repositoryUtenti
-     * @param passwordEncoder
-     * @param servizioJwt
+     * @param repositoryUtenti la repository degli utento
+     * @param passwordEncoder l'encoder della password
+     * @param servizioJwt il servizio jwt
      */
     public EffettuaAutenticazioneHandler(RepositoryUtenti repositoryUtenti, PasswordEncoder passwordEncoder, ServizioJwt servizioJwt) {
         this.repositoryUtenti = repositoryUtenti;

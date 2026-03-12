@@ -6,7 +6,7 @@ import jakarta.validation.constraints.*;
 /**
  * DTO che rappresenta un invito ad entrare a far parte dello Staff di un hackathon o di un Team
  */
-public record InvitiDTO(
+public record InvitoDTO(
     @NotBlank String destinatario,
     @NotBlank String tipo,
     String nomeTeam,
