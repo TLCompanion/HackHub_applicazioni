@@ -2,6 +2,7 @@ package com.example.hackhub.handler;
 
 import com.example.hackhub.boundary.dto.HackathonRequest;
 import com.example.hackhub.domain.RuoloStaff;
+import com.example.hackhub.domain.TipoNotifica;
 import com.example.hackhub.domain.implementazione.*;
 import com.example.hackhub.servizi.HackathonBuilder;
 import com.example.hackhub.servizi.ServizioNotifiche;
@@ -15,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
+
+import static java.util.Arrays.stream;
 
 @Service
 public class CreaHackathonHandler {
@@ -59,6 +63,16 @@ public class CreaHackathonHandler {
         gestisciInvitiStaff(hackathon, request.nomeMentori(), request.nomeGiudice());
         repositoryHackathon.save(hackathon);
     }
+
+//    //todo da mettere sul tempo
+//    private void notificaUtenti(Hackathon hackathon){
+//        List<Utente> staff = hackathon.getStaff().stream().map(Staff::getUtente).toList();
+//        List<Utente> team = hackathon.getIscrizioni().stream().map(IscrizioneTeam::getTeam).flatMap(t -> t.getMembri().stream()).map(MembroTeam::getUtente).toList();
+//        List<Utente> destinatari = Stream.concat(staff.stream(), team.stream()).toList();
+//        for(Utente u : destinatari){
+//            servizioNotifiche.creaNotifica(u, null, hackathon + " è iniziato");
+//        }
+//    }
 
     private void buildSteps(HackathonBuilder builder, HackathonRequest request) {
         builder.impostaNome(request.nome());
