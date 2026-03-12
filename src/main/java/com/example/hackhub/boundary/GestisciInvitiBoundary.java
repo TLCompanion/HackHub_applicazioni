@@ -1,6 +1,6 @@
 package com.example.hackhub.boundary;
 
-import com.example.hackhub.boundary.dto.InvitoDTO;
+import com.example.hackhub.boundary.dto.RichiestaDTO;
 import com.example.hackhub.handler.GestisciInvitiHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +25,11 @@ public class GestisciInvitiBoundary {
      * @return la lista di inviti
      */
     @GetMapping
-    public ResponseEntity<List<InvitoDTO>> viewInviti(
+    public ResponseEntity<List<RichiestaDTO>> viewRichieste(
             @AuthenticationPrincipal Jwt jwt
     ) {
         String idUtente = jwt.getSubject();
-        return ResponseEntity.ok(handler.viewInviti(idUtente));
+        return ResponseEntity.ok(handler.viewRichieste(idUtente));
     }
 
     /**
@@ -53,7 +53,7 @@ public class GestisciInvitiBoundary {
      * @return una nuova risposta rifiutata per lo staff
      */
     @PostMapping("/{idRichiesta}/rifiuta")
-    public ResponseEntity<Void> rifiutaInvito(
+    public ResponseEntity<Void> rifiutaRichiesta(
             @AuthenticationPrincipal Jwt jwt,
             @PathVariable String idRichiesta
     ) {

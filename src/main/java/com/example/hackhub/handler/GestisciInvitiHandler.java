@@ -1,6 +1,6 @@
 package com.example.hackhub.handler;
 
-import com.example.hackhub.boundary.dto.InvitoDTO;
+import com.example.hackhub.boundary.dto.RichiestaDTO;
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.RuoloTeam;
 import com.example.hackhub.domain.TipoNotifica;
@@ -43,14 +43,12 @@ public class GestisciInvitiHandler {
     /**
      * Metodo che ritorna la lista di richieste pendenti in formato JSON
      * @param idUtente l'identificativo dell'utente
-     * @return una lista di inviti JSON
+     * @return una lista di richieste JSON
      */
-    // TODO questo metodo sarà da estendere con tutti gli altri tipi di Richiesta, assieme al metodo privato in basso
-    // TODO questo avverrà con l'implementazione del use case "gestisce proposta di call"
-    public List<InvitoDTO> viewInviti(String idUtente) {
+    public List<RichiestaDTO> viewRichieste(String idUtente) {
         List<Richiesta> listRichieste = repositoryRichiesta.findAllByDestinatario(idUtente);
-        List<InvitoDTO> dtoList = new ArrayList<>();
-        for (Richiesta r : listRichieste) dtoList.add(toDto(r));
+        List<RichiestaDTO> dtoList = new ArrayList<>();
+        for (Richiesta r : listRichieste) dtoList.add(new RichiestaDTO(r.getIdRichiesta(), r.getPayload()));
         return dtoList;
     }
 
@@ -140,20 +138,5 @@ public class GestisciInvitiHandler {
         if (!(r instanceof InvitoStaff invitoStaff))
             throw new ConflictException("La richiesta non è un invito staff");
         servizioNotifiche.creaNotifica(trovaOrganizzatore(invitoStaff.getHackathon()), TipoNotifica.RIFIUTO_RICHIESTA, "La richiesta è stata rifiutata");
-    }
-
-    /**
-     * Crea un nuovo Dto in base al tipo della richiesta
-     * @param richiesta la richiesta
-     * @return un nuovo dto, null se il tipo della richiesta non corrisponde con nessun tipo esistente
-     */
-    private InvitoDTO toDto(Richiesta richiesta) {
-        if (richiesta instanceof InvitoStaff is)
-            return new InvitoDTO(is.getDestinatario().getIdUtente(), "INVITO_STAFF", null, is.getHackathon().getNome(), is.getRuolo());
-
-        if (richiesta instanceof InvitoTeam it)
-            return new InvitoDTO(it.getDestinatario().getIdUtente(), "INVITO_TEAM", it.getTeam().getNome(), null, null);
-
-        return null;
     }
 }

@@ -35,20 +35,20 @@ public class JwtFiltro extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         String header = request.getHeader("Authorization");
         String token = null;
-        String nomeUtente = null;
+        String idUtente = null;
 
         // Verifica che ci sia header e che inizi con Bearer
         if (header != null && header.startsWith("Bearer ")) {
             token = header.substring(7); // Rimuove Bearer
             try {
-                nomeUtente = servizioJwt.estraiNomeUtente(token);
+                idUtente = servizioJwt.estraiIdUtente(token);
             }
             catch (Exception ignored) {}
         }
 
         // ricavo l'utente se non c'è già autenticazione, e valido il token
-        if (nomeUtente != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            Utente utente = repositoryUtenti.findByNomeUtente(nomeUtente).orElse(null);
+        if (idUtente != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            Utente utente = repositoryUtenti.findByIdUtente(idUtente).orElse(null);
 
             if (utente != null) {
                 try { // Valido il token e creo un oggetto Authentication
