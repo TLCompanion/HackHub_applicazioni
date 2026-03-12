@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface RepositoryRichiesta  extends JpaRepository<Richiesta, String> {
 
-    List<Richiesta> findByDestinatario(String destinatario);
+    List<Richiesta> findAllByDestinatario(String destinatario);
 }

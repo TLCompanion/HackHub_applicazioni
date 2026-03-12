@@ -53,6 +53,16 @@ public class IscrizioneTeam {
         }
     }
 
+    /**
+     * Metodo che inserisce una nuova sottomissione, se non è presente
+     * @param sottomissione la sottomissione da allegare a questa iscrizione
+     */
+    public void aggiungiSottomissione(Sottomissione sottomissione) {
+        if (this.sottomissione != null)
+            throw new IllegalStateException("Sottomissione già presente per questa iscrizione.");
+        this.sottomissione = sottomissione;
+    }
+
     public String getId() { return idIscrizione; }
 
     public Team getTeam() { return team; }

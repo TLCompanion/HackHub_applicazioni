@@ -33,15 +33,13 @@ public class ServizioNotifiche {
 
     /**
      * Crea una nuova notifica
-     * @param destinatari i destinatari
+     * @param destinatario i destinatari
      * @param tipo il tipo della notifica
      * @param messaggio il messaggio da inviare
      */
-    public void creaNotifica(List<Utente> destinatari, TipoNotifica tipo, String messaggio){
-        for (Utente d : destinatari) {
-            Notifica notifica = new Notifica(messaggio, d, tipo);
-            repositoryNotifica.save(notifica);
-        }
+    public void creaNotifica(Utente destinatario, TipoNotifica tipo, String messaggio){
+        Notifica notifica = new Notifica(messaggio, destinatario, tipo);
+        repositoryNotifica.save(notifica);
     }
 
     /**

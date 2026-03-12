@@ -48,7 +48,7 @@ public class GestisciInvitiHandler {
     // TODO questo metodo sarà da estendere con tutti gli altri tipi di Richiesta, assieme al metodo privato in basso
     // TODO questo avverrà con l'implementazione del use case "gestisce proposta di call"
     public List<InvitoDTO> viewInviti(String idUtente) {
-        List<Richiesta> listRichieste = repositoryRichiesta.findByDestinatario(idUtente);
+        List<Richiesta> listRichieste = repositoryRichiesta.findAllByDestinatario(idUtente);
         List<InvitoDTO> dtoList = new ArrayList<>();
         for (Richiesta r : listRichieste) dtoList.add(toDto(r));
         return dtoList;
@@ -64,20 +64,22 @@ public class GestisciInvitiHandler {
         Richiesta r = validazioneRichiesta(idRichiesta);
         Utente destinatario;
 
-        if (r instanceof InvitoStaff invitoStaff){
-            r.accetta();
-            destinatario = accettaInvitoStaff(invitoStaff, utente);
+        switch (r) {
+            case InvitoStaff invitoStaff -> {
+                r.accetta();
+                destinatario = accettaInvitoStaff(invitoStaff, utente);
+            }
+            case InvitoTeam invitoTeam -> {
+                r.accetta();
+                destinatario = accettaInvitoTeam(invitoTeam, utente);
+            }
+            case PropostaCall propostaCall -> {
+                r.accetta();
+                destinatario = accettaCall(propostaCall, utente);
+            }
+            default -> throw new ConflictException("La richiesta non appartiene a nessun tipo di invito esistente");
         }
-        else if (r instanceof InvitoTeam invitoTeam){
-            r.accetta();
-            destinatario = accettaInvitoTeam(invitoTeam, utente);
-        }
-        else if(r instanceof PropostaCall propostaCall){
-            r.accetta();
-            destinatario = accettaCall(propostaCall, utente);
-        }else
-            throw new ConflictException("La richiesta non appartiene a nessun tipo di invito esistente");
-        servizioNotifiche.creaNotifica(List.of(destinatario), TipoNotifica.ACCETTA_RICHIESTA, utente.getNomeUtente() + "ha accettato la tua richiesta");
+        servizioNotifiche.creaNotifica(destinatario, TipoNotifica.ACCETTA_RICHIESTA, utente.getNomeUtente() + "ha accettato la tua richiesta");
     }
 
     private Utente accettaInvitoStaff(InvitoStaff invitoStaff, Utente utente){
@@ -137,7 +139,7 @@ public class GestisciInvitiHandler {
         r.rifiuta();
         if (!(r instanceof InvitoStaff invitoStaff))
             throw new ConflictException("La richiesta non è un invito staff");
-        servizioNotifiche.creaNotifica(List.of(trovaOrganizzatore(invitoStaff.getHackathon())), TipoNotifica.RIFIUTO_RICHIESTA, "La richiesta è stata rifiutata");
+        servizioNotifiche.creaNotifica(trovaOrganizzatore(invitoStaff.getHackathon()), TipoNotifica.RIFIUTO_RICHIESTA, "La richiesta è stata rifiutata");
     }
 
     /**
