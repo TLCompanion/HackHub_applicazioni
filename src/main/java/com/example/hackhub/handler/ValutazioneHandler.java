@@ -106,7 +106,7 @@ public class ValutazioneHandler{
                 map(IscrizioneTeam::getSottomissione).filter(Objects::nonNull).toList();
         boolean tutteValutate = sottomissioni.stream().allMatch(Sottomissione::haValutazione);
         if (tutteValutate) {
-            hackathon.conludiHackathon();
+            hackathon.concludi();
             repositoryHackathon.save(hackathon);
             String messaggio = "L'hackathon è stato concluso, valutazioni terminate";
             List<Utente> utentiDestinatari = hackathon.getIscrizioni().stream()
