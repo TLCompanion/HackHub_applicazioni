@@ -1,7 +1,6 @@
 package com.example.hackhub.handler;
 
-import com.example.hackhub.boundary.dto.NotificaDTO;
-import com.example.hackhub.boundary.dto.RichiestaDTO;
+import com.example.hackhub.boundary.dto.*;
 import com.example.hackhub.domain.implementazione.*;
 import com.example.hackhub.repository.RepositoryHackathon;
 import com.example.hackhub.repository.RepositoryNotifica;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class VisualizzaHandler {
@@ -19,8 +19,6 @@ public class VisualizzaHandler {
     private final RepositoryRichiesta repositoryRichiesta;
     private final RepositoryNotifica repositoryNotifica;
     private final RepositoryUtenti repositoryUtenti;
-
-    // TODO sostituire i dto al posto degli oggetti grezzi
 
     /**
      * Costruttore che inizializza questo handler per visualizzare liste di oggetti
@@ -38,12 +36,13 @@ public class VisualizzaHandler {
      * @param idHackathon l'id dell'hackathon di riferimento
      * @return la lista dei team iscritti
      */
-    public List<Team> viewTeam(String idHackathon) {
+    public List<TeamDTO> viewTeam(String idHackathon) {
         Hackathon hackathon = repositoryHackathon.findByIdHackathon(idHackathon)
                 .orElseThrow(() -> new RuntimeException("Hackathon non trovato"));
         List<Team> teams = new ArrayList<>();
         for (IscrizioneTeam i : hackathon.getIscrizioni()) teams.add(i.getTeam());
-        return teams;
+        return teams.stream().map(t -> new TeamDTO(t.getNome(), t.getMembri()))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -51,13 +50,14 @@ public class VisualizzaHandler {
      * @param idHackathon l'id dell'hackathon di riferimento
      * @return la lista delle valutazioni
      */
-    public List<Valutazione> viewValutazioni(String idHackathon) {
+    public List<ValutazioneRequest> viewValutazioni(String idHackathon) {
         Hackathon hackathon = repositoryHackathon.findByIdHackathon(idHackathon)
                 .orElseThrow(() -> new RuntimeException("Hackathon non trovato"));
         List<Valutazione> valutazioni = new ArrayList<>();
         for (IscrizioneTeam i : hackathon.getIscrizioni())
             valutazioni.add(i.getSottomissione().getValutazione());
-        return valutazioni;
+        return valutazioni.stream().map(v -> new ValutazioneRequest(v.getDescrizione(),
+                v.getVoto())).collect(Collectors.toList());
     }
 
     /**
@@ -65,12 +65,13 @@ public class VisualizzaHandler {
      * @param idHackathon l'id dell'hackathon di riferimento
      * @return la lista di sottomissioni
      */
-    public List<Sottomissione> viewSottomissioni(String idHackathon) {
+    public List<SottomissioneDTO> viewSottomissioni(String idHackathon) {
         Hackathon hackathon = repositoryHackathon.findByIdHackathon(idHackathon)
                 .orElseThrow(() -> new RuntimeException("Hackathon non trovato"));
         List<Sottomissione> sottomissioni = new ArrayList<>();
         for (IscrizioneTeam i : hackathon.getIscrizioni()) sottomissioni.add(i.getSottomissione());
-        return  sottomissioni;
+        return  sottomissioni.stream().map(s -> new SottomissioneDTO
+                (s.getLink(), s.getValutazione())).collect(Collectors.toList());
     }
 
     /**
@@ -78,10 +79,11 @@ public class VisualizzaHandler {
      * @param idHackathon l'id dell'hackathon di riferimento
      * @return la lista delle iscrizioni
      */
-    public List<IscrizioneTeam> viewIscrizioni(String idHackathon) {
+    public List<IscrizioneTeamDTO> viewIscrizioni(String idHackathon) {
         Hackathon hackathon = repositoryHackathon.findByIdHackathon(idHackathon)
                 .orElseThrow(() -> new RuntimeException("Hackathon non trovato"));
-        return hackathon.getIscrizioni();
+        return hackathon.getIscrizioni().stream().map(i -> new IscrizioneTeamDTO
+                (i.getHackathon(), i.getTeam(), i.getSottomissione())).collect(Collectors.toList());
     }
 
     /**
@@ -91,9 +93,8 @@ public class VisualizzaHandler {
      */
     public List<RichiestaDTO> viewRichieste(String idUtente) {
         List<Richiesta> listRichieste = repositoryRichiesta.findAllByDestinatario(idUtente);
-        List<RichiestaDTO> dtoList = new ArrayList<>();
-        for (Richiesta r : listRichieste) dtoList.add(new RichiestaDTO(r.getIdRichiesta(), r.getPayload()));
-        return dtoList;
+        return listRichieste.stream().map(r -> new RichiestaDTO(r.getIdRichiesta(), r.getPayload()))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -105,8 +106,7 @@ public class VisualizzaHandler {
         List<Notifica> listNotifiche = repositoryNotifica.findAllByDestinatario(
                 repositoryUtenti.findByIdUtente(idUtente)
                         .orElseThrow(() -> new RuntimeException("Utente non trovato")));
-        List<NotificaDTO> dtoList = new ArrayList<>();
-        for (Notifica n : listNotifiche) dtoList.add(new NotificaDTO(n.getPayload()));
-        return dtoList;
+        return listNotifiche.stream().map(n -> new NotificaDTO(n.getPayload()))
+                .collect(Collectors.toList());
     }
 }

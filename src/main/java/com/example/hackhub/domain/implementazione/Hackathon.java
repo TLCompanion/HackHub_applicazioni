@@ -172,6 +172,10 @@ public class Hackathon {
         this.stato.concludiHackathon(this);
     }
 
+    public void avviaHackathon(){
+        this.stato.avviaHackathon(this);
+    }
+
     public int getTeamMax() {
         return teamMax;
     }

@@ -1,31 +1,33 @@
 package com.example.hackhub.boundary;
 
-import com.example.hackhub.domain.implementazione.Team;
-import com.example.hackhub.handler.InvitaUtentiHandler;
+import com.example.hackhub.boundary.dto.HackathonRequest;
+import com.example.hackhub.domain.implementazione.Hackathon;
+import com.example.hackhub.handler.AvviaHackathonHandler;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/inviti")
-public class InvitaUtentiBoundary {
+@RequestMapping("/api/hackathon")
+@Validated
+public class AvviaHackathonBoundary {
 
-    private final InvitaUtentiHandler handler;
+    private final AvviaHackathonHandler handler;
 
-    public InvitaUtentiBoundary(InvitaUtentiHandler handler){
+    public AvviaHackathonBoundary(AvviaHackathonHandler handler){
         this.handler = handler;
     }
 
-    @PostMapping("/utenti")
-    public ResponseEntity<Void> InvitaUtenti(@AuthenticationPrincipal Jwt jwt,
-                                             @RequestParam Team team){
-        String idUtente = jwt.getSubject();
-        handler.invitaUtenti(idUtente, team);
+    @PostMapping("/avvia")
+    public ResponseEntity<Void> avviaHackathon(
+            @RequestParam Hackathon hackathon){
+        handler.avviaHackathon(hackathon);
         return ResponseEntity.noContent().build();
     }
 }

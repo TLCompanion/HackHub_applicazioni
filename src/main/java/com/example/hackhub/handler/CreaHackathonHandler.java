@@ -64,16 +64,6 @@ public class CreaHackathonHandler {
         repositoryHackathon.save(hackathon);
     }
 
-//    //todo da mettere sul tempo
-//    private void notificaUtenti(Hackathon hackathon){
-//        List<Utente> staff = hackathon.getStaff().stream().map(Staff::getUtente).toList();
-//        List<Utente> team = hackathon.getIscrizioni().stream().map(IscrizioneTeam::getTeam).flatMap(t -> t.getMembri().stream()).map(MembroTeam::getUtente).toList();
-//        List<Utente> destinatari = Stream.concat(staff.stream(), team.stream()).toList();
-//        for(Utente u : destinatari){
-//            servizioNotifiche.creaNotifica(u, null, hackathon + " è iniziato");
-//        }
-//    }
-
     private void buildSteps(HackathonBuilder builder, HackathonRequest request) {
         builder.impostaNome(request.nome());
         Periodo periodo = new Periodo(request.dataInizio(), request.dataFine());

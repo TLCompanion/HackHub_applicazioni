@@ -33,5 +33,15 @@ public enum TipoNotifica {
     /**
      * Il leader del team invia a un mentore una richiesta di supporto, in formato notifica
      */
-    RICHIESTA_SUPPORTO
+    RICHIESTA_SUPPORTO,
+
+    /**
+     * La data di inizio di un hackathon coincide con la data corrente
+     */
+    AVVIO_HACKATHON,
+
+    /**
+     * Un hackathon non soddisfa i requisiti per essere avviato
+     */
+    IMPOSSIBILE_AVVIARE_HACKATHON
 }

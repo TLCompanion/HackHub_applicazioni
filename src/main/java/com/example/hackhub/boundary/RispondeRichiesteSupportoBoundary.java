@@ -2,10 +2,12 @@ package com.example.hackhub.boundary;
 
 import com.example.hackhub.handler.RispondeRichiesteSupportoHandler;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -25,8 +27,10 @@ public class RispondeRichiesteSupportoBoundary {
      * @param idNotifica l'id della notifica che richiede supporto a un mentore di un hackathon
      * @return l'esito della chiamata http, e salva nel db una proposta call oppure una notifica di risposta
      */
-    @PutMapping()
-    public ResponseEntity<Void> rispondiRichiestaSupportoConNotifica(String idNotifica, Jwt jwt) {
+    @PutMapping("/risposta")
+    public ResponseEntity<Void> rispondiRichiestaSupportoConNotifica(
+            @RequestParam String idNotifica,
+            @AuthenticationPrincipal Jwt jwt) {
         String idMentore = jwt.getSubject();
         handler.rispondiRichiestaSupportoConNotifica(idMentore, idNotifica);
         return ResponseEntity.ok().build();
