@@ -21,9 +21,17 @@ public enum TipoNotifica {
     ACCETTA_RICHIESTA,
 
     /**
-     * I membri del team vengono notificati, in quanto un membro del team ha modificato la sottomissione
-     * consegnata in precedenza durante l'esecuzione di un hackathon, ad esempio per correggere un errore
-     * o per migliorare la qualità del progetto consegnato.
+     * I membri del team vengono notificati, in quanto un membro del team ha inserito oppure modificato
+     * la sottomissione consegnata in precedenza durante l'esecuzione di un hackathon
      */
-    MODIFICHE_SOTTOMISSIONE
+    SOTTOMISSIONE_MODIFICATA,
+    /**
+     * I membri del team vengono notificati che la sottomissione in precedenza consegnata nell'hackathon
+     * è stata rimossa da un membro del team
+     */
+    SOTTOMISSIONE_RIMOSSA,
+    /**
+     * Il leader del team invia a un mentore una richiesta di supporto, in formato notifica
+     */
+    RICHIESTA_SUPPORTO
 }

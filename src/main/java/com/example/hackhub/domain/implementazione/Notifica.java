@@ -2,6 +2,7 @@ package com.example.hackhub.domain.implementazione;
 
 import com.example.hackhub.domain.TipoNotifica;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;
 import java.util.UUID;

@@ -31,4 +31,11 @@ public class GestisceSottomissioneBoundary {
         handler.inviaSottomissione(idUtente, link);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping
+    public ResponseEntity<Void> attivaRimozioneSottomissione(Jwt jwt) {
+        String idUtente = jwt.getSubject();
+        handler.attivaRimozioneSottomissione(idUtente);
+        return ResponseEntity.ok().build();
+    }
 }

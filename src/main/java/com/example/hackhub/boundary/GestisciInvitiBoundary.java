@@ -21,18 +21,6 @@ public class GestisciInvitiBoundary {
     public GestisciInvitiBoundary(GestisciInvitiHandler handler) { this.handler = handler; }
 
     /**
-     * Metodo del boundary che ritorna la lista di inviti pendenti di un utente
-     * @return la lista di inviti
-     */
-    @GetMapping
-    public ResponseEntity<List<RichiestaDTO>> viewRichieste(
-            @AuthenticationPrincipal Jwt jwt
-    ) {
-        String idUtente = jwt.getSubject();
-        return ResponseEntity.ok(handler.viewRichieste(idUtente));
-    }
-
-    /**
      * Metodo del boundary che accetta una richiesta di invito Staff, Team o una propostaCall
      * @param idRichiesta l'identificativo della richiesta
      * @return una nuova risposta accettata per lo staff

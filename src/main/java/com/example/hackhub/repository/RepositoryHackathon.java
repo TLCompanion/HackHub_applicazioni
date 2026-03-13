@@ -11,4 +11,5 @@ public interface RepositoryHackathon extends JpaRepository<Hackathon, String> {
 
     Optional<Hackathon> findByNome(String nomeHackathon);
 
+    Optional<Hackathon> findByIdHackathon(String idHackathon);
 }

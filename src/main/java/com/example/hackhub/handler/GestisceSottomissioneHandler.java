@@ -49,9 +49,35 @@ public class GestisceSottomissioneHandler {
 
         // Altrimenti creo la sottomissione, la aggiungo all'iscrizione, salvo tutto e notifico il resto del team
         Sottomissione sottomissione = new Sottomissione(link);
+        iscrizioneTeam.aggiungiSottomissione(sottomissione);
         repositorySottomissioni.save(sottomissione);
+
         for (MembroTeam m : team.getMembri())
             if (!m.equals(membro))
-                servizioNotifiche.creaNotifica(m.getUtente(), TipoNotifica.MODIFICHE_SOTTOMISSIONE, membro.getUtente().getNomeUtente() + " ha modificato la sottomissione dell'hackathon " + hackathon.getNome());
+                servizioNotifiche.creaNotifica(m.getUtente(), TipoNotifica.SOTTOMISSIONE_MODIFICATA, membro.getUtente().getNomeUtente() + " ha modificato la sottomissione dell'hackathon " + hackathon.getNome());
+    }
+
+    /**
+     * Metodo che rimuove una sottomissione di un team
+     * @param idUtente l'id del membro che rimuove la sottomissione
+     */
+    public void attivaRimozioneSottomissione(String idUtente) {
+        // Prelevo il membro del team e risalgo allo stato dell'hackathon
+        MembroTeam membro = repositoryMembriTeam.findByUtente_IdUtente(idUtente)
+                .orElseThrow(() -> new RuntimeException("Membro del team non trovato"));
+        Team team = membro.getTeam();
+        IscrizioneTeam iscrizioneTeam = repositoryIscrizioniTeam.findByTeam(team)
+                .orElseThrow(() -> new RuntimeException("Team non trovato"));
+        Hackathon hackathon = iscrizioneTeam.getHackathon();
+
+        // Verifico che la rimozione delle sottomissioni sia consentita, se non succede niente è tutto ok
+        hackathon.getStato().verificaInvioSottomissioneConsentito(iscrizioneTeam.getHackathon());
+
+        // Altrimenti rimuovo la sottomissione e notifico il resto del team
+        iscrizioneTeam.rimuoviSottomissione();
+        repositoryIscrizioniTeam.save(iscrizioneTeam);
+        for (MembroTeam m : team.getMembri())
+            if (!m.equals(membro))
+                servizioNotifiche.creaNotifica(m.getUtente(), TipoNotifica.SOTTOMISSIONE_RIMOSSA, membro.getUtente().getNomeUtente() + " ha attivato la rimozione della sottomissione dell'hackathon " + hackathon.getNome());
     }
 }

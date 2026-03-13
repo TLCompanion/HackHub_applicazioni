@@ -41,18 +41,6 @@ public class GestisciInvitiHandler {
     }
 
     /**
-     * Metodo che ritorna la lista di richieste pendenti in formato JSON
-     * @param idUtente l'identificativo dell'utente
-     * @return una lista di richieste JSON
-     */
-    public List<RichiestaDTO> viewRichieste(String idUtente) {
-        List<Richiesta> listRichieste = repositoryRichiesta.findAllByDestinatario(idUtente);
-        List<RichiestaDTO> dtoList = new ArrayList<>();
-        for (Richiesta r : listRichieste) dtoList.add(new RichiestaDTO(r.getIdRichiesta(), r.getPayload()));
-        return dtoList;
-    }
-
-    /**
      * Metodo del boundary che accetta una richiesta di invito Staff
      * @param idUtente l'identificativo dell'utente
      * @param idRichiesta l'identificativo della richeista
@@ -97,7 +85,8 @@ public class GestisciInvitiHandler {
                 .findByUtente_IdUtente(propostaCall.getDestinatario().getIdUtente())
                 .orElseThrow(() -> new NotFoundException("L'utente non appartiene a nessun team"))
                 .getTeam();
-        Staff mentore = repositoryStaff.findByUtente_IdUtente(propostaCall.getMittente());
+        Staff mentore = repositoryStaff.findByUtente_IdUtente(propostaCall.getMittente())
+                .orElseThrow(() -> new RuntimeException("Mentore non trovato"));
         CallSlot callSlot = new CallSlot(propostaCall.getPeriodo(), team, mentore, link);
         //todo manca da aggiungerlo al calendario
         return mentore.getUtente();
