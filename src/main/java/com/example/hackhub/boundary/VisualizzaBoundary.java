@@ -33,6 +33,7 @@ public class VisualizzaBoundary {
      * @param jwt il token jwt dell'utente
      * @return esito della chiamata http
      */
+    //TODO falciare questo metodo
     @GetMapping
     public ResponseEntity<Void> viewTeam(String idHackathon, @AuthenticationPrincipal Jwt jwt) {
         handler.viewTeam(idHackathon);

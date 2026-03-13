@@ -168,7 +168,7 @@ public class Hackathon {
         this.stato = stato;
     }
 
-    public void conludiHackathon() {
+    public void concludi() {
         this.stato.concludiHackathon(this);
     }
 
