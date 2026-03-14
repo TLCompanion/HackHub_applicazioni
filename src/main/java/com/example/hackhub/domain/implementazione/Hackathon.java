@@ -1,5 +1,6 @@
 package com.example.hackhub.domain.implementazione;
 
+import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.implementazione.statePattern.IscrizioniAperte;
 import com.example.hackhub.domain.implementazione.statePattern.StatoHackathon;
 import com.example.hackhub.eccezioni.ConflictException;
@@ -172,9 +173,21 @@ public class Hackathon {
         this.stato.concludiHackathon(this);
     }
 
+    /**
+     * Avvia l'hackathon se è presente almeno un giudice e un mentore, altrimenti lancia un'eccezione
+     * @throws ConflictException se non è presente un giudice o un mentore
+     */
     public void avviaHackathon(){
+        Staff giudice = staff.stream().filter(s -> s.getRuolo().equals(RuoloStaff.GIUDICE)).findFirst()
+                .orElse(null);
+        List<Staff> mentori = staff.stream().filter(s -> s.getRuolo().equals(RuoloStaff.MENTORE)).toList();
+        if (giudice == null || mentori.isEmpty()) {
+            throw new ConflictException("Non è possibile avviare l'hackathon senza un giudice e almeno un mentore");
+        }
         this.stato.avviaHackathon(this);
     }
+
+    //TODO aggiungere altri metodi per gestire le transizioni di stato
 
     public int getTeamMax() {
         return teamMax;

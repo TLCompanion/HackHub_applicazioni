@@ -3,6 +3,8 @@ package com.example.hackhub.handler;
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.TipoNotifica;
 import com.example.hackhub.domain.implementazione.*;
+import com.example.hackhub.domain.implementazione.statePattern.IscrizioniChiuse;
+import com.example.hackhub.domain.implementazione.statePattern.StatoHackathon;
 import com.example.hackhub.eccezioni.ConflictException;
 import com.example.hackhub.eccezioni.NotFoundException;
 import com.example.hackhub.repository.RepositoryHackathon;
@@ -10,48 +12,42 @@ import com.example.hackhub.servizi.ServizioNotifiche;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
 @Service
-public class AvviaHackathonHandler {
+public class EventiTemporaliHandler {
 
     private final RepositoryHackathon repositoryHackathon;
     private final ServizioNotifiche servizioNotifiche;
 
-    public AvviaHackathonHandler(RepositoryHackathon repositoryHackathon, ServizioNotifiche servizioNotifiche) {
+    public EventiTemporaliHandler(RepositoryHackathon repositoryHackathon, ServizioNotifiche servizioNotifiche) {
         this.repositoryHackathon = repositoryHackathon;
         this.servizioNotifiche = servizioNotifiche;
     }
 
     /**
-     * Metodo che avvia un'hackathon
-     * @param hackathon l'hackathon da avviare
+     * Metodo che avvia tutti gli hackathon che devono essere avviati se i requisiti sono rispettati, e notifica gli
+     * utenti dell'inizio dell'hackathon, in caso di errori notifica l'organizzatore dell'impossibilità di avviare l'hackathon
      */
-    public void avviaHackathon(Hackathon hackathon) {
-        repositoryHackathon.findByNome(hackathon.getNome()).orElseThrow(() -> new NotFoundException("Hackathon non trovato"));
-        eseguiControlloScadenze(hackathon);
-        List<Hackathon> hackathons = repositoryHackathon.findAll().stream()
-                .filter(h -> h.getPeriodo().getDataInizio().equals(LocalDate.now()))
-                .toList();
-        for(Hackathon h: hackathons){
-            h.avviaHackathon();
-            notificaUtenti(hackathon);
+    public void avviaHackathon() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Hackathon> hackathonDaAvviare = repositoryHackathon.findHackathonDaAvviare(IscrizioniChiuse.INSTANCE,
+                now.toLocalDate(), now.toLocalTime());
+        for(Hackathon h: hackathonDaAvviare){
+            try {
+                h.avviaHackathon();
+                repositoryHackathon.save(h);
+                notificaUtenti(h);
+            } catch (ConflictException e) {
+                servizioNotifiche.creaNotifica(trovaOrganizzatore(h), TipoNotifica.IMPOSSIBILE_AVVIARE_HACKATHON,
+                        "Impossibile avviare l'hackathon " + h.getNome());
+            }
         }
     }
 
-    /**
-     * Controlla che tutte le scadenze siano rispettate e notifica l'organizzatore in caso contrario
-     * @param hackathon l'hackathon
-     * @throws ConflictException se le scadenze non sono rispettate
-     */
-    private void eseguiControlloScadenze(Hackathon hackathon) {
-        if (!hackathon.getPeriodo().getDataInizio().equals(LocalDate.now()))
-         {
-            servizioNotifiche.creaNotifica(trovaOrganizzatore(hackathon), TipoNotifica.IMPOSSIBILE_AVVIARE_HACKATHON, "Impossibile avviare l'hackathon " + hackathon.getNome());
-            throw new ConflictException("Scadenze non rispettate");
-        }
-    }
+    //TODO mettere i metodi per gli altri eventi temporali
 
     /**
      * Trova l'organizzatore dell'hackathon
