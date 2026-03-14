@@ -1,6 +1,7 @@
 package com.example.hackhub.domain.implementazione;
 
 import com.example.hackhub.domain.RuoloStaff;
+import com.example.hackhub.domain.StatoEnum;
 import com.example.hackhub.domain.implementazione.statePattern.IscrizioniAperte;
 import com.example.hackhub.domain.implementazione.statePattern.StatoHackathon;
 import com.example.hackhub.eccezioni.ConflictException;
@@ -27,8 +28,6 @@ public class Hackathon {
     @NotBlank
     private String nome;
 
-    //Valid serve per fare le valutazioni con le annotazioni di validazione presenti nella classe Periodo,
-    // ad esempio per assicurarsi che la data di inizio sia precedente a quella di fine.
     @Embedded
     @Valid
     @NotNull
@@ -53,6 +52,10 @@ public class Hackathon {
     @Min(1)
     private int maxIscrizioni; //Massimo numero di iscrizioni (team) che possono partecipare all'hackathon
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private StatoEnum statoEnum;
+
     @Transient
     private StatoHackathon stato;
 
@@ -62,9 +65,11 @@ public class Hackathon {
     @Transient
     private List<Staff> staff;
 
-    //private List<String>
     @Transient
     private List<IscrizioneTeam> iscrizioni;
+
+    @NotNull
+    private LocalDateTime scadenzaConsegne;
 
     public Hackathon() {
         this.staff = new ArrayList<>();
@@ -97,6 +102,7 @@ public class Hackathon {
         this.maxIscrizioni = maxIscrizioni;
         // valori di default / inizializzazioni
         this.stato = IscrizioniAperte.INSTANCE; // stato iniziale, ad esempio "Iscrizioni Aperte"
+        setStatoEnum(IscrizioniAperte.INSTANCE);
         this.staff = new ArrayList<>();
         this.iscrizioni = new ArrayList<>();
     }
@@ -163,16 +169,6 @@ public class Hackathon {
         this.iscrizioni.add(iscrizione);
     }
 
-    //metodi getter
-
-    public void setStato(StatoHackathon stato) {
-        this.stato = stato;
-    }
-
-    public void concludi() {
-        this.stato.concludiHackathon(this);
-    }
-
     /**
      * Avvia l'hackathon se è presente almeno un giudice e un mentore, altrimenti lancia un'eccezione
      * @throws ConflictException se non è presente un giudice o un mentore
@@ -187,7 +183,47 @@ public class Hackathon {
         this.stato.avviaHackathon(this);
     }
 
+    /**
+     * Chiude le iscrizioni di questo hackathon
+     */
+    public void chiudiIscrizioni() {
+        this.stato.chiudiIscrizioni(this);
+    }
+
+    /**
+     * Blocca la possibilità di consegnare o modificare sottomissioni in questo hackathon, dando il via
+     * alla fase di valutazione delle sottomissioni da parte del giudice
+     */
+    public void avviaValutazione() {
+        this.stato.avviaValutazione(this);
+    }
+
+    public void setStato(StatoHackathon stato) {
+        this.stato = stato;
+    }
+
+    public void concludi() {
+        this.stato.concludiHackathon(this);
+    }
+
+    /**
+     * Metodo che tiene traccia degli stati dell'hackathon e simula la sua persistenza nel db
+     * @param stato lo StatoHackathon corrente
+     */
+    public void setStatoEnum(StatoHackathon stato) {
+        switch (stato.getClass().getSimpleName()) {
+            case "IscrizioniAperte" -> this.statoEnum = StatoEnum.ISCRIZIONI_APERTE;
+            case "IscrizioniChiuse" -> this.statoEnum = StatoEnum.ISCRIZIONI_CHIUSE;
+            case "InCorso" -> this.statoEnum = StatoEnum.IN_CORSO;
+            case "ValutazioneInCorso" -> this.statoEnum = StatoEnum.VALUTAZIONE_IN_CORSO;
+            case "Concluso" -> this.statoEnum = StatoEnum.CONCLUSO;
+        }
+    }
+
     //TODO aggiungere altri metodi per gestire le transizioni di stato
+
+
+    // METODI GETTER E SETTER
 
     public int getTeamMax() {
         return teamMax;
@@ -204,6 +240,8 @@ public class Hackathon {
     public StatoHackathon getStato() {
         return this.stato;
     }
+
+    public StatoEnum getStatoEnum() { return statoEnum; }
 
     public String getIdHackathon() {
         return this.idHackathon;
@@ -249,5 +287,9 @@ public class Hackathon {
 
     public int getMaxIscrizioni() {
         return this.maxIscrizioni;
+    }
+
+    public LocalDateTime getScadenzaConsegne() {
+        return this.scadenzaConsegne;
     }
 }

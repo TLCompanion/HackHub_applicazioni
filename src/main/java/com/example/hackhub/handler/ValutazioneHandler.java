@@ -4,6 +4,7 @@ import com.example.hackhub.boundary.dto.ValutazioneRequest;
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.TipoNotifica;
 import com.example.hackhub.domain.implementazione.*;
+import com.example.hackhub.domain.implementazione.statePattern.Concluso;
 import com.example.hackhub.eccezioni.*;
 import com.example.hackhub.repository.*;
 import com.example.hackhub.servizi.ServizioNotifiche;
@@ -107,6 +108,7 @@ public class ValutazioneHandler{
         boolean tutteValutate = sottomissioni.stream().allMatch(Sottomissione::haValutazione);
         if (tutteValutate) {
             hackathon.concludi();
+            hackathon.setStatoEnum(Concluso.INSTANCE);
             repositoryHackathon.save(hackathon);
             String messaggio = "L'hackathon è stato concluso, valutazioni terminate";
             List<Utente> utentiDestinatari = hackathon.getIscrizioni().stream()

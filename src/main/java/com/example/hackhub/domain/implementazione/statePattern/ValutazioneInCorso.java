@@ -15,5 +15,6 @@ public class ValutazioneInCorso implements StatoHackathon {
     @Override
     public void concludiHackathon(Hackathon hackathon) {
         hackathon.setStato(Concluso.INSTANCE);
+        hackathon.setStatoEnum(Concluso.INSTANCE);
     }
 }

@@ -3,15 +3,14 @@ package com.example.hackhub.handler;
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.TipoNotifica;
 import com.example.hackhub.domain.implementazione.*;
-import com.example.hackhub.domain.implementazione.statePattern.IscrizioniChiuse;
-import com.example.hackhub.domain.implementazione.statePattern.StatoHackathon;
+import com.example.hackhub.domain.implementazione.statePattern.*;
 import com.example.hackhub.eccezioni.ConflictException;
 import com.example.hackhub.eccezioni.NotFoundException;
+import com.example.hackhub.eccezioni.TransizioneNonConsentitaException;
 import com.example.hackhub.repository.RepositoryHackathon;
 import com.example.hackhub.servizi.ServizioNotifiche;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
@@ -28,6 +27,15 @@ public class EventiTemporaliHandler {
     }
 
     /**
+     * Metodo che gestisce tutte le scadenze temporali degli hackathon
+     */
+    public void gestisciScadenzeTemporali() {
+        avviaHackathon();
+        chiudiIscrizioni();
+        iniziaValutazione();
+    }
+
+    /**
      * Metodo che avvia tutti gli hackathon che devono essere avviati se i requisiti sono rispettati, e notifica gli
      * utenti dell'inizio dell'hackathon, in caso di errori notifica l'organizzatore dell'impossibilità di avviare l'hackathon
      */
@@ -38,6 +46,7 @@ public class EventiTemporaliHandler {
         for(Hackathon h: hackathonDaAvviare){
             try {
                 h.avviaHackathon();
+                h.setStatoEnum(InCorso.INSTANCE);
                 repositoryHackathon.save(h);
                 notificaUtenti(h);
             } catch (ConflictException e) {
@@ -47,7 +56,36 @@ public class EventiTemporaliHandler {
         }
     }
 
-    //TODO mettere i metodi per gli altri eventi temporali
+    /**
+     * Metodo che chiude le iscrizioni di tutti gli hackathon il cui termine è passato
+     */
+    private void chiudiIscrizioni() {
+        StatoHackathon stato = IscrizioniAperte.INSTANCE;
+        List<Hackathon> hackathonDaChiudere = repositoryHackathon.findHackathonDaChiudere(stato, LocalDateTime.now());
+        for (Hackathon h : hackathonDaChiudere) {
+            try { h.chiudiIscrizioni(); }
+            catch (TransizioneNonConsentitaException e)
+            { throw new RuntimeException("Impossibile chiudere le iscrizioni dell'hackathon " + h.getNome()); }
+            h.setStatoEnum(IscrizioniChiuse.INSTANCE);
+            repositoryHackathon.save(h);
+        }
+    }
+
+    /**
+     * Metodo che blocca la consegna delle sottomissioni, dando inizio alla fase di valutazione delle
+     * sottomissioni dei vari hackathon
+     */
+    private void iniziaValutazione() {
+        StatoHackathon stato = InCorso.INSTANCE;
+        List<Hackathon> hackathonDaValutare = repositoryHackathon.findHackathonDaValutare(stato, LocalDateTime.now());
+        for (Hackathon h : hackathonDaValutare) {
+            try { h.avviaValutazione(); }
+            catch (TransizioneNonConsentitaException e)
+            { throw new RuntimeException("Impossibile avviare la valutazione dell'hackathon " + h.getNome()); }
+            h.setStatoEnum(ValutazioneInCorso.INSTANCE);
+            repositoryHackathon.save(h);
+        }
+    }
 
     /**
      * Trova l'organizzatore dell'hackathon

@@ -3,6 +3,7 @@ package com.example.hackhub.domain.implementazione.statePattern;
 import com.example.hackhub.domain.implementazione.Hackathon;
 
 public class IscrizioniAperte implements StatoHackathon {
+
     public static final IscrizioniAperte INSTANCE = new IscrizioniAperte();
     //Le iscrizioni vengono aperte quando sia il gi
     private IscrizioniAperte(){}
