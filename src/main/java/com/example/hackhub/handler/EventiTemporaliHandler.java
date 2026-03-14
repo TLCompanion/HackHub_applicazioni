@@ -1,6 +1,7 @@
 package com.example.hackhub.handler;
 
 import com.example.hackhub.domain.RuoloStaff;
+import com.example.hackhub.domain.StatoEnum;
 import com.example.hackhub.domain.TipoNotifica;
 import com.example.hackhub.domain.implementazione.*;
 import com.example.hackhub.domain.implementazione.statePattern.*;
@@ -41,7 +42,7 @@ public class EventiTemporaliHandler {
      */
     public void avviaHackathon() {
         LocalDateTime now = LocalDateTime.now();
-        List<Hackathon> hackathonDaAvviare = repositoryHackathon.findHackathonDaAvviare(IscrizioniChiuse.INSTANCE,
+        List<Hackathon> hackathonDaAvviare = repositoryHackathon.findHackathonDaAvviare(StatoEnum.ISCRIZIONI_CHIUSE,
                 now.toLocalDate(), now.toLocalTime());
         for(Hackathon h: hackathonDaAvviare){
             try {
@@ -61,7 +62,7 @@ public class EventiTemporaliHandler {
      */
     private void chiudiIscrizioni() {
         StatoHackathon stato = IscrizioniAperte.INSTANCE;
-        List<Hackathon> hackathonDaChiudere = repositoryHackathon.findHackathonDaChiudere(stato, LocalDateTime.now());
+        List<Hackathon> hackathonDaChiudere = repositoryHackathon.findHackathonDaChiudere(StatoEnum.ISCRIZIONI_APERTE, LocalDateTime.now());
         for (Hackathon h : hackathonDaChiudere) {
             try { h.chiudiIscrizioni(); }
             catch (TransizioneNonConsentitaException e)
@@ -77,7 +78,7 @@ public class EventiTemporaliHandler {
      */
     private void iniziaValutazione() {
         StatoHackathon stato = InCorso.INSTANCE;
-        List<Hackathon> hackathonDaValutare = repositoryHackathon.findHackathonDaValutare(stato, LocalDateTime.now());
+        List<Hackathon> hackathonDaValutare = repositoryHackathon.findHackathonDaValutare(StatoEnum.IN_CORSO, LocalDateTime.now());
         for (Hackathon h : hackathonDaValutare) {
             try { h.avviaValutazione(); }
             catch (TransizioneNonConsentitaException e)

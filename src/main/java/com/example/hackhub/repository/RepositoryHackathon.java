@@ -1,7 +1,7 @@
 package com.example.hackhub.repository;
 
+import com.example.hackhub.domain.StatoEnum;
 import com.example.hackhub.domain.implementazione.Hackathon;
-import com.example.hackhub.domain.implementazione.statePattern.StatoHackathon;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -31,7 +31,7 @@ public interface RepositoryHackathon extends JpaRepository<Hackathon, String> {
             ORDER BY h.periodo.dataInizio ASC, h.periodo.oraInizio ASC
                        \s""")
     List<Hackathon> findHackathonDaAvviare(
-            @Param("stato") StatoHackathon stato,
+            @Param("stato") StatoEnum stato,
             @Param("today") LocalDate today,
             @Param("nowTime") LocalTime nowTime);
 
@@ -49,7 +49,7 @@ public interface RepositoryHackathon extends JpaRepository<Hackathon, String> {
         ORDER BY h.periodo.dataInizio ASC, h.periodo.oraInizio ASC
                        \s""")
     List<Hackathon> findHackathonDaChiudere(
-            @Param("stato") StatoHackathon statoEnum,
+            @Param("stato") StatoEnum statoEnum,
             @Param("today") LocalDateTime scadenza
     );
 
@@ -67,7 +67,7 @@ public interface RepositoryHackathon extends JpaRepository<Hackathon, String> {
         ORDER BY h.periodo.dataInizio ASC, h.periodo.oraInizio ASC
                        \s""")
     List<Hackathon> findHackathonDaValutare(
-            @Param("stato") StatoHackathon statoEnum,
+            @Param("stato") StatoEnum statoEnum,
             @Param("today") LocalDateTime scadenza
     );
 }
