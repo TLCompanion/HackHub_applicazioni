@@ -15,16 +15,17 @@ public class IscrizioneTeam {
     private String idIscrizione;
 
     //private String idHackathon
-    @OneToOne(optional = false)
-    @JoinColumn(name = "hackathon_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_hackathon", nullable = false)
     private Hackathon hackathon;
 
     //private String idTeam
-    @OneToOne(optional = false)
-    @JoinColumn(name = "id_team")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_team", nullable = false)
     private Team team;
 
-    @OneToOne(optional = false)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_sottomissione")
     private Sottomissione sottomissione;
 
     public IscrizioneTeam() {}
@@ -72,4 +73,8 @@ public class IscrizioneTeam {
     public Hackathon getHackathon() { return hackathon; }
 
     public Sottomissione getSottomissione() { return sottomissione; }
+
+    public void setHackathon(Hackathon hackathon) {
+        this.hackathon = hackathon;
+    }
 }

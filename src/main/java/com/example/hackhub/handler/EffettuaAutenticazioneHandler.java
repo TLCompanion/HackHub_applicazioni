@@ -53,7 +53,7 @@ public class EffettuaAutenticazioneHandler {
                 .orElseThrow(() -> new BadRequestException("Nome utente errato"));
 
         // Altrimenti verifico se la password inserita è corretta, e in caso positivo genero il token
-        if (!passwordEncoder.matches(passwordEncoder.encode(request.password()), utente.getPasswordHash()))
+        if (!passwordEncoder.matches(request.password(), utente.getPasswordHash()))
             throw new BadRequestException("Password errata");
         String token = servizioJwt.generaToken(utente);
         return new AuthResponse(token, "Bearer");

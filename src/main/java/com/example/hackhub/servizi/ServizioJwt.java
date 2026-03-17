@@ -53,7 +53,7 @@ public class ServizioJwt {
      * @param token il token Jwt da cui si deve effettuare l'estrazione
      * @return nomeUtente
      */
-    public String estraiIdUtente(String token) {
+    public String estraiNomeUtente(String token) {
         if (token == null) throw new IllegalArgumentException("L'utente passato è nullo");
 
         return Jwts.parserBuilder()

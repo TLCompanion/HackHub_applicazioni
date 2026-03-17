@@ -23,7 +23,7 @@ public class Team {
     @Column(nullable = false, unique = true)
     private String nome; // nome del team, unico nella piattaforma
 
-    @Transient
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MembroTeam> membri; //insieme degli utenti che fanno parte del team
 
     public Team() {} // Costruttore vuoto richiesto per la persistenza nel DB
@@ -64,15 +64,13 @@ public class Team {
     public void aggiungiMembro(MembroTeam membro) {
         if (membro.getRuolo().equals(RuoloTeam.LEADER))
             throw new IllegalArgumentException("Tentativo di aggiungere un Leader a un Team");
-
         membri.add(membro);
+        membro.setTeam(this);
     }
 
     public void setLeader(MembroTeam membro) throws ForbiddenException {
         if (this.hasLeader()) throw new ForbiddenException("Il team ha già un leader");
-
-        for (MembroTeam m : membri)
-            if (m.equals(membro)) m.setRuolo(RuoloTeam.LEADER);
+        membri.add(membro);
     }
 
     private boolean hasLeader() {

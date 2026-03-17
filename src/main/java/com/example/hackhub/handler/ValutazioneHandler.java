@@ -44,14 +44,14 @@ public class ValutazioneHandler{
     /**
      * Avvia l'inserimento di una nuova valutazione per una sottomissione
      * @param idSottomissione l'id della sottomissione da valutare
-     * @param idGiudice l'id del giudice
+     * @param nomeUtente il nome utente del giudice che sta valutando la sottomissione
      * @param request la valutazione con i suoi componenti
      */
     @Transactional
-    public void avviaInserimentoValutazione(String idSottomissione, String idGiudice, ValutazioneRequest request){
+    public void avviaInserimentoValutazione(String idSottomissione, String nomeUtente, ValutazioneRequest request){
         Sottomissione sottomissione = repositorySottomissioni.findById(idSottomissione).orElseThrow(() ->
                 new NotFoundException("Sottomissione non trovata"));
-        Hackathon hackathon = repositoryStaff.findById(idGiudice).orElseThrow( () ->
+        Hackathon hackathon = repositoryStaff.findByUtente_NomeUtente(nomeUtente).orElseThrow( () ->
                 new NotFoundException("Giudice non trovato")).getHackathon();
 
         try {
@@ -59,7 +59,7 @@ public class ValutazioneHandler{
         } catch (RuntimeException ex) {
             throw new ConflictException("Valutazione non consentita in questo stato dell'hackathon");
         }
-        verificaGiudiceAutorizzato(hackathon, idGiudice);
+        verificaGiudiceAutorizzato(hackathon, nomeUtente);
         creaOAggiornaValutazione(sottomissione, request.punteggio(), request.giudizio());
         repositorySottomissioni.save(sottomissione);
         concludiHackathonSeTutteValutate(hackathon);
@@ -68,11 +68,11 @@ public class ValutazioneHandler{
     /**
      * Verifica che l'utente che vuole valutare le sottomissioni sia il giudice dell'hackathon
      * @param hackathon l'hackathon
-     * @param idGiudice l'id del giudice
+     * @param nomeUtente il nome utente dell'utente che vuole valutare
      */
-    private void verificaGiudiceAutorizzato(Hackathon hackathon, String idGiudice) {
+    private void verificaGiudiceAutorizzato(Hackathon hackathon, String nomeUtente) {
         boolean autorizzato = hackathon.getStaff().stream()
-                .anyMatch(s -> s.getRuolo() == RuoloStaff.GIUDICE && s.getIdUtente().equals(idGiudice));
+                .anyMatch(s -> s.getRuolo() == RuoloStaff.GIUDICE && s.getUtente().getNomeUtente().equals(nomeUtente));
         if (!autorizzato) {
             throw new ForbiddenException("Utente non autorizzato a valutare questa sottomissione");
         }

@@ -20,11 +20,10 @@ public class IscriviTeamBoundary {
 
     @PostMapping("/team")
     public ResponseEntity<Void> avviaIscrizioneHackathon(
-            @AuthenticationPrincipal Jwt jwt,
+            @AuthenticationPrincipal String nomeUtente,
             @RequestParam String nomeHackathon
     ) {
-        String idUtente = jwt.getSubject(); // Ottieni l'ID dell'utente dal token JWT
-        handler.avviaIscrizioneHackathon(idUtente, nomeHackathon);
+        handler.avviaIscrizioneHackathon(nomeUtente, nomeHackathon);
         return ResponseEntity.noContent().build();
     }
 }

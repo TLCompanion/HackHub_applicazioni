@@ -32,12 +32,12 @@ public class IscriviTeamHandler {
 
     /**
      * Avvia un iscrizione di un team ad un hackathon
-     * @param idUtente l'id dell'utente che vuole iscriversi
+     * @param nomeUtente il nome dell'utente che vuole iscrivere il team
      * @param nomeHackathon il nome dell'hackathon
      */
     @Transactional
-    public void avviaIscrizioneHackathon(String idUtente, String nomeHackathon) {
-        MembroTeam membroTeam = repositoryMembriTeam.findByUtente_IdUtente(idUtente).orElseThrow(() ->
+    public void avviaIscrizioneHackathon(String nomeUtente, String nomeHackathon) {
+        MembroTeam membroTeam = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() ->
                 new NotFoundException("L'utente non è membro di nessun team"));
 
         if (!membroTeam.getRuolo().equals(RuoloTeam.LEADER))

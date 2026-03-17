@@ -3,7 +3,6 @@ package com.example.hackhub.boundary;
 import com.example.hackhub.handler.GestisceSottomissioneHandler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,18 +24,16 @@ public class GestisceSottomissioneBoundary {
 
     @PostMapping("/invia")
     public ResponseEntity<Void> inviaSottomissione(
-            @AuthenticationPrincipal Jwt jwt,
+            @AuthenticationPrincipal String nomeUtente,
             @RequestParam  String link) {
-        String idUtente = jwt.getSubject();
-        handler.inviaSottomissione(idUtente, link);
+        handler.inviaSottomissione(nomeUtente, link);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/rimozione")
     public ResponseEntity<Void> attivaRimozioneSottomissione(
-            @AuthenticationPrincipal Jwt jwt) {
-        String idUtente = jwt.getSubject();
-        handler.attivaRimozioneSottomissione(idUtente);
+            @AuthenticationPrincipal String nomeUtente) {
+        handler.attivaRimozioneSottomissione(nomeUtente);
         return ResponseEntity.ok().build();
     }
 }

@@ -38,7 +38,7 @@ class CreaHackathonHandlerTest {
         repoStaff = mock(RepositoryStaff.class);
         servizioNotifiche = mock(ServizioNotifiche.class);
 
-        handler = new CreaHackathonHandler(repoUtenti, repoHackathon, repoStaff, servizioNotifiche);
+        //handler = new CreaHackathonHandler(repoUtenti, repoHackathon, repoStaff, servizioNotifiche);
     }
 
     private HackathonRequest requestValida() {

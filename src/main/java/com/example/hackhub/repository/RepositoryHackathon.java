@@ -63,7 +63,7 @@ public interface RepositoryHackathon extends JpaRepository<Hackathon, String> {
         SELECT h
         FROM Hackathon h
         WHERE h.statoEnum = :stato
-        AND h.scadenzaConsegne <= :scadenza
+        AND h.periodo.dataFine <= :scadenza
         ORDER BY h.periodo.dataInizio ASC, h.periodo.oraInizio ASC
                        \s""")
     List<Hackathon> findHackathonDaValutare(

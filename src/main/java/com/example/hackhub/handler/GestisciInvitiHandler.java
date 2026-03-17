@@ -42,50 +42,53 @@ public class GestisciInvitiHandler {
 
     /**
      * Metodo del boundary che accetta una richiesta di invito Staff
-     * @param idUtente l'identificativo dell'utente
+     * @param nomeUtente il nome utente dell'utente che accetta la richiesta
      * @param idRichiesta l'identificativo della richeista
      */
-    public void accettaRichiesta(String idUtente, String idRichiesta) {
-        Utente utente = validazioneUtente(idUtente);
+    public void accettaRichiesta(String nomeUtente, String idRichiesta) {
+        Utente utente = validazioneUtente(nomeUtente);
         Richiesta r = validazioneRichiesta(idRichiesta);
         Utente destinatario;
 
         switch (r) {
             case InvitoStaff invitoStaff -> {
                 r.accetta();
-                destinatario = accettaInvitoStaff(invitoStaff, utente);
+                destinatario = accettaInvitoStaff(nomeUtente, invitoStaff);
             }
             case InvitoTeam invitoTeam -> {
                 r.accetta();
-                destinatario = accettaInvitoTeam(invitoTeam, utente);
+                destinatario = accettaInvitoTeam(nomeUtente, invitoTeam);
             }
             case PropostaCall propostaCall -> {
                 r.accetta();
-                destinatario = accettaCall(propostaCall, utente);
+                destinatario = accettaCall(nomeUtente, propostaCall);
             }
             default -> throw new ConflictException("La richiesta non appartiene a nessun tipo di invito esistente");
         }
         servizioNotifiche.creaNotifica(destinatario, TipoNotifica.ACCETTA_RICHIESTA, utente.getNomeUtente() + "ha accettato la tua richiesta");
     }
 
-    private Utente accettaInvitoStaff(InvitoStaff invitoStaff, Utente utente){
+    private Utente accettaInvitoStaff(String nomeUtente, InvitoStaff invitoStaff){
+        validazioneUtente(nomeUtente);
         Hackathon hackathon = invitoStaff.getHackathon();
         repositoryHackathon.save(hackathon);
         return trovaOrganizzatore(hackathon);
     }
 
-    private Utente accettaInvitoTeam(InvitoTeam invitoTeam, Utente utente){
+    private Utente accettaInvitoTeam(String nomeUtente, InvitoTeam invitoTeam){
+        validazioneUtente(nomeUtente);
         Team team = invitoTeam.getTeam();
         return trovaLeader(team);
     }
 
-    private Utente accettaCall(PropostaCall propostaCall, Utente utente){
+    private Utente accettaCall(String nomeUtente, PropostaCall propostaCall){
+        validazioneUtente(nomeUtente);
         String link = ""; //todo completare, come lo gestiamo sto link
         Team team = repositoryMembriTeam
-                .findByUtente_IdUtente(propostaCall.getDestinatario().getIdUtente())
+                .findByUtente_NomeUtente(propostaCall.getDestinatario().getNomeUtente())
                 .orElseThrow(() -> new NotFoundException("L'utente non appartiene a nessun team"))
                 .getTeam();
-        Staff mentore = repositoryStaff.findByUtente_IdUtente(propostaCall.getMittente())
+        Staff mentore = repositoryStaff.findByUtente_NomeUtente(propostaCall.getMittente())
                 .orElseThrow(() -> new RuntimeException("Mentore non trovato"));
         CallSlot callSlot = new CallSlot(propostaCall.getPeriodo(), team, mentore, link);
         //todo manca da aggiungerlo al calendario
@@ -102,8 +105,8 @@ public class GestisciInvitiHandler {
     }
 
     //non so se hanno senso o meno ma sono ripetuti in tutti i metodi quindi mi sembrava meglio fare così
-    private Utente validazioneUtente(String idUtente){
-        return repositoryUtenti.findByIdUtente(idUtente)
+    private Utente validazioneUtente(String nomeUtente){
+        return repositoryUtenti.findByNomeUtente(nomeUtente)
                 .orElseThrow(() -> new RuntimeException("Utente non trovato"));
     }
 
@@ -121,11 +124,10 @@ public class GestisciInvitiHandler {
                 new NotFoundException("Organizzatore non trovato"));
     }
 
-    public void rifiutaRichiesta(String idRichiesta){
+    public void rifiutaRichiesta(String nomeUtente, String idRichiesta){
+        validazioneUtente(nomeUtente);
         Richiesta r = validazioneRichiesta(idRichiesta);
         r.rifiuta();
-        if (!(r instanceof InvitoStaff invitoStaff))
-            throw new ConflictException("La richiesta non è un invito staff");
-        servizioNotifiche.creaNotifica(trovaOrganizzatore(invitoStaff.getHackathon()), TipoNotifica.RIFIUTO_RICHIESTA, "La richiesta è stata rifiutata");
+        servizioNotifiche.creaNotifica(r.getDestinatario(), TipoNotifica.RIFIUTO_RICHIESTA, "La richiesta è stata rifiutata");
     }
 }

@@ -22,11 +22,11 @@ public class InvitaUtentiHandler {
         this.repositoryMembriTeam = repositoryMembriTeam;
         this.servizioNotifiche = servizioNotifiche;
     }
-    public void invitaUtenti(String idUtente, Team team) {
-        Utente utente = repositoryUtenti.findByIdUtente(idUtente)
+    public void invitaUtenti(String nomeUtente, Team team) {
+        Utente utente = repositoryUtenti.findByNomeUtente(nomeUtente)
                 .orElseThrow(() -> new NotFoundException("Utente non trovato"));
 
-        if (repositoryMembriTeam.findByUtente_IdUtente(utente.getIdUtente()).isPresent()) {
+        if (repositoryMembriTeam.findByUtente_NomeUtente(utente.getNomeUtente()).isPresent()) {
             throw new ConflictException("L'utente appartiene già a un team");
         }
 

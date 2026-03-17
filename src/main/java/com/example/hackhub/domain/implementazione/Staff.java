@@ -10,19 +10,19 @@ import java.util.UUID;
  * in cui lavora
  */
 @Entity
-@Table(name = "staff", uniqueConstraints = @UniqueConstraint(columnNames = {"idUtente", "idHackathon"}))
+@Table(name = "staff", uniqueConstraints = @UniqueConstraint(columnNames = {"id_utente", "id_hackathon"}))
 public class Staff {
 
     @Id
     @Column(nullable = false, updatable = false)
     private String id;
 
-    @OneToOne(optional = false)
-    @JoinColumn(name = "id_utente")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_utente", nullable = false)
     private Utente utente;
 
-    @OneToOne(optional = false)
-    @JoinColumn(name = "id_hackathon")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_hackathon", nullable = false)
     private Hackathon hackathon;
 
     @Enumerated(EnumType.STRING)
@@ -32,12 +32,13 @@ public class Staff {
     /**
      * Creazione di un membro dello staff
      * @param utente l'utente associato allo staff
-     * @param hackathon l'hackathon associato allo staff
      * @param ruolo il ruolo ricoperto
      */
-    public Staff(Utente utente, Hackathon hackathon, RuoloStaff ruolo) {
+    // N.B. Non è necessario passare l'hackathon come parametro, poiché lo staff viene associato all'hackathon tramite
+    // il metodo setHackathon() dopo la creazione dello staff, in questo modo si evita di creare un ciclo di dipendenze
+    // tra le classi Staff e Hackathon, che potrebbe complicare la gestione delle entità e delle relazioni tra di esse.
+    public Staff(Utente utente,  RuoloStaff ruolo) {
         this.utente = utente;
-        this.hackathon = hackathon;
         this.ruolo = ruolo;
     }
 
@@ -67,5 +68,9 @@ public class Staff {
 
     public Hackathon getHackathon() {
         return hackathon;
+    }
+
+    public void setHackathon(Hackathon hackathon) {
+        this.hackathon = hackathon;
     }
 }

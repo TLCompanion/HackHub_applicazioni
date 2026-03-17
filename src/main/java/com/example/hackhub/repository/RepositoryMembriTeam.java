@@ -14,6 +14,7 @@ public interface RepositoryMembriTeam extends JpaRepository<MembroTeam, String> 
     //Serve optional per gestire i null
     Optional<MembroTeam> findMembroTeamByRuolo(RuoloTeam ruolo);
 
-    Optional<MembroTeam> findByUtente_IdUtente(String idUtente);
+    //TODO in uml aggiornare questo metodo
+    Optional<MembroTeam> findByUtente_NomeUtente(String nomeUtente);
 
 }

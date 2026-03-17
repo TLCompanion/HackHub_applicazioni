@@ -2,10 +2,8 @@ package com.example.hackhub.boundary;
 
 import com.example.hackhub.domain.implementazione.Team;
 import com.example.hackhub.handler.InvitaUtentiHandler;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,10 +20,9 @@ public class InvitaUtentiBoundary {
     }
 
     @PostMapping("/utenti")
-    public ResponseEntity<Void> InvitaUtenti(@AuthenticationPrincipal Jwt jwt,
+    public ResponseEntity<Void> InvitaUtenti(@AuthenticationPrincipal String nomeUtente,
                                              @RequestParam Team team){
-        String idUtente = jwt.getSubject();
-        handler.invitaUtenti(idUtente, team);
+        handler.invitaUtenti(nomeUtente, team);
         return ResponseEntity.noContent().build();
     }
 }

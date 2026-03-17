@@ -2,9 +2,7 @@ package com.example.hackhub.domain.implementazione;
 
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.StatoRichiesta;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
@@ -12,14 +10,16 @@ import java.time.LocalDateTime;
 @DiscriminatorValue("INVITO_STAFF")
 public class InvitoStaff extends Richiesta {
 
-    @Transient
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_hackathon", nullable = false)
     private Hackathon hackathon;
+    @Enumerated(EnumType.STRING)
     private RuoloStaff ruolo;
 
     public InvitoStaff() {}
 
     /**
-     * Costruttore che instanzia un invito ad unirsi allo Staff di un Hackathon
+     * Costruttore che instanzia un invito a unirsi allo Staff di un Hackathon
      * @param nomeMittente il nome del mittente
      * @param payload il messaggio
      * @param destinatario il destinatario
@@ -36,7 +36,7 @@ public class InvitoStaff extends Richiesta {
     @Override
     public void accetta() {
         this.setStato(StatoRichiesta.ACCETTATO);
-        Staff staff = new Staff(this.getDestinatario(), hackathon, this.ruolo);
+        Staff staff = new Staff(this.getDestinatario(), this.ruolo);
         hackathon.aggiungiStaff(staff);
     }
 

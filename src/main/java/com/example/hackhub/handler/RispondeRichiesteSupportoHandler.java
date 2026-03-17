@@ -28,13 +28,13 @@ public class RispondeRichiesteSupportoHandler {
     /**
      * Metodo che permette a un mentore di un hackathon di rispondere a una notifica che richiede supporto,
      * e con cui il mentore risponde con una proposta di call oppure con una notifica in risposta
-     * @param idMentore l'id del mentore dell'hackathon che ha ricevuto la notifica
+     * @param nomeUtente il nome utente del mentore che risponde alla richiesta di supporto
      * @param idNotifica l'id della notifica considerata
      */
-    public void rispondiRichiestaSupportoConNotifica(String idMentore, String idNotifica) {
+    public void rispondiRichiestaSupportoConNotifica(String nomeUtente, String idNotifica) {
         Notifica notifica = repositoryNotifica.findByIdNotifica(idNotifica)
                 .orElseThrow(() -> new RuntimeException("Notifica non trovata"));
-        Staff staff = repositoryStaff.findByUtente_IdUtente(idMentore)
+        Staff staff = repositoryStaff.findByUtente_NomeUtente(nomeUtente)
                 .orElseThrow(() -> new RuntimeException("Staff non trovato"));
         servizioNotifiche.creaNotifica(notifica.getDestinatario(), TipoNotifica.RICHIESTA_SUPPORTO,
                 staff.getUtente().getNomeUtente() + " ha risposto alla tua richiesta di supporto: Consigli per superare il problema");

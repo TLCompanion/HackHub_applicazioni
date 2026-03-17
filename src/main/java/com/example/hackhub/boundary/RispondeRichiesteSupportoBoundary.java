@@ -3,7 +3,6 @@ package com.example.hackhub.boundary;
 import com.example.hackhub.handler.RispondeRichiesteSupportoHandler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,9 +29,8 @@ public class RispondeRichiesteSupportoBoundary {
     @PutMapping("/risposta")
     public ResponseEntity<Void> rispondiRichiestaSupportoConNotifica(
             @RequestParam String idNotifica,
-            @AuthenticationPrincipal Jwt jwt) {
-        String idMentore = jwt.getSubject();
-        handler.rispondiRichiestaSupportoConNotifica(idMentore, idNotifica);
+            @AuthenticationPrincipal String nomeUtente) {
+        handler.rispondiRichiestaSupportoConNotifica(nomeUtente, idNotifica);
         return ResponseEntity.ok().build();
     }
 }

@@ -50,7 +50,7 @@ public class ServizioNotifiche {
      */
     public void creaPropostaCall(String nomeMittente, Utente destinatario, Periodo periodo) {
         PropostaCall propostaCall = new PropostaCall(nomeMittente,
-                "Proposta di Call",
+                "Proposta di Call da " + nomeMittente + ", per il giorno" + periodo.getDataInizio() + ", nell'orario: " + periodo.getDataInizio() + " - " + periodo.getOraFine(),
                 destinatario,
                 LocalDateTime.of(periodo.getDataInizio().minusDays(1), periodo.getOraInizio()),
                 periodo);
@@ -70,7 +70,7 @@ public class ServizioNotifiche {
 
         InvitoStaff invitoStaff = new InvitoStaff(
                 nomeMittente,
-                "Invito nello Staff di " + hackathon.getNome(),
+                "Invito nello Staff di " + hackathon.getNome() + " come " + ruolo.name() + " da " + nomeMittente,
                 destinatario,
                 LocalDateTime.now(),
                 hackathon,
@@ -87,7 +87,7 @@ public class ServizioNotifiche {
     public void creaInvitoTeam(String nomeMittente, Utente destinatario, Team team) {
         InvitoTeam invitoTeam = new InvitoTeam(
                 nomeMittente,
-                "Invito ad entrare nel team: " + team.getNome(),
+                "Invito ad entrare nel team: " + team.getNome() + "da " + nomeMittente,
                 destinatario,
                 LocalDateTime.now().plusDays(3),
                 team

@@ -7,7 +7,6 @@ import com.example.hackhub.handler.EffettuaAutenticazioneHandler;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/register")
+@RequestMapping("/api/autenticazione")
 @Validated
 public class EffettuaAutenticazioneBoundary {
 
@@ -34,7 +33,7 @@ public class EffettuaAutenticazioneBoundary {
      * @param request il JSON di richiesta di registrazione
      * @return la risposta
      */
-    @PostMapping
+    @PostMapping("registrazione")
     public ResponseEntity<Void> attivaRegistrazione(
             @Valid @RequestBody RegisterRequest request) {
         handler.attivaRegistrazione(request); // Avvio la registrazione
@@ -46,7 +45,7 @@ public class EffettuaAutenticazioneBoundary {
      * @param request il JSON di richiesta di login
      * @return la risposta
      */
-    @PostMapping("/login")
+    @PostMapping("/accesso")
     public ResponseEntity<AuthResponse> attivaAutenticazione(
             @Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(handler.attivaAutenticazione(request));

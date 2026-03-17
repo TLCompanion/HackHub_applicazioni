@@ -5,7 +5,6 @@ import com.example.hackhub.handler.CreaHackathonHandler;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/api/hackathon")
+@RequestMapping("/api/creaHackathon")
 @Validated
 public class CreaHackathonBoundary {
 
@@ -26,11 +25,10 @@ public class CreaHackathonBoundary {
 
     @PostMapping
     public ResponseEntity<Void> avviaCreazioneHackathon(
-            @AuthenticationPrincipal Jwt jwt,
+            @AuthenticationPrincipal String nomeUtente,
             @Valid @RequestBody HackathonRequest request
             ) {
-        String idUtente = jwt.getSubject(); // Ottieni l'ID dell'utente dal token JWT
-        handler.avviaCreazioneHackathon(request, idUtente);
+        handler.avviaCreazioneHackathon(request, nomeUtente);
         return ResponseEntity.noContent().build();
     }
 

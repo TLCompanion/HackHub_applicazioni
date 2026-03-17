@@ -2,6 +2,7 @@ package com.example.hackhub.servizi;
 
 import com.example.hackhub.domain.implementazione.Utente;
 import com.example.hackhub.repository.RepositoryUtenti;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
 
 import java.io.IOException;
 import java.util.Collections;
@@ -24,8 +26,9 @@ public class JwtFiltro extends OncePerRequestFilter {
 
     /**
      * Costruttore che inizializza JwtFiltro
-     * @param servizioJwt
-     * @param repositoryUtenti
+     *
+     * @param servizioJwt      il servizio jwt per gestire i token
+     * @param repositoryUtenti il repository degli utenti per prelevare le informazioni dell'utente autenticato
      */
     public JwtFiltro(ServizioJwt servizioJwt, RepositoryUtenti repositoryUtenti) {
         this.servizioJwt = servizioJwt;
@@ -36,35 +39,31 @@ public class JwtFiltro extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws ServletException, IOException {
         String header = request.getHeader("Authorization");
         String token = null;
-        String idUtente = null;
+        String nomeUtente = null;
 
         // Verifica che ci sia header e che inizi con Bearer
         if (header != null && header.startsWith("Bearer ")) {
             token = header.substring(7); // Rimuove Bearer
             try {
-                idUtente = servizioJwt.estraiIdUtente(token);
-            }
-            catch (Exception ignored) {}
-        }
+                nomeUtente = servizioJwt.estraiNomeUtente(token);
+                // ricavo l'utente se non c'è già autenticazione, e valido il token
+                if (nomeUtente != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    Utente utente = repositoryUtenti.findByNomeUtente(nomeUtente).orElse(null);
 
-        // ricavo l'utente se non c'è già autenticazione, e valido il token
-        if (idUtente != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            Utente utente = repositoryUtenti.findByIdUtente(idUtente).orElse(null);
-
-            if (utente != null) {
-                try { // Valido il token e creo un oggetto Authentication
-                    servizioJwt.validaToken(token, utente);
-                    UsernamePasswordAuthenticationToken auth =
-                            new UsernamePasswordAuthenticationToken(
-                                    utente,
-                                    null,
-                                    Collections.emptyList());
-                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(auth);
+                    if (utente != null) {
+                        // Valido il token e creo un oggetto Authentication
+                        servizioJwt.validaToken(token, utente);
+                        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(nomeUtente,
+                                null, Collections.emptyList());
+                        auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(auth);
+                    }
                 }
-                catch (Exception ignored) {}
+            } catch (JwtException | IllegalArgumentException e) {
+                SecurityContextHolder.clearContext();
             }
         }
         chain.doFilter(request, response); // Continua la catena
     }
+
 }

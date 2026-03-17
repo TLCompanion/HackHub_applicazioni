@@ -62,18 +62,15 @@ public class Hackathon {
     @NotNull
     private LocalDateTime scadenzaIscrizioni;
 
-    @Transient
+    @OneToMany(mappedBy = "hackathon", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Staff> staff;
 
-    @Transient
+    @OneToMany(mappedBy = "hackathon", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<IscrizioneTeam> iscrizioni;
 
-    @NotNull
-    private LocalDateTime scadenzaConsegne;
-
     public Hackathon() {
-        this.staff = new ArrayList<>();
-        this.iscrizioni = new ArrayList<>();
+        staff = new ArrayList<>();
+        iscrizioni = new ArrayList<>();
     }
 
     /**
@@ -126,54 +123,55 @@ public class Hackathon {
 
     /**
      * Lancia eccezioni se ci sono dei parametri sbagliati dell'hackathon
-     * @param nome il nome
-     * @param periodo il periodo di svolgimento
-     * @param premio il premio
-     * @param luogo il luogo dove si svolge
-     * @param teamMax il numero massimo dei membri che un team deve avere per iscriversi
-     * @param teamMin il numero minimo di membri che un team deve avere per iscriversi
-     * @param regolamento il regolamente
+     *
+     * @param nome               il nome
+     * @param periodo            il periodo di svolgimento
+     * @param premio             il premio
+     * @param luogo              il luogo dove si svolge
+     * @param teamMax            il numero massimo dei membri che un team deve avere per iscriversi
+     * @param teamMin            il numero minimo di membri che un team deve avere per iscriversi
+     * @param regolamento        il regolamente
      * @param scadenzaIscrizioni la scadenza delle iscrizioni
      * @throws IllegalArgumentException se alcuni dati non sono validi
-     * @throws NullPointerException se alcuni dati non sono stati inseriti
+     * @throws NullPointerException     se alcuni dati non sono stati inseriti
      */
-    private void validazione(String nome, Periodo periodo, BigDecimal premio, String luogo, int teamMax, int teamMin, String regolamento, LocalDateTime scadenzaIscrizioni) throws IllegalArgumentException, NullPointerException {
-
+    private void validazione(String nome, Periodo periodo, BigDecimal premio, String luogo, int teamMax, int teamMin,
+                             String regolamento, LocalDateTime scadenzaIscrizioni) throws IllegalArgumentException,
+            NullPointerException {
         if (nome == null || periodo == null || premio == null || luogo == null || regolamento == null || scadenzaIscrizioni == null)
             throw new NullPointerException("Non sono ammessi valori nulli");
-
         if (nome.length() < 3) throw new IllegalArgumentException("Il nome deve avere almeno 3 caratteri di lunghezza");
-
         if (premio.longValue() <= 0) throw new IllegalArgumentException("Il premio deve avere valore positivo");
-
         if (luogo.length() < 3) throw new IllegalArgumentException("Il luogo deve avere almeno 3 caratteri");
-
         if (teamMin < 3) throw new IllegalArgumentException("Il numero minimo di membri per team deve essere almeno 3");
-        if (teamMax < teamMin) throw new IllegalArgumentException("Il numero massimo di membri deve essere almeno il numero minimo");
-
+        if (teamMax < teamMin)
+            throw new IllegalArgumentException("Il numero massimo di membri deve essere almeno il numero minimo");
         if (scadenzaIscrizioni.isEqual(LocalDateTime.now()) || scadenzaIscrizioni.isBefore(LocalDateTime.now()))
             throw new IllegalArgumentException("Data oppure orario inseriti non validi");
     }
 
     /**
      * Aggiunge un iscrizione se i parametri di iscrizione sono validi
+     *
      * @param iscrizione l'iscrizione
      */
     public void aggiungiIscrizione(IscrizioneTeam iscrizione) {
-        if (iscrizioni.size() == maxIscrizioni) {
+        if (iscrizioni.size() >= maxIscrizioni) {
             throw new ConflictException("Numero massimo di iscrizioni raggiunto");
         }
-        if (stato != IscrizioniAperte.INSTANCE) {
+        if (statoEnum != StatoEnum.ISCRIZIONI_APERTE) {
             throw new ConflictException("Non è possibile iscrivere un team, le iscrizioni non sono aperte");
         }
         this.iscrizioni.add(iscrizione);
+        iscrizione.setHackathon(this);
     }
 
     /**
      * Avvia l'hackathon se è presente almeno un giudice e un mentore, altrimenti lancia un'eccezione
+     *
      * @throws ConflictException se non è presente un giudice o un mentore
      */
-    public void avviaHackathon(){
+    public void avviaHackathon() {
         Staff giudice = staff.stream().filter(s -> s.getRuolo().equals(RuoloStaff.GIUDICE)).findFirst()
                 .orElse(null);
         List<Staff> mentori = staff.stream().filter(s -> s.getRuolo().equals(RuoloStaff.MENTORE)).toList();
@@ -208,6 +206,7 @@ public class Hackathon {
 
     /**
      * Metodo che tiene traccia degli stati dell'hackathon e simula la sua persistenza nel db
+     *
      * @param stato lo StatoHackathon corrente
      */
     public void setStatoEnum(StatoHackathon stato) {
@@ -241,7 +240,9 @@ public class Hackathon {
         return this.stato;
     }
 
-    public StatoEnum getStatoEnum() { return statoEnum; }
+    public StatoEnum getStatoEnum() {
+        return statoEnum;
+    }
 
     public String getIdHackathon() {
         return this.idHackathon;
@@ -251,14 +252,13 @@ public class Hackathon {
         return this.nome;
     }
 
-    // mi serve per ottenerlo nell'handler delle valutazioni per verificare che il giudice è un giudice di quello specifico hackathon e non un giudice di un altro hacakthon
     public List<Staff> getStaff() {
         return this.staff;
     }
 
-    //mi serve per l'handler CreaHackathonHandler
     public void aggiungiStaff(Staff staff) {
         this.staff.add(staff);
+        staff.setHackathon(this);
     }
 
     public Periodo getPeriodo() {
@@ -287,9 +287,5 @@ public class Hackathon {
 
     public int getMaxIscrizioni() {
         return this.maxIscrizioni;
-    }
-
-    public LocalDateTime getScadenzaConsegne() {
-        return this.scadenzaConsegne;
     }
 }

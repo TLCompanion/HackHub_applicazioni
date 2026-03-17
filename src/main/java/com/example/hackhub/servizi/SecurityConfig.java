@@ -19,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
             return http
                     .csrf(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests(auth -> auth
-                            .requestMatchers("/api/auth/**").permitAll()
+                            .requestMatchers("/api/autenticazione/**").permitAll()
                             .anyRequest().authenticated()
                     )
                     .addFilterBefore(filtro, UsernamePasswordAuthenticationFilter.class)

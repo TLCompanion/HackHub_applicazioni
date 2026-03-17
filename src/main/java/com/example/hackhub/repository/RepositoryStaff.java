@@ -7,5 +7,6 @@ import java.util.Optional;
 
 public interface RepositoryStaff extends JpaRepository<Staff, String> {
 
-    Optional<Staff> findByUtente_IdUtente(String idUtente);
+    //TODO aggiornare questo metodo in uml
+    Optional<Staff> findByUtente_NomeUtente(String nomeUtente);
 }

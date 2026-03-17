@@ -41,24 +41,24 @@ public class CreaTeamHandler {
      * non sia già esistente. Se tutte le verifiche passano, crea un nuovo team e aggiunge l'utente come membro con
      * ruolo di leader.
      *
-     * @param idUtente l'ID dell'utente che vuole creare il team
+     * @param nomeUtente il nome utente dell'utente che vuole creare il team
      * @param nomeTeam il nome del team da creare
      */
     @Transactional
-    public void avviaCreazioneTeam(String idUtente, String nomeTeam) {
-        if (repositoryMembriTeam.existsByUtente(repositoryUtenti.findById(idUtente).
-                orElseThrow(() -> new NotFoundException("Utente non trovato")))) {
+    public void avviaCreazioneTeam(String nomeUtente, String nomeTeam) {
+        Utente utente = repositoryUtenti.findByNomeUtente(nomeUtente).orElseThrow(() ->
+                new NotFoundException("Utente non trovato"));
+        if (repositoryMembriTeam.existsByUtente(utente)) {
             throw new ForbiddenException("L'utente è già membro di un team");
         }
         if (repositoryTeam.existsByNome(nomeTeam)) {
             throw new ConflictException("Esiste già un team con questo nome");
         }
         Team team = new Team(nomeTeam);
-        repositoryTeam.save(team);
-        Utente utente = repositoryUtenti.findById(idUtente).orElseThrow(() ->
-                new NotFoundException("Utente non trovato"));
         MembroTeam leader = new MembroTeam(utente, team, RuoloTeam.LEADER);
         team.setLeader(leader);
-        repositoryMembriTeam.save(leader);
+        repositoryTeam.save(team);
+        //TODO verificare se funziona anche senza questo save, visto che c'è cascade all'interno di Team
+        //repositoryMembriTeam.save(leader);
     }
 }

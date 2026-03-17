@@ -9,7 +9,7 @@ import java.util.UUID;
  * Un utente registrato alla piattaforma che diventa parte di un team
  */
 @Entity
-@Table(name = "membroTeam", uniqueConstraints = @UniqueConstraint(columnNames = "idUtente"))
+@Table(name = "membro_team", uniqueConstraints = @UniqueConstraint(columnNames = "id_utente"))
 public class MembroTeam {
 
     @Id
@@ -22,8 +22,8 @@ public class MembroTeam {
     private Utente utente;
 
     //private String idTeam
-    @OneToOne(optional = false)
-    @JoinColumn(name = "id_team")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_team",nullable = false)
     private Team team;
 
     @Enumerated(EnumType.STRING)
@@ -75,4 +75,6 @@ public class MembroTeam {
     // METODO SETTER
 
     public void setRuolo(RuoloTeam r) { this.ruolo = r; }
+
+    public void setTeam(Team t) { this.team = t; }
 }

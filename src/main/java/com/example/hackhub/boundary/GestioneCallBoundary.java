@@ -5,7 +5,6 @@ import com.example.hackhub.handler.GestioneCallHandler;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,11 +24,10 @@ public class GestioneCallBoundary {
 
     @PostMapping("/propostaCall")
     public ResponseEntity<Void> avviaPropostaCall(
-            @AuthenticationPrincipal Jwt jwt,
+            @AuthenticationPrincipal String nomeUtente,
             @RequestBody @Valid PropostaCallRequest request
             ){
-            String idUtente = jwt.getSubject(); // Ottieni l'ID dell'utente dal token JWT
-              handler.avviaPropostaCall(idUtente, request);
+              handler.avviaPropostaCall(nomeUtente, request);
             return ResponseEntity.noContent().build();
     }
 }

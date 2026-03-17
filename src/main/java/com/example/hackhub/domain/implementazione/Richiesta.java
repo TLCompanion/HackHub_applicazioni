@@ -13,12 +13,12 @@ import java.util.UUID;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tipo")
-public class Richiesta {
+public abstract class Richiesta {
 
     @Id
     private String idRichiesta;
     private String nomeMittente;
-    @Transient
+    @OneToOne
     private Utente destinatario;
     private StatoRichiesta stato;
     private String payload;

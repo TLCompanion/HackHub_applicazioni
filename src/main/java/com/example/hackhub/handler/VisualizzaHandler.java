@@ -2,10 +2,9 @@ package com.example.hackhub.handler;
 
 import com.example.hackhub.boundary.dto.*;
 import com.example.hackhub.domain.implementazione.*;
-import com.example.hackhub.repository.RepositoryHackathon;
-import com.example.hackhub.repository.RepositoryNotifica;
-import com.example.hackhub.repository.RepositoryRichiesta;
-import com.example.hackhub.repository.RepositoryUtenti;
+import com.example.hackhub.eccezioni.ConflictException;
+import com.example.hackhub.eccezioni.NotFoundException;
+import com.example.hackhub.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,30 +18,50 @@ public class VisualizzaHandler {
     private final RepositoryRichiesta repositoryRichiesta;
     private final RepositoryNotifica repositoryNotifica;
     private final RepositoryUtenti repositoryUtenti;
+    private final RepositoryStaff repositoryStaff;
 
     /**
      * Costruttore che inizializza questo handler per visualizzare liste di oggetti
      * @param repositoryHackathon la repository degli hackathon
      */
-    public VisualizzaHandler(RepositoryHackathon repositoryHackathon, RepositoryRichiesta repositoryRichiesta,  RepositoryNotifica repositoryNotifica,  RepositoryUtenti repositoryUtenti) {
+    public VisualizzaHandler(RepositoryHackathon repositoryHackathon, RepositoryRichiesta repositoryRichiesta, RepositoryNotifica repositoryNotifica, RepositoryUtenti repositoryUtenti, RepositoryStaff repositoryStaff) {
         this.repositoryHackathon = repositoryHackathon;
         this.repositoryRichiesta = repositoryRichiesta;
         this.repositoryNotifica = repositoryNotifica;
         this.repositoryUtenti = repositoryUtenti;
+        this.repositoryStaff = repositoryStaff;
     }
 
     /**
      * Metodo che ritorna la lista di team iscritti a un hackathon
+     * @param nomeUtente il nome utente dell'utente che sta visualizzando la lista
      * @param idHackathon l'id dell'hackathon di riferimento
      * @return la lista dei team iscritti
      */
-    public List<TeamDTO> viewTeam(String idHackathon) {
-        Hackathon hackathon = repositoryHackathon.findByIdHackathon(idHackathon)
-                .orElseThrow(() -> new RuntimeException("Hackathon non trovato"));
+    //TODO questo metodo va molto probabilmente tolto perchè viewIscrizioni fa la stessa cosa
+    public List<TeamDTO> viewTeam(String nomeUtente, String idHackathon) {
+        Hackathon hackathon = validaAutorizzazioni(nomeUtente, idHackathon);
         List<Team> teams = new ArrayList<>();
         for (IscrizioneTeam i : hackathon.getIscrizioni()) teams.add(i.getTeam());
         return teams.stream().map(t -> new TeamDTO(t.getNome(), t.getMembri()))
                 .collect(Collectors.toList());
+    }
+
+    //TODO nell'uml aggiungere questi controlli con le eccezioni per tutti i casi d'uso che utilizzano questo metodo di utilità
+    private Hackathon validaAutorizzazioni(String nomeUtente, String idHackathon) {
+        verificaUtenteOrFail(nomeUtente);
+        Staff staff = repositoryStaff.findByUtente_NomeUtente(nomeUtente)
+                .orElseThrow(() -> new RuntimeException("L'utente non è membro di nessuno staff"));
+        if (!staff.getHackathon().getIdHackathon().equals(idHackathon)) {
+            throw new ConflictException("L'utente non è membro dello staff di questo hackathon");
+        }
+        return repositoryHackathon.findByIdHackathon(idHackathon)
+                .orElseThrow(() -> new RuntimeException("Hackathon non trovato"));
+    }
+
+    private Utente verificaUtenteOrFail(String nomeUtente) {
+        return repositoryUtenti.findByNomeUtente(nomeUtente).orElseThrow(() ->
+                new NotFoundException("Utente non trovato"));
     }
 
     /**
@@ -50,9 +69,8 @@ public class VisualizzaHandler {
      * @param idHackathon l'id dell'hackathon di riferimento
      * @return la lista delle valutazioni
      */
-    public List<ValutazioneRequest> viewValutazioni(String idHackathon) {
-        Hackathon hackathon = repositoryHackathon.findByIdHackathon(idHackathon)
-                .orElseThrow(() -> new RuntimeException("Hackathon non trovato"));
+    public List<ValutazioneRequest> viewValutazioni(String nomeUtente, String idHackathon) {
+        Hackathon hackathon = validaAutorizzazioni(nomeUtente, idHackathon);
         List<Valutazione> valutazioni = new ArrayList<>();
         for (IscrizioneTeam i : hackathon.getIscrizioni())
             valutazioni.add(i.getSottomissione().getValutazione());
@@ -65,9 +83,8 @@ public class VisualizzaHandler {
      * @param idHackathon l'id dell'hackathon di riferimento
      * @return la lista di sottomissioni
      */
-    public List<SottomissioneDTO> viewSottomissioni(String idHackathon) {
-        Hackathon hackathon = repositoryHackathon.findByIdHackathon(idHackathon)
-                .orElseThrow(() -> new RuntimeException("Hackathon non trovato"));
+    public List<SottomissioneDTO> viewSottomissioni(String nomeUtente, String idHackathon) {
+        Hackathon hackathon = validaAutorizzazioni(nomeUtente, idHackathon);
         List<Sottomissione> sottomissioni = new ArrayList<>();
         for (IscrizioneTeam i : hackathon.getIscrizioni()) sottomissioni.add(i.getSottomissione());
         return  sottomissioni.stream().map(s -> new SottomissioneDTO
@@ -79,33 +96,32 @@ public class VisualizzaHandler {
      * @param idHackathon l'id dell'hackathon di riferimento
      * @return la lista delle iscrizioni
      */
-    public List<IscrizioneTeamDTO> viewIscrizioni(String idHackathon) {
-        Hackathon hackathon = repositoryHackathon.findByIdHackathon(idHackathon)
-                .orElseThrow(() -> new RuntimeException("Hackathon non trovato"));
+    public List<IscrizioneTeamDTO> viewIscrizioni(String nomeUtente, String idHackathon) {
+        Hackathon hackathon = validaAutorizzazioni(nomeUtente, idHackathon);
         return hackathon.getIscrizioni().stream().map(i -> new IscrizioneTeamDTO
                 (i.getHackathon(), i.getTeam(), i.getSottomissione())).collect(Collectors.toList());
     }
 
     /**
      * Metodo che ritorna la lista di richieste pendenti in formato JSON
-     * @param idUtente l'identificativo dell'utente
+     * @param nomeUtente il nome utente dell'utente destinatario delle richieste
      * @return una lista di richieste JSON
      */
-    public List<RichiestaDTO> viewRichieste(String idUtente) {
-        List<Richiesta> listRichieste = repositoryRichiesta.findAllByDestinatario(idUtente);
+    public List<RichiestaDTO> viewRichieste(String nomeUtente) {
+        Utente utente = verificaUtenteOrFail(nomeUtente);
+        List<Richiesta> listRichieste = repositoryRichiesta.findAllByDestinatario(utente);
         return listRichieste.stream().map(r -> new RichiestaDTO(r.getIdRichiesta(), r.getPayload()))
                 .collect(Collectors.toList());
     }
 
     /**
      * Metodo che ritorna la lista di notifiche destinate all'utente di riferimento
-     * @param idUtente l'id dell'utente destinatario
+     * @param nomeUtente il nome utente dell'utente destinatario delle notifiche
      * @return la lista di notifiche dto
      */
-    public List<NotificaDTO> viewNotifiche(String idUtente) {
-        List<Notifica> listNotifiche = repositoryNotifica.findAllByDestinatario(
-                repositoryUtenti.findByIdUtente(idUtente)
-                        .orElseThrow(() -> new RuntimeException("Utente non trovato")));
+    public List<NotificaDTO> viewNotifiche(String nomeUtente) {
+        Utente utente = verificaUtenteOrFail(nomeUtente);
+        List<Notifica> listNotifiche = repositoryNotifica.findAllByDestinatario(utente);
         return listNotifiche.stream().map(n -> new NotificaDTO(n.getPayload()))
                 .collect(Collectors.toList());
     }

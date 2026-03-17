@@ -39,21 +39,21 @@ public class GestioneCallHandler {
     }
 
     /**
-     * Avvia una proposta di call da un mentore ad un team
-     * @param idUtente l'id utente del mentore
+     * Avvia una proposta di call da un mentore a un team
+     * @param nomeUtente il nome utente del mentore che propone la call
      * @param request la richiesta contenente tutti i dettagli
      */
     @Transactional
-    public void avviaPropostaCall(String idUtente, PropostaCallRequest request) {
+    public void avviaPropostaCall(String nomeUtente, PropostaCallRequest request) {
         Hackathon hackathon = repositoryHackathon.findById(request.idHackathon()).orElseThrow( () ->
                 new NotFoundException("Hackathon non esistente"));
-        verificaMentoreAutorizzato(hackathon, idUtente);
+        verificaMentoreAutorizzato(hackathon, nomeUtente);
         //Il periodo è fisso e dura mezz'ora
         Periodo periodo = new Periodo(request.data(), request.ora(), request.data(), request.ora().plusMinutes(30));
         validazione(periodo, hackathon, request.idTeam());
         Utente leader = repositoryMembriTeam.findMembroTeamByRuolo(RuoloTeam.LEADER).orElseThrow(() ->
                 new NotFoundException("Leader del team non trovato")).getUtente();
-        servizioNotifiche.creaPropostaCall(idUtente, leader, periodo);
+        servizioNotifiche.creaPropostaCall(nomeUtente, leader, periodo);
     }
 
     /**
@@ -77,11 +77,11 @@ public class GestioneCallHandler {
     /**
      * Verifica che l'utente che vuole inviare le call sia un mentore dell'hackathon
      * @param hackathon l'hackathon
-     * @param idMentore l'id del mentore
+     * @param nomeMentore il nome del mentore che vuole inviare la call
      */
-    private void verificaMentoreAutorizzato(Hackathon hackathon, String idMentore) {
+    private void verificaMentoreAutorizzato(Hackathon hackathon, String nomeMentore) {
         boolean autorizzato = hackathon.getStaff().stream()
-                .anyMatch(s -> s.getRuolo() == RuoloStaff.MENTORE && s.getIdUtente().equals(idMentore));
+                .anyMatch(s -> s.getRuolo() == RuoloStaff.MENTORE && s.getUtente().getNomeUtente().equals(nomeMentore));
         if (!autorizzato) {
             throw new ForbiddenException("Utente non autorizzato a inviare call");
         }

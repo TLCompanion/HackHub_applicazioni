@@ -11,33 +11,31 @@ import org.springframework.stereotype.Service;
 @Service
 public class GestisceSottomissioneHandler {
 
+    //TODO in uml togliere la repo sottomissioni dal diagramma di progetto e dal sequence
     private final RepositoryIscrizioniTeam repositoryIscrizioniTeam;
     private final RepositoryMembriTeam repositoryMembriTeam;
-    private final RepositorySottomissioni repositorySottomissioni;
     private final ServizioNotifiche servizioNotifiche;
 
     /**
      * Metodo che istanzia l'handler per la gestione delle sottomissioni
      * @param repositoryIscrizioniTeam la repo per le iscrizioni agli hackathon
      * @param repositoryMembriTeam la repo per i membri team
-     * @param repositorySottomissioni la repo per le sottomissioni
      * @param servizioNotifiche il servizio per l'invio delle notifiche
      */
-    public GestisceSottomissioneHandler(RepositoryIscrizioniTeam repositoryIscrizioniTeam, RepositoryMembriTeam repositoryMembriTeam, RepositorySottomissioni repositorySottomissioni, ServizioNotifiche  servizioNotifiche) {
+    public GestisceSottomissioneHandler(RepositoryIscrizioniTeam repositoryIscrizioniTeam, RepositoryMembriTeam repositoryMembriTeam, ServizioNotifiche  servizioNotifiche) {
         this.repositoryIscrizioniTeam = repositoryIscrizioniTeam;
         this.repositoryMembriTeam = repositoryMembriTeam;
-        this.repositorySottomissioni = repositorySottomissioni;
         this.servizioNotifiche = servizioNotifiche;
     }
 
     /**
      * Metodo che crea una sottomissione e la invia
-     * @param idUtente l'identificativo dell'utente nel db
+     * @param nomeUtente il nome utente del membro che invia la sottomissione
      * @param link il link a un file online o a una repository di GitHub
      */
-    public void inviaSottomissione(String idUtente, String link) {
+    public void inviaSottomissione(String nomeUtente, String link) {
         // Prelevo il membro del team e risalgo allo stato dell'hackathon
-        MembroTeam membro = repositoryMembriTeam.findByUtente_IdUtente(idUtente)
+        MembroTeam membro = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente)
                 .orElseThrow(() -> new RuntimeException("Membro del team non trovato"));
         Team team = membro.getTeam();
         IscrizioneTeam iscrizioneTeam = repositoryIscrizioniTeam.findByTeam(team)
@@ -50,7 +48,7 @@ public class GestisceSottomissioneHandler {
         // Altrimenti creo la sottomissione, la aggiungo all'iscrizione, salvo tutto e notifico il resto del team
         Sottomissione sottomissione = new Sottomissione(link);
         iscrizioneTeam.aggiungiSottomissione(sottomissione);
-        repositorySottomissioni.save(sottomissione);
+        repositoryIscrizioniTeam.save(iscrizioneTeam);
 
         for (MembroTeam m : team.getMembri())
             if (!m.equals(membro))
@@ -59,11 +57,11 @@ public class GestisceSottomissioneHandler {
 
     /**
      * Metodo che rimuove una sottomissione di un team
-     * @param idUtente l'id del membro che rimuove la sottomissione
+     * @param nomeUtente il nome utente del membro che attiva la rimozione della sottomissione
      */
-    public void attivaRimozioneSottomissione(String idUtente) {
+    public void attivaRimozioneSottomissione(String nomeUtente) {
         // Prelevo il membro del team e risalgo allo stato dell'hackathon
-        MembroTeam membro = repositoryMembriTeam.findByUtente_IdUtente(idUtente)
+        MembroTeam membro = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente)
                 .orElseThrow(() -> new RuntimeException("Membro del team non trovato"));
         Team team = membro.getTeam();
         IscrizioneTeam iscrizioneTeam = repositoryIscrizioniTeam.findByTeam(team)

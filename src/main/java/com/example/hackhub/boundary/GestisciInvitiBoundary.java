@@ -1,15 +1,11 @@
 package com.example.hackhub.boundary;
 
-import com.example.hackhub.boundary.dto.RichiestaDTO;
 import com.example.hackhub.handler.GestisciInvitiHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Validated
 @RestController
@@ -27,11 +23,10 @@ public class GestisciInvitiBoundary {
      */
     @PostMapping("/{idRichiesta}/accetta")
     public ResponseEntity<Void> accettaRichiesta(
-            @AuthenticationPrincipal Jwt jwt,
+            @AuthenticationPrincipal String nomeUtente,
             @PathVariable String idRichiesta
     ) {
-        String idUtente = jwt.getSubject();
-        handler.accettaRichiesta(idUtente, idRichiesta);
+        handler.accettaRichiesta(nomeUtente, idRichiesta);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
@@ -42,10 +37,10 @@ public class GestisciInvitiBoundary {
      */
     @PostMapping("/{idRichiesta}/rifiuta")
     public ResponseEntity<Void> rifiutaRichiesta(
-            @AuthenticationPrincipal Jwt jwt,
+            @AuthenticationPrincipal String nomeUtente,
             @PathVariable String idRichiesta
     ) {
-        handler.rifiutaRichiesta(idRichiesta);
+        handler.rifiutaRichiesta(nomeUtente, idRichiesta);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
