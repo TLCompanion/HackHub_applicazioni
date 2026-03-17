@@ -58,4 +58,6 @@ public class Utente {
     public String getEmail() { return email; }
 
     public String getPasswordHash() { return passwordHash; }
+
+    public void setNomeUtente(String nomeUtente) { this.nomeUtente = nomeUtente; }
 }

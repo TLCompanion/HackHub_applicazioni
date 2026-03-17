@@ -1,4 +1,4 @@
-package com.example.hackhub.handler;
+package com.example.hackhub.testJunit.handler;
 
 import com.example.hackhub.boundary.dto.ValutazioneRequest;
 import com.example.hackhub.domain.RuoloStaff;

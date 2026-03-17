@@ -33,7 +33,7 @@ public class EffettuaAutenticazioneBoundary {
      * @param request il JSON di richiesta di registrazione
      * @return la risposta
      */
-    @PostMapping("registrazione")
+    @PostMapping("/registrazione")
     public ResponseEntity<Void> attivaRegistrazione(
             @Valid @RequestBody RegisterRequest request) {
         handler.attivaRegistrazione(request); // Avvio la registrazione

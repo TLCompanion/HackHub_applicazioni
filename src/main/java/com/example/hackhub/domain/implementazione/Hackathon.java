@@ -288,4 +288,8 @@ public class Hackathon {
     public int getMaxIscrizioni() {
         return this.maxIscrizioni;
     }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 }

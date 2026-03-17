@@ -1,4 +1,4 @@
-package com.example.hackhub.servizi;
+package com.example.hackhub.testJunit.servizi;
 
 class ServizioNotificheTest {
 /*

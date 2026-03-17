@@ -44,12 +44,7 @@ public class CreaHackathonHandler {
      */
     @Transactional
     public void avviaCreazioneHackathon(HackathonRequest request, String nomeUtente) {
-        if (repositoryHackathon.existsByNome(request.nome())){
-            throw new ForbiddenException("Esiste già un hackathon con questo nome");
-        }
-        if (request.nomeGiudice().equals(nomeUtente) || request.nomeMentori().contains(nomeUtente)) {
-            throw new ForbiddenException("L'organizzatore non può essere anche giudice o mentore");
-        }
+        validazione(request, nomeUtente);
         HackathonBuilder builder = new HackathonBuilder();
         builder.reset();
         buildSteps(builder, request);
@@ -57,6 +52,25 @@ public class CreaHackathonHandler {
         repositoryHackathon.save(hackathon);
         gestisciOrganizzatore(nomeUtente, hackathon);
         gestisciInvitiStaff(hackathon, request.nomeMentori(), request.nomeGiudice());
+    }
+
+    private void validazione(HackathonRequest request, String nomeUtente) {
+        if (repositoryHackathon.existsByNome(request.nome())){
+            throw new ForbiddenException("Esiste già un hackathon con questo nome");
+        }
+        if (repositoryUtenti.findByNomeUtente(request.nomeGiudice()).isEmpty() || request.nomeMentori().stream().
+                anyMatch(nome -> repositoryUtenti.findByNomeUtente(nome).isEmpty())) {
+            throw new NotFoundException("Uno o più utenti specificati non esistono");
+        }
+        if (request.nomeGiudice().equals(nomeUtente) || request.nomeMentori().contains(nomeUtente)) {
+            throw new ForbiddenException("L'organizzatore non può essere anche giudice o mentore");
+        }
+        if (request.nomeMentori().contains(request.nomeGiudice())) {
+            throw new ForbiddenException("Un utente non può essere sia giudice che mentore");
+        }
+        if (request.nomeMentori().size() != request.nomeMentori().stream().distinct().count()) {
+            throw new ForbiddenException("Non possono esserci nomi duplicati tra i mentori");
+        }
     }
 
     private void buildSteps(HackathonBuilder builder, HackathonRequest request) {
@@ -99,9 +113,6 @@ public class CreaHackathonHandler {
                 new NotFoundException("L'utente specificato non esiste: " + nome))).toList();
         Utente giudice = repositoryUtenti.findByNomeUtente(nomeGiudice).orElseThrow(() ->
                 new NotFoundException("L'utente specificato non esiste: " + nomeGiudice));
-        if (mentori.contains(giudice)) {
-            throw new ForbiddenException("Un utente non può essere sia giudice che mentore");
-        }
         return new HashMap<>(){{
             put(giudice, RuoloStaff.GIUDICE);
             mentori.forEach(mentore -> put(mentore, RuoloStaff.MENTORE));

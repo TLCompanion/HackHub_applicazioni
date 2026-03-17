@@ -4,12 +4,12 @@ import com.example.hackhub.domain.implementazione.Utente;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 /**
@@ -25,9 +25,9 @@ public class ServizioJwt {
 
     /**
      * Metodo helper per prelevare la chiave
-     * @return
+     * @return la chiave segreta per firmare i token Jwt, ottenuta dalla stringa jwtSecret
      */
-    private Key getSigningKey() { return Keys.hmacShaKeyFor(jwtSecret.getBytes()); }
+    private SecretKey getSigningKey() { return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8)); }
 
     /**
      * Metodo che genera un token Jwt per un Utente che tenta di accedere alla piattaforma
@@ -41,10 +41,10 @@ public class ServizioJwt {
         Date expiryDate = new Date(now.getTime()+jwtExpirationMs);
 
         return Jwts.builder()
-                .setSubject(utente.getNomeUtente())
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .subject(utente.getNomeUtente())
+                .issuedAt(now)
+                .expiration(expiryDate)
+                .signWith(getSigningKey())
                 .compact();
     }
 
@@ -54,13 +54,13 @@ public class ServizioJwt {
      * @return nomeUtente
      */
     public String estraiNomeUtente(String token) {
-        if (token == null) throw new IllegalArgumentException("L'utente passato è nullo");
+        if (token == null) throw new IllegalArgumentException("Il token è nullo");
 
-        return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
                 .build()
-                .parseClaimsJws(token)
-                .getBody()
+                .parseSignedClaims(token)
+                .getPayload()
                 .getSubject();
     }
 
@@ -75,11 +75,11 @@ public class ServizioJwt {
             throw new IllegalArgumentException("Token o utente passati nulli");
 
         try {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
+            Claims claims = Jwts.parser()
+                    .verifyWith(getSigningKey())
                     .build()
-                    .parseClaimsJws(token)
-                    .getBody();
+                    .parseSignedClaims(token)
+                    .getPayload();
             if (!claims.getSubject().equals(utente.getNomeUtente()))
                 throw new JwtException("Token non corrispondente all'utente");
         }

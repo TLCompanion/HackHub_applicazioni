@@ -1,4 +1,4 @@
-package com.example.hackhub.servizi;
+package com.example.hackhub.testJunit.servizi;
 
 import com.example.hackhub.domain.implementazione.Hackathon;
 import com.example.hackhub.domain.implementazione.Periodo;

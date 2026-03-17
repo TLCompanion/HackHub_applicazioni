@@ -38,6 +38,5 @@ public class RispondeRichiesteSupportoHandler {
                 .orElseThrow(() -> new RuntimeException("Staff non trovato"));
         servizioNotifiche.creaNotifica(notifica.getDestinatario(), TipoNotifica.RICHIESTA_SUPPORTO,
                 staff.getUtente().getNomeUtente() + " ha risposto alla tua richiesta di supporto: Consigli per superare il problema");
-        repositoryNotifica.save(notifica);
     }
 }

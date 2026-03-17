@@ -20,6 +20,8 @@ public abstract class Richiesta {
     private String nomeMittente;
     @OneToOne
     private Utente destinatario;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private StatoRichiesta stato;
     private String payload;
     private LocalDateTime scadenza;

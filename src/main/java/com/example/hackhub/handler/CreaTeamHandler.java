@@ -58,7 +58,5 @@ public class CreaTeamHandler {
         MembroTeam leader = new MembroTeam(utente, team, RuoloTeam.LEADER);
         team.setLeader(leader);
         repositoryTeam.save(team);
-        //TODO verificare se funziona anche senza questo save, visto che c'è cascade all'interno di Team
-        //repositoryMembriTeam.save(leader);
     }
 }

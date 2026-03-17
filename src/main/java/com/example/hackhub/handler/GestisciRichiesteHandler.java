@@ -1,6 +1,5 @@
 package com.example.hackhub.handler;
 
-import com.example.hackhub.boundary.dto.RichiestaDTO;
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.RuoloTeam;
 import com.example.hackhub.domain.TipoNotifica;
@@ -10,12 +9,10 @@ import com.example.hackhub.eccezioni.NotFoundException;
 import com.example.hackhub.repository.*;
 import com.example.hackhub.servizi.ServizioNotifiche;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class GestisciInvitiHandler {
+public class GestisciRichiesteHandler {
 
     private final RepositoryUtenti repositoryUtenti;
     private final RepositoryRichiesta repositoryRichiesta;
@@ -31,7 +28,7 @@ public class GestisciInvitiHandler {
      * @param repositoryHackathon la repository per gli hackathon
      * @param servizioNotifiche il servizio che gestisce le notifiche
      */
-    public GestisciInvitiHandler(RepositoryUtenti repositoryUtenti, RepositoryRichiesta repositoryRichiesta, RepositoryHackathon repositoryHackathon, ServizioNotifiche servizioNotifiche, RepositoryStaff repositoryStaff, RepositoryMembriTeam repositoryMembriTeam) {
+    public GestisciRichiesteHandler(RepositoryUtenti repositoryUtenti, RepositoryRichiesta repositoryRichiesta, RepositoryHackathon repositoryHackathon, ServizioNotifiche servizioNotifiche, RepositoryStaff repositoryStaff, RepositoryMembriTeam repositoryMembriTeam) {
         this.repositoryUtenti = repositoryUtenti;
         this.repositoryRichiesta = repositoryRichiesta;
         this.repositoryHackathon = repositoryHackathon;
@@ -45,6 +42,7 @@ public class GestisciInvitiHandler {
      * @param nomeUtente il nome utente dell'utente che accetta la richiesta
      * @param idRichiesta l'identificativo della richeista
      */
+    @Transactional
     public void accettaRichiesta(String nomeUtente, String idRichiesta) {
         Utente utente = validazioneUtente(nomeUtente);
         Richiesta r = validazioneRichiesta(idRichiesta);
@@ -68,6 +66,14 @@ public class GestisciInvitiHandler {
         servizioNotifiche.creaNotifica(destinatario, TipoNotifica.ACCETTA_RICHIESTA, utente.getNomeUtente() + "ha accettato la tua richiesta");
     }
 
+    @Transactional
+    public void rifiutaRichiesta(String nomeUtente, String idRichiesta){
+        validazioneUtente(nomeUtente);
+        Richiesta r = validazioneRichiesta(idRichiesta);
+        r.rifiuta();
+        servizioNotifiche.creaNotifica(r.getDestinatario(), TipoNotifica.RIFIUTO_RICHIESTA, "La richiesta è stata rifiutata");
+    }
+
     private Utente accettaInvitoStaff(String nomeUtente, InvitoStaff invitoStaff){
         validazioneUtente(nomeUtente);
         Hackathon hackathon = invitoStaff.getHackathon();
@@ -89,7 +95,7 @@ public class GestisciInvitiHandler {
                 .orElseThrow(() -> new NotFoundException("L'utente non appartiene a nessun team"))
                 .getTeam();
         Staff mentore = repositoryStaff.findByUtente_NomeUtente(propostaCall.getMittente())
-                .orElseThrow(() -> new RuntimeException("Mentore non trovato"));
+                .orElseThrow(() -> new NotFoundException("Mentore non trovato"));
         CallSlot callSlot = new CallSlot(propostaCall.getPeriodo(), team, mentore, link);
         //todo manca da aggiungerlo al calendario
         return mentore.getUtente();
@@ -107,12 +113,12 @@ public class GestisciInvitiHandler {
     //non so se hanno senso o meno ma sono ripetuti in tutti i metodi quindi mi sembrava meglio fare così
     private Utente validazioneUtente(String nomeUtente){
         return repositoryUtenti.findByNomeUtente(nomeUtente)
-                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
+                .orElseThrow(() -> new NotFoundException("Utente non trovato"));
     }
 
     private Richiesta validazioneRichiesta(String idRichiesta){
         return repositoryRichiesta.findById(idRichiesta)
-                .orElseThrow(() -> new RuntimeException("Invito scaduto"));
+                .orElseThrow(() -> new NotFoundException("Invito scaduto"));
     }
 
     private Utente trovaOrganizzatore(Hackathon hackathon){
@@ -122,12 +128,5 @@ public class GestisciInvitiHandler {
                 .findFirst()
                 .orElseThrow(() ->
                 new NotFoundException("Organizzatore non trovato"));
-    }
-
-    public void rifiutaRichiesta(String nomeUtente, String idRichiesta){
-        validazioneUtente(nomeUtente);
-        Richiesta r = validazioneRichiesta(idRichiesta);
-        r.rifiuta();
-        servizioNotifiche.creaNotifica(r.getDestinatario(), TipoNotifica.RIFIUTO_RICHIESTA, "La richiesta è stata rifiutata");
     }
 }

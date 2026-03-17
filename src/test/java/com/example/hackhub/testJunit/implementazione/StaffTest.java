@@ -1,4 +1,4 @@
-package com.example.hackhub.domain.implementazione;
+package com.example.hackhub.testJunit.implementazione;
 
 import com.example.hackhub.domain.RuoloStaff;
 import org.junit.jupiter.api.Test;

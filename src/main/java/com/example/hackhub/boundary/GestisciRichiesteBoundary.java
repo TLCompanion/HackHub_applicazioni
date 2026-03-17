@@ -1,6 +1,6 @@
 package com.example.hackhub.boundary;
 
-import com.example.hackhub.handler.GestisciInvitiHandler;
+import com.example.hackhub.handler.GestisciRichiesteHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.*;
 
 @Validated
 @RestController
-@RequestMapping("/api/inviti")
-public class GestisciInvitiBoundary {
+@RequestMapping("/api/gestisciRichiesta")
+public class GestisciRichiesteBoundary {
 
-    private final GestisciInvitiHandler handler;
+    private final GestisciRichiesteHandler handler;
 
-    public GestisciInvitiBoundary(GestisciInvitiHandler handler) { this.handler = handler; }
+    public GestisciRichiesteBoundary(GestisciRichiesteHandler handler) { this.handler = handler; }
 
     /**
      * Metodo del boundary che accetta una richiesta di invito Staff, Team o una propostaCall

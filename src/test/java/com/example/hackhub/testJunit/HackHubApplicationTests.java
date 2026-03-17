@@ -1,4 +1,4 @@
-package com.example.hackhub;
+package com.example.hackhub.testJunit;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
