@@ -5,6 +5,7 @@ import com.example.hackhub.domain.implementazione.MembroTeam;
 import com.example.hackhub.domain.implementazione.Utente;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Collection;
 import java.util.Optional;
 
 public interface RepositoryMembriTeam extends JpaRepository<MembroTeam, String> {
@@ -17,4 +18,9 @@ public interface RepositoryMembriTeam extends JpaRepository<MembroTeam, String> 
     //TODO in uml aggiornare questo metodo
     Optional<MembroTeam> findByUtente_NomeUtente(String nomeUtente);
 
+    Collection<Object> findByUtente_idUtente(String utenteIdUtente);
+
+    String id(String id);
+
+    MembroTeam getMembroTeamById(String id);
 }

@@ -26,4 +26,13 @@ public class IscriviTeamBoundary {
         handler.avviaIscrizioneHackathon(nomeUtente, nomeHackathon);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/cancella")
+    public ResponseEntity<Void> annullaIscrizioneHackathon(
+            @AuthenticationPrincipal String nomeUtente,
+            @RequestParam String idHackathon
+    ) {
+        handler.annullaIscrizioneHackathon(nomeUtente, idHackathon);
+        return ResponseEntity.noContent().build();
+    }
 }

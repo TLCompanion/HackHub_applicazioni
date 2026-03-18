@@ -43,5 +43,11 @@ public enum TipoNotifica {
     /**
      * Un hackathon non soddisfa i requisiti per essere avviato
      */
-    IMPOSSIBILE_AVVIARE_HACKATHON
+    IMPOSSIBILE_AVVIARE_HACKATHON,
+
+    USCITA,
+
+    VIOLAZIONE_REGOLAMENTO,
+
+    ESPULSIONE_TEAM
 }

@@ -9,4 +9,6 @@ public interface RepositoryStaff extends JpaRepository<Staff, String> {
 
     //TODO aggiornare questo metodo in uml
     Optional<Staff> findByUtente_NomeUtente(String nomeUtente);
+
+    Staff getStaffById(String id);
 }

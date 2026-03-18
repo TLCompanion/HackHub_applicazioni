@@ -86,4 +86,8 @@ public class Team {
     public String getIdTeam() { return idTeam; }
 
     public List<MembroTeam> getMembri() { return membri;}
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 }
