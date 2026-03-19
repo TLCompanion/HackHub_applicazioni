@@ -25,19 +25,6 @@ public class VisualizzaBoundary {
     }
 
     /**
-     * Metodo del boundary che ritorna una lista di team
-     * @param idHackathon id dell'hackathon di riferimento
-     * @return esito della chiamata http
-     */
-    @GetMapping("/team")
-    public ResponseEntity<List<TeamDTO>> viewTeam(
-            @RequestParam String idHackathon,
-            @AuthenticationPrincipal String nomeUtente) {
-        List<TeamDTO> listaTeam = handler.viewTeam(nomeUtente, idHackathon);
-        return ResponseEntity.status(HttpStatus.OK).body(listaTeam);
-    }
-
-    /**
      * Metodo del boundary che ritorna una lista di valutazioni
      * @param idHackathon id dell'hackathon di riferimento
      * @return esito della chiamata http

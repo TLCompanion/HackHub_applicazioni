@@ -11,19 +11,24 @@ import java.util.UUID;
  * Classe che gestisce gli elementi generali di una richiesta
  */
 @Entity
+@Table(name = "richiesta")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "tipo")
+@DiscriminatorColumn(name = "tipo_richiesta")
 public abstract class Richiesta {
 
     @Id
     private String idRichiesta;
+    @Column(nullable = false)
     private String nomeMittente;
-    @OneToOne
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "destinatario_id_utente", nullable = false)
     private Utente destinatario;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private StatoRichiesta stato;
+    @Column(nullable = false)
     private String payload;
+    @Column(nullable = false)
     private LocalDateTime scadenza;
 
     public Richiesta(){}

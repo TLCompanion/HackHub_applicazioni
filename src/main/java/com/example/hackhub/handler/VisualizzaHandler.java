@@ -32,21 +32,6 @@ public class VisualizzaHandler {
         this.repositoryStaff = repositoryStaff;
     }
 
-    /**
-     * Metodo che ritorna la lista di team iscritti a un hackathon
-     * @param nomeUtente il nome utente dell'utente che sta visualizzando la lista
-     * @param idHackathon l'id dell'hackathon di riferimento
-     * @return la lista dei team iscritti
-     */
-    //TODO questo metodo va molto probabilmente tolto perchè viewIscrizioni fa la stessa cosa
-    public List<TeamDTO> viewTeam(String nomeUtente, String idHackathon) {
-        Hackathon hackathon = validaAutorizzazioni(nomeUtente, idHackathon);
-        List<Team> teams = new ArrayList<>();
-        for (IscrizioneTeam i : hackathon.getIscrizioni()) teams.add(i.getTeam());
-        return teams.stream().map(t -> new TeamDTO(t.getNome(), t.getMembri()))
-                .collect(Collectors.toList());
-    }
-
     //TODO nell'uml aggiungere questi controlli con le eccezioni per tutti i casi d'uso che utilizzano questo metodo di
 
     private Hackathon validaAutorizzazioni(String nomeUtente, String idHackathon) {
@@ -88,8 +73,9 @@ public class VisualizzaHandler {
         Hackathon hackathon = validaAutorizzazioni(nomeUtente, idHackathon);
         List<Sottomissione> sottomissioni = new ArrayList<>();
         for (IscrizioneTeam i : hackathon.getIscrizioni()) sottomissioni.add(i.getSottomissione());
+
         return  sottomissioni.stream().map(s -> new SottomissioneDTO
-                (s.getLink(), s.getValutazione())).collect(Collectors.toList());
+                (s.getLink(), s.getValutazione().getDescrizione(), s.getValutazione().getVoto())).collect(Collectors.toList());
     }
 
     /**
@@ -100,7 +86,7 @@ public class VisualizzaHandler {
     public List<IscrizioneTeamDTO> viewIscrizioni(String nomeUtente, String idHackathon) {
         Hackathon hackathon = validaAutorizzazioni(nomeUtente, idHackathon);
         return hackathon.getIscrizioni().stream().map(i -> new IscrizioneTeamDTO
-                (i.getHackathon(), i.getTeam(), i.getSottomissione())).collect(Collectors.toList());
+                (i.getHackathon().getNome(), i.getTeam().getNome(), i.getSottomissione().getLink())).collect(Collectors.toList());
     }
 
     /**

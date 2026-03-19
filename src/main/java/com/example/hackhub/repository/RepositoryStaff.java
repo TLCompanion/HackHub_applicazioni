@@ -21,5 +21,5 @@ public interface RepositoryStaff extends JpaRepository<Staff, String> {
      * @param id l'id del membro dello staff
      * @return il membro dello staff se esiste, altrimenti un optional vuoto
      */
-    Optional<Staff> getStaffById(String id);
+    Optional<Staff> getStaffByIdStaff(String id);
 }

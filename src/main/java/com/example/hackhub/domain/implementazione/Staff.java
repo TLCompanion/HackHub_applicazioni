@@ -10,19 +10,19 @@ import java.util.UUID;
  * in cui lavora
  */
 @Entity
-@Table(name = "staff", uniqueConstraints = @UniqueConstraint(columnNames = {"id_utente", "id_hackathon"}))
+@Table(name = "staff")
 public class Staff {
 
     @Id
     @Column(nullable = false, updatable = false)
-    private String id;
+    private String idStaff;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "id_utente", nullable = false)
+    @JoinColumn(name = "utente_id_utente", nullable = false)
     private Utente utente;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "id_hackathon", nullable = false)
+    @JoinColumn(name = "hackathon_id_hackathon", nullable = false)
     private Hackathon hackathon;
 
     @Enumerated(EnumType.STRING)
@@ -49,8 +49,8 @@ public class Staff {
     // salva l'entità per la prima volta.
     @PrePersist
     private void assegnaId() {
-        if (this.id == null) {
-            this.id = "MS-" + UUID.randomUUID();
+        if (this.idStaff == null) {
+            this.idStaff = "MS-" + UUID.randomUUID();
         }
     }
 
@@ -72,5 +72,9 @@ public class Staff {
 
     public void setHackathon(Hackathon hackathon) {
         this.hackathon = hackathon;
+    }
+
+    public String getIdStaff() {
+        return idStaff;
     }
 }

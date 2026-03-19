@@ -20,7 +20,7 @@ public class Sottomissione {
     private String link; //allegato al file con il progetto richiesto dall'hackathon
 
     @OneToOne
-    @JoinColumn(name = "id_valutazione")
+    @JoinColumn(name = "valutazione_id_valutazione")
     private Valutazione valutazione;
 
     public Sottomissione() {}

@@ -26,7 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 class VisualizzaBoundaryIT {
-
     private static final String BASE_URL = "/api/visualizzaListe";
 
     private static final String UTENTE = "francesca";
@@ -41,8 +40,8 @@ class VisualizzaBoundaryIT {
     @Test
     void viewTeam_ok() throws Exception {
 
-        List<TeamDTO> risposta = List.of();
-        when(handler.viewTeam(UTENTE, HACKATHON_ID)).thenReturn(risposta);
+        //List<TeamDTO> risposta = List.of();
+       // when(handler.viewTeam(UTENTE, HACKATHON_ID)).thenReturn(risposta);
 
         mockMvc.perform(get(BASE_URL + "/team")
                         .param("idHackathon", HACKATHON_ID)

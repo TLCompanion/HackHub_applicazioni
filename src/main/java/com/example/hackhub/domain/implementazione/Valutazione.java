@@ -6,7 +6,7 @@ import java.util.UUID;
 
 /**
  * Valutazione fatta da parte di un giudice per una sottomissione inviata
- * da un' team ad un'hackathon
+ * da un team a un'hackathon
  */
 @Entity
 @Table(name = "valutazioni")
@@ -19,7 +19,7 @@ public class Valutazione {
     @Column(nullable = false)
     private int voto;
 
-    @Column
+    @Column(nullable = false)
     private String descrizione;
 
     public Valutazione() {}
