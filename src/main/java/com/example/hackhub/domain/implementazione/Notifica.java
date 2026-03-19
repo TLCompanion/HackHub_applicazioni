@@ -11,14 +11,18 @@ import java.util.UUID;
  * Classe che gestisce le notifiche da inviare alla fine dell'hackathon
  */
 @Entity
+@Table(name = "notifica")
 public class Notifica {
 
     @Id
     private String idNotifica;
-    @Transient
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "destinatario_id_utente", nullable = false)
     private Utente destinatario;
+    @Enumerated(EnumType.STRING)
     @Column(insertable=false, updatable=false)
     private TipoNotifica tipo;
+    @Column(nullable = false)
     private String payload;
 
     public Notifica() {}
@@ -33,10 +37,6 @@ public class Notifica {
         this.tipo = tipo;
         this.payload = payload;
     }
-
-    //PrePersist serve per fare operazioni prima di salvare l'entità nel database, in questo caso per assegnare un id
-    // univoco alla notifica se non è già stato assegnato, viene automaticamente chiamato da JPA/Hibernate quando si
-    // salva l'entità per la prima volta.
 
     /**
      * Assegna un id univoco ad ogni notifica

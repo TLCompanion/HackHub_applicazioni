@@ -1,8 +1,11 @@
 package com.example.hackhub.domain.implementazione;
 
 import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Transient;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.aspectj.weaver.ast.Call;
 
 import java.time.LocalDateTime;
@@ -11,6 +14,8 @@ import java.time.LocalDateTime;
 @DiscriminatorValue("PROPOSTA_CALL")
 public class PropostaCall extends Richiesta {
 
+    @Embedded
+    @Valid
     private Periodo periodo; // Periodo che indica l'arco di tempo di durata della call
 
     public PropostaCall() {}

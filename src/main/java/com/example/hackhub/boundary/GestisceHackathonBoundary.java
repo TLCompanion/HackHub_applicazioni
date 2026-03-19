@@ -19,15 +19,15 @@ public class GestisceHackathonBoundary {
     /**
      * Metodo della boundary per segnalare una violazione
      * @param nomeOrganizzatore il nome dell'organizzatore
-     * @param team il team che ha violato le regole
+     * @param nomeTeam il nome del team che ha violato le regole
      * @return una nuova chiamata http
      */
     @PostMapping("/segnalaViolazione")
     public ResponseEntity<Void> segnalaViolazione(
             @AuthenticationPrincipal String nomeOrganizzatore,
-            @RequestParam Team team
+            @RequestParam String nomeTeam
     ){
-        handler.segnalaViolazione(nomeOrganizzatore, team);
+        handler.segnalaViolazione(nomeOrganizzatore, nomeTeam);
         return ResponseEntity.ok().build();
     }
 

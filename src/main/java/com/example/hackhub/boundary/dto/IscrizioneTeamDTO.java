@@ -6,8 +6,8 @@ import com.example.hackhub.domain.implementazione.Team;
 import jakarta.validation.constraints.NotBlank;
 
 public record IscrizioneTeamDTO(
-        @NotBlank Hackathon hackathon,
-        @NotBlank Team team,
-        @NotBlank Sottomissione sottomissione
+        @NotBlank String nomeHackathon,
+        @NotBlank String nomeTeam,
+        String linkSottomissione
         ) {
 }

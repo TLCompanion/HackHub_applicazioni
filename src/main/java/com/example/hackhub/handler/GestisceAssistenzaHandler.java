@@ -5,6 +5,8 @@ import com.example.hackhub.domain.RuoloTeam;
 import com.example.hackhub.domain.implementazione.Hackathon;
 import com.example.hackhub.domain.implementazione.MembroTeam;
 import com.example.hackhub.domain.implementazione.Staff;
+import com.example.hackhub.eccezioni.BadRequestException;
+import com.example.hackhub.eccezioni.ConflictException;
 import com.example.hackhub.eccezioni.NotFoundException;
 import com.example.hackhub.repository.RepositoryHackathon;
 import com.example.hackhub.repository.RepositoryIscrizioniTeam;
@@ -47,17 +49,17 @@ public class GestisceAssistenzaHandler {
      * @param idHackathon l'hackathon associato
      */
     public void chiediAssistenza(String nomeUtente, String idMentore, String idHackathon){
-        MembroTeam leader = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new IllegalArgumentException("L'utente non è membro di alcun team."));
+        MembroTeam leader = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new ConflictException("L'utente non è membro di alcun team."));
         if (leader.getRuolo() != RuoloTeam.LEADER){
-            throw new IllegalArgumentException("Solo il leader del team può richiedere assistenza.");
+            throw new ConflictException("Solo il leader del team può richiedere assistenza.");
         }
-        Hackathon hackathon = repositoryHackathon.findById(idHackathon).orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato."));
+        Hackathon hackathon = repositoryHackathon.findById(idHackathon).orElseThrow(() -> new BadRequestException("Hackathon non trovato."));
         if (repositoryIscrizioniTeam.findByTeamAndHackathon(leader.getTeam(), hackathon).isEmpty()){
-            throw new IllegalArgumentException("Il team non è iscritto all'hackathon.");
+            throw new ConflictException("Il team non è iscritto all'hackathon.");
         }
-        Staff mentore = repositoryStaff.getStaffById(idMentore).stream().filter(s -> s.getRuolo() == RuoloStaff.MENTORE).findFirst().orElseThrow(() -> new NotFoundException("L'utente selezionato non è un mentore"));
-        if (hackathon.equals(mentore.getHackathon())){
-            throw new IllegalArgumentException("Il mentore selezionato non è associato all'hackathon.");
+        Staff mentore = repositoryStaff.getStaffByIdStaff(idMentore).stream().filter(s -> s.getRuolo() == RuoloStaff.MENTORE).findFirst().orElseThrow(() -> new NotFoundException("L'utente selezionato non è un mentore"));
+        if (!hackathon.equals(mentore.getHackathon())){
+            throw new ConflictException("Il mentore selezionato non è associato all'hackathon.");
         }
         servizioNotifiche.creaNotifica(mentore.getUtente(), ASSISTENZA, "Richiesta di assistenza");
     }

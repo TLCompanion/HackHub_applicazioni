@@ -16,16 +16,16 @@ public class IscrizioneTeam {
 
     //private String idHackathon
     @ManyToOne(optional = false)
-    @JoinColumn(name = "id_hackathon", nullable = false)
+    @JoinColumn(name = "hackathon_id_hackathon", nullable = false)
     private Hackathon hackathon;
 
     //private String idTeam
     @ManyToOne(optional = false)
-    @JoinColumn(name = "id_team", nullable = false)
+    @JoinColumn(name = "team_id_team", nullable = false)
     private Team team;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_sottomissione")
+    @JoinColumn(name = "sottomissione_id_sottomissione")
     private Sottomissione sottomissione;
 
     public IscrizioneTeam() {}

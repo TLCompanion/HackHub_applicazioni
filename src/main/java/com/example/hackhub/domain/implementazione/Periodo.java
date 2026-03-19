@@ -12,8 +12,6 @@ import java.time.LocalTime;
 @Embeddable
 public class Periodo {
 
-    //NotNull è utilizzato per assicurarsi che i campi data e ora non siano nulli, garantendo così che un periodo sia
-    // sempre definito correttamente.
     @NotNull
     private LocalDate dataInizio;
     @NotNull

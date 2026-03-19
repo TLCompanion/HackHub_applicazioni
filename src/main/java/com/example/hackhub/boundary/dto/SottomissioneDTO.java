@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 
 public record SottomissioneDTO(
         @NotBlank String link,
-        Valutazione valutazione
+        String giudizio,
+        int punteggio
 ) {
 }

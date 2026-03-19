@@ -14,16 +14,16 @@ public class MembroTeam {
 
     @Id
     @Column(nullable = false, updatable = false)
-    private String id;
+    private String idMembroTeam;
 
     //private String idUtente
     @OneToOne(optional = false)
-    @JoinColumn(name = "id_utente")
+    @JoinColumn(name = "utente_id_utente")
     private Utente utente;
 
     //private String idTeam
     @ManyToOne(optional = false)
-    @JoinColumn(name = "id_team",nullable = false)
+    @JoinColumn(name = "team_id_team",nullable = false)
     private Team team;
 
     @Enumerated(EnumType.STRING)
@@ -53,14 +53,14 @@ public class MembroTeam {
      */
     @PrePersist
     private void assegnaId() {
-        if (this.id == null) {
-            this.id = "MT-" + UUID.randomUUID();
+        if (this.idMembroTeam == null) {
+            this.idMembroTeam = "MT-" + UUID.randomUUID();
         }
     }
 
     // METODI GETTER
 
-    public String getId() { return id; }
+    public String getIdMembroTeam() { return idMembroTeam; }
 
     public String getIdUtente() { return utente.getIdUtente(); }
 

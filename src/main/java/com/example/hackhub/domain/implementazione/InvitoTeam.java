@@ -11,12 +11,17 @@ import java.time.LocalDateTime;
 @DiscriminatorValue("INVITO_TEAM")
 public class InvitoTeam extends Richiesta {
 
-    @Transient
+    @ManyToOne
+    @JoinColumn(name = "team_id_team")
     private Team team;
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
 
     public InvitoTeam() {}
     /**
-     * Costruttore che inizializza un invito ad entrare in un team
+     * Costruttore che inizializza un invito a entrare in un team
      * @param nomeMittente il nome del mittente
      * @param payload il messaggio
      * @param destinatario il destinatario

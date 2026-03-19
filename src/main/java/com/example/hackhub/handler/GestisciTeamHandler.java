@@ -1,7 +1,6 @@
 package com.example.hackhub.handler;
 
 import com.example.hackhub.domain.RuoloTeam;
-import com.example.hackhub.domain.implementazione.Hackathon;
 import com.example.hackhub.domain.implementazione.IscrizioneTeam;
 import com.example.hackhub.domain.implementazione.MembroTeam;
 import com.example.hackhub.domain.implementazione.Team;
@@ -125,7 +124,7 @@ public class GestisciTeamHandler {
         if (!repositoryIscrizioniTeam.findByTeam(team).isEmpty()) {
             throw new NotFoundException("Il team è iscritto ad un'hackathon, non puoi espellere un membro");
         }
-        if (membroDaEspellere.getId().equals(leader.getId())) {
+        if (membroDaEspellere.getIdMembroTeam().equals(leader.getIdMembroTeam())) {
             throw new ConflictException("Il leader non può espellere se stesso");
         }
         team.getMembri().remove(membroDaEspellere);

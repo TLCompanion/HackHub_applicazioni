@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 @DiscriminatorValue("INVITO_STAFF")
 public class InvitoStaff extends Richiesta {
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "id_hackathon", nullable = false)
+    @ManyToOne()
+    @JoinColumn(name = "hackathon_id_hackathon")
     private Hackathon hackathon;
     @Enumerated(EnumType.STRING)
     private RuoloStaff ruolo;
