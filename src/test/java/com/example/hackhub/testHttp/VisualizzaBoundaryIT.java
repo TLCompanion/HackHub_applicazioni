@@ -1,8 +1,15 @@
 package com.example.hackhub.testHttp;
 
-import com.example.hackhub.boundary.dto.*;
+import com.example.hackhub.domain.RuoloStaff;
+import com.example.hackhub.domain.TipoNotifica;
 import com.example.hackhub.domain.implementazione.*;
-import com.example.hackhub.handler.VisualizzaHandler;
+import com.example.hackhub.repository.RepositoryHackathon;
+import com.example.hackhub.repository.RepositoryNotifica;
+import com.example.hackhub.repository.RepositoryRichiesta;
+import com.example.hackhub.repository.RepositoryStaff;
+import com.example.hackhub.repository.RepositoryUtenti;
+import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,138 +17,305 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-// TODO classe test da sistemare, non riesco a farla funzionare porco cane
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
 class VisualizzaBoundaryIT {
-    private static final String BASE_URL = "/api/visualizzaListe";
 
-    private static final String UTENTE = "francesca";
-    private static final String HACKATHON_ID = "hack1";
+
+    private static final String BASE_URL = "/api/visualizzaListe";
+    private static final String NOME_UTENTE = "francesca";
+
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockitoSpyBean
-    private VisualizzaHandler handler;
 
-    @Test
-    void viewTeam_ok() throws Exception {
+    @Autowired
+    private RepositoryHackathon repositoryHackathon;
 
-        //List<TeamDTO> risposta = List.of();
-       // when(handler.viewTeam(UTENTE, HACKATHON_ID)).thenReturn(risposta);
 
-        mockMvc.perform(get(BASE_URL + "/team")
-                        .param("idHackathon", HACKATHON_ID)
-                        .with(authentication(auth(UTENTE))))
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].id").value("team1"))
-                .andExpect(jsonPath("$[1].id").value("team2"));
+    @Autowired
+    private RepositoryRichiesta repositoryRichiesta;
+
+
+    @Autowired
+    private RepositoryNotifica repositoryNotifica;
+
+
+    @Autowired
+    private RepositoryUtenti repositoryUtenti;
+
+
+    @Autowired
+    private RepositoryStaff repositoryStaff;
+
+
+    @Autowired
+    private EntityManager entityManager;
+
+
+    private Utente utente;
+    private Hackathon hackathon;
+
+
+    @BeforeEach
+    void setUp() {
+        repositoryRichiesta.deleteAll();
+        repositoryNotifica.deleteAll();
+        repositoryStaff.deleteAll();
+        repositoryHackathon.deleteAll();
+        repositoryUtenti.deleteAll();
+
+
+        utente = new Utente(NOME_UTENTE, "francesca@example.it", "hash123");
+        repositoryUtenti.saveAndFlush(utente);
+
+
+        Periodo periodoHackathon = new Periodo(
+                LocalDate.now().plusDays(5),
+                LocalTime.of(9, 0),
+                LocalDate.now().plusDays(7),
+                LocalTime.of(18, 0)
+        );
+
+
+        hackathon = new Hackathon(
+                "HackathonTest",
+                periodoHackathon,
+                BigDecimal.valueOf(1000),
+                "Camerino",
+                5,
+                3,
+                LocalDateTime.now().plusDays(2),
+                "Regolamento di test",
+                10
+        );
+        repositoryHackathon.saveAndFlush(hackathon);
+
+
+        Staff staff = new Staff(utente, RuoloStaff.GIUDICE);
+        hackathon.aggiungiStaff(staff);
+        repositoryHackathon.saveAndFlush(hackathon);
     }
+
 
     @Test
     void viewValutazioni_ok() throws Exception {
+        Team team1 = new Team("teamx");
+        Team team2 = new Team("teamy");
+        entityManager.persist(team1);
+        entityManager.persist(team2);
 
-        List<ValutazioneRequest> risposta = List.of();
 
-        when(handler.viewValutazioni(UTENTE, HACKATHON_ID)).thenReturn(risposta);
+        Valutazione valutazione1 = new Valutazione(8, "Buono");
+        Valutazione valutazione2 = new Valutazione(9, "Ottimo");
+        entityManager.persist(valutazione1);
+        entityManager.persist(valutazione2);
+
+
+        Sottomissione sottomissione1 = new Sottomissione("link-sub-1");
+        sottomissione1.impostaValutazione(valutazione1);
+
+
+        Sottomissione sottomissione2 = new Sottomissione("link-sub-2");
+        sottomissione2.impostaValutazione(valutazione2);
+
+
+        IscrizioneTeam iscrizione1 = new IscrizioneTeam(team1, hackathon);
+        iscrizione1.aggiungiSottomissione(sottomissione1);
+
+
+        IscrizioneTeam iscrizione2 = new IscrizioneTeam(team2, hackathon);
+        iscrizione2.aggiungiSottomissione(sottomissione2);
+
+
+        hackathon.aggiungiIscrizione(iscrizione1);
+        hackathon.aggiungiIscrizione(iscrizione2);
+        repositoryHackathon.saveAndFlush(hackathon);
+
 
         mockMvc.perform(get(BASE_URL + "/valutazioni")
-                        .param("idHackathon", HACKATHON_ID)
-                        .with(authentication(auth(UTENTE))))
+                        .param("idHackathon", hackathon.getIdHackathon())
+                        .with(authentication(auth())))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].teamId").value("team1"))
-                .andExpect(jsonPath("$[0].punteggio").value(8))
-                .andExpect(jsonPath("$[1].teamId").value("team2"))
-                .andExpect(jsonPath("$[1].punteggio").value(9));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[*].giudizio", containsInAnyOrder("Buono", "Ottimo")))
+                .andExpect(jsonPath("$[*].punteggio", containsInAnyOrder(8, 9)));
     }
+
 
     @Test
     void viewSottomissioni_ok() throws Exception {
+        Team team1 = new Team("teamx");
+        Team team2 = new Team("teamy");
+        entityManager.persist(team1);
+        entityManager.persist(team2);
 
-        List<SottomissioneDTO> risposta = List.of();
 
-        when(handler.viewSottomissioni(UTENTE, HACKATHON_ID)).thenReturn(risposta);
+        Valutazione valutazione1 = new Valutazione(8, "Buono");
+        Valutazione valutazione2 = new Valutazione(9, "Ottimo");
+        entityManager.persist(valutazione1);
+        entityManager.persist(valutazione2);
+
+
+        Sottomissione sottomissione1 = new Sottomissione("link-sub-1");
+        sottomissione1.impostaValutazione(valutazione1);
+
+
+        Sottomissione sottomissione2 = new Sottomissione("link-sub-2");
+        sottomissione2.impostaValutazione(valutazione2);
+
+
+        IscrizioneTeam iscrizione1 = new IscrizioneTeam(team1, hackathon);
+        iscrizione1.aggiungiSottomissione(sottomissione1);
+
+
+        IscrizioneTeam iscrizione2 = new IscrizioneTeam(team2, hackathon);
+        iscrizione2.aggiungiSottomissione(sottomissione2);
+
+
+        hackathon.aggiungiIscrizione(iscrizione1);
+        hackathon.aggiungiIscrizione(iscrizione2);
+        repositoryHackathon.saveAndFlush(hackathon);
+
 
         mockMvc.perform(get(BASE_URL + "/sottomissioni")
-                        .param("idHackathon", HACKATHON_ID)
-                        .with(authentication(auth(UTENTE))))
+                        .param("idHackathon", hackathon.getIdHackathon())
+                        .with(authentication(auth())))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value("sub1"))
-                .andExpect(jsonPath("$[1].id").value("sub2"));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[*].link", containsInAnyOrder("link-sub-1", "link-sub-2")))
+                .andExpect(jsonPath("$[*].giudizio", containsInAnyOrder("Buono", "Ottimo")))
+                .andExpect(jsonPath("$[*].punteggio", containsInAnyOrder(8, 9)));
     }
+
 
     @Test
     void viewIscrizioni_ok() throws Exception {
+        Team team1 = new Team("teamx");
+        Team team2 = new Team("teamy");
+        entityManager.persist(team1);
+        entityManager.persist(team2);
 
-        List<IscrizioneTeamDTO> risposta = List.of();
 
-        when(handler.viewIscrizioni(UTENTE, HACKATHON_ID)).thenReturn(risposta);
+        Sottomissione sottomissione1 = new Sottomissione("link-sub-1");
+        Sottomissione sottomissione2 = new Sottomissione("link-sub-2");
+
+
+        IscrizioneTeam iscrizione1 = new IscrizioneTeam(team1, hackathon);
+        iscrizione1.aggiungiSottomissione(sottomissione1);
+
+
+        IscrizioneTeam iscrizione2 = new IscrizioneTeam(team2, hackathon);
+        iscrizione2.aggiungiSottomissione(sottomissione2);
+
+
+        hackathon.aggiungiIscrizione(iscrizione1);
+        hackathon.aggiungiIscrizione(iscrizione2);
+        repositoryHackathon.saveAndFlush(hackathon);
+
 
         mockMvc.perform(get(BASE_URL + "/iscrizioni")
-                        .param("idHackathon", HACKATHON_ID)
-                        .with(authentication(auth(UTENTE))))
+                        .param("idHackathon", hackathon.getIdHackathon())
+                        .with(authentication(auth())))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].teamId").value("team1"))
-                .andExpect(jsonPath("$[1].teamId").value("team2"));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[*].nomeHackathon", containsInAnyOrder("HackathonTest", "HackathonTest")))
+                .andExpect(jsonPath("$[*].nomeTeam", containsInAnyOrder("teamx", "teamy")))
+                .andExpect(jsonPath("$[*].linkSottomissione", containsInAnyOrder("link-sub-1", "link-sub-2")));
     }
+
 
     @Test
     void viewRichieste_ok() throws Exception {
-
-        List<RichiestaDTO> risposta = List.of(
-                new RichiestaDTO("req1", "nulla"),
-                new RichiestaDTO("req2", "niente")
+        PropostaCall richiesta1 = new PropostaCall(
+                "mentor1",
+                "payload-1",
+                utente,
+                LocalDateTime.now().plusDays(1),
+                new Periodo(
+                        LocalDate.now().plusDays(1),
+                        LocalTime.of(10, 0),
+                        LocalDate.now().plusDays(1),
+                        LocalTime.of(11, 0)
+                )
         );
 
-        when(handler.viewRichieste(UTENTE)).thenReturn(risposta);
+
+        PropostaCall richiesta2 = new PropostaCall(
+                "mentor2",
+                "payload-2",
+                utente,
+                LocalDateTime.now().plusDays(1),
+                new Periodo(
+                        LocalDate.now().plusDays(2),
+                        LocalTime.of(15, 0),
+                        LocalDate.now().plusDays(2),
+                        LocalTime.of(16, 0)
+                )
+        );
+
+
+        repositoryRichiesta.saveAll(List.of(richiesta1, richiesta2));
+        repositoryRichiesta.flush();
+
 
         mockMvc.perform(get(BASE_URL + "/richieste")
-                        .with(authentication(auth(UTENTE))))
+                        .with(authentication(auth())))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value("req1"))
-                .andExpect(jsonPath("$[1].id").value("req2"));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[*].payload", containsInAnyOrder("payload-1", "payload-2")));
     }
+
 
     @Test
     void viewNotifiche_ok() throws Exception {
+        Notifica notifica1 = new Notifica("notifica-1", utente, TipoNotifica.AVVIO_HACKATHON);
+        Notifica notifica2 = new Notifica("notifica-2", utente, TipoNotifica.VALUTAZIONE_CONCLUSA);
 
-        List<NotificaDTO> risposta = List.of(
-                new NotificaDTO("not1"),
-                new NotificaDTO("not2")
-        );
 
-        when(handler.viewNotifiche(UTENTE)).thenReturn(risposta);
+        repositoryNotifica.saveAll(List.of(notifica1, notifica2));
+        repositoryNotifica.flush();
+
 
         mockMvc.perform(get(BASE_URL + "/notifiche")
-                        .with(authentication(auth(UTENTE))))
+                        .with(authentication(auth())))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value("not1"))
-                .andExpect(jsonPath("$[1].id").value("not2"));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[*].messaggio", containsInAnyOrder("notifica-1", "notifica-2")));
     }
 
-    // =========================
-    // AUTH helper
-    // =========================
 
-    private UsernamePasswordAuthenticationToken auth(String username) {
+    private UsernamePasswordAuthenticationToken auth() {
         return new UsernamePasswordAuthenticationToken(
-                username,
+                VisualizzaBoundaryIT.NOME_UTENTE,
                 null,
                 List.of(new SimpleGrantedAuthority("ROLE_USER"))
         );
     }
 }
+
