@@ -74,14 +74,14 @@ public class GestisciTeamHandler {
 //            throw new NotFoundException("Il team non esiste");
 //        }
         //todo, secondo me in questo caso non serve la stringa dell'id del team, possiamo semplicemente risalire al team dal membro del team così:
-        MembroTeam membroTeam = repositoryMembriTeam.getMembroTeamById(idMembro).orElseThrow(() -> new NotFoundException("Membro del team non trovato"));
-        Team team = membroTeam.getTeam();
-        team.getMembri().remove(membroTeam);
-        repositoryMembriTeam.delete(membroTeam);
-        repositoryTeam.save(team);
-        for(MembroTeam m : team.getMembri()){
-            servizioNotifiche.creaNotifica(m.getUtente(), USCITA, "Il membro " + membroTeam.getUtente().getNomeUtente() + " è uscito dal team.");
-        }
+        //MembroTeam membroTeam = repositoryMembriTeam.getMembroTeamById(idMembro).orElseThrow(() -> new NotFoundException("Membro del team non trovato"));
+//        Team team = membroTeam.getTeam();
+//        team.getMembri().remove(membroTeam);
+//        repositoryMembriTeam.delete(membroTeam);
+//        repositoryTeam.save(team);
+//        for(MembroTeam m : team.getMembri()){
+//            servizioNotifiche.creaNotifica(m.getUtente(), USCITA, "Il membro " + membroTeam.getUtente().getNomeUtente() + " è uscito dal team.");
+//        }
     }
 
     /**

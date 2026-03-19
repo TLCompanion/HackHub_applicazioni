@@ -14,14 +14,34 @@ import java.util.Optional;
 
 public interface RepositoryHackathon extends JpaRepository<Hackathon, String> {
 
+    /**
+     * Controlla che esista un hackathon con il nome specificato
+     * @param nome il nome
+     * @return true se esiste, false altrimenti
+     */
     boolean existsByNome(String nome);
 
+    /**
+     * Trova l'hackathon con il nome specificato
+     * @param nomeHackathon il nome dell'hackathon
+     * @return l'hackathon, un optional vuoto se non esiste
+     */
     Optional<Hackathon> findByNome(String nomeHackathon);
 
+    /**
+     * Trova l'hackathon dal suo id
+     * @param idHackathon l'id dell'hackathon
+     * @return l'hackathon, un optional vuoto se non esiste
+     */
     Optional<Hackathon> findByIdHackathon(String idHackathon);
 
-    // Query per trovare tutti gli hackathon che hanno le iscrizioni chiuse e la data di inizio passata, quindi pronti
-    // per essere avviati (si mette quella passata perchè equals non è abbastanza preciso e potrebbe non funzionare)
+    /**
+     * Query per trovare tutti gli hackathon che hanno iscrizioni chiuse e la data di inizio passata, quindi pronti per essere avviati
+     * @param stato lo stato dell'hackathon
+     * @param today la data corrente
+     * @param nowTime l'ora corrente
+     * @return la lista degli hackathon da avviare
+     */
     @Query("""
             SELECT h\s
             FROM Hackathon h

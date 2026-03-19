@@ -8,5 +8,11 @@ import java.util.List;
 
 public interface RepositoryRichiesta  extends JpaRepository<Richiesta, String> {
 
+    /**
+     * Trova le richieste con un certo destinatario
+     * @param destinatario il destinatario
+     * @return la lista delle richieste, se non è presente nessuna richiesta con quel destinatario ritorna
+     * una lista vuota
+     */
     List<Richiesta> findAllByDestinatario(Utente destinatario);
 }

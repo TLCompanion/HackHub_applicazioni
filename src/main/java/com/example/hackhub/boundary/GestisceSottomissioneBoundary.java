@@ -22,6 +22,12 @@ public class GestisceSottomissioneBoundary {
         this.handler = handler;
     }
 
+    /**
+     * Invia una sottomissione per un hackathon
+     * @param nomeUtente il nome utente che la invia
+     * @param link il link contenente la sottomissione
+     * @return una nuova chiamata http
+     */
     @PostMapping("/invia")
     public ResponseEntity<Void> inviaSottomissione(
             @AuthenticationPrincipal String nomeUtente,
@@ -30,6 +36,11 @@ public class GestisceSottomissioneBoundary {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Rimuove una sottomissione inviata
+     * @param nomeUtente il nome utente che la vuole rimuovere
+     * @return una nuova chiamata http
+     */
     @PostMapping("/rimozione")
     public ResponseEntity<Void> attivaRimozioneSottomissione(
             @AuthenticationPrincipal String nomeUtente) {

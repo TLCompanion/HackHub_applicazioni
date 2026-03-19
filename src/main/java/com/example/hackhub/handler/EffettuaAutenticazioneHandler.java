@@ -47,6 +47,11 @@ public class EffettuaAutenticazioneHandler {
         repositoryUtenti.save(utente);
     }
 
+    /**
+     * Metodo che attiva l'autenticazione di un utente tramite una richiesta di login
+     * @param request la richiesta
+     * @return una nuova authResponse
+     */
     public AuthResponse attivaAutenticazione(LoginRequest request) {
         // Prelevo l'utente dal db, se non esiste esco
         Utente utente = repositoryUtenti.findByNomeUtente(request.nomeUtente())

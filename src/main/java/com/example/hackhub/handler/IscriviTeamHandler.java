@@ -74,6 +74,11 @@ public class IscriviTeamHandler {
             throw new ConflictException("Il numero massimo di iscrizioni è già stato raggiunto");
     }
 
+    /**
+     * Annulla l'iscrizione ad un hackathon
+     * @param nomeUtente il nome dell'utente
+     * @param idHackathon l'identificativo dell'hackathon
+     */
     public void annullaIscrizioneHackathon(String nomeUtente, String idHackathon){
         Hackathon hackathon = repositoryHackathon.findById(idHackathon).orElseThrow(() ->
                 new NotFoundException("Hackathon non trovato"));

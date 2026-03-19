@@ -22,6 +22,13 @@ public class ValutazioneBoundary {
         this.handler = handler;
     }
 
+    /**
+     * Inserisce una valutazione in una sottomissione
+     * @param idSottomissione l'id della sottomissione
+     * @param request il dto con i dati della valutazione
+     * @param nomeUtente il nome dell'utente che sta inserendo la valutazione
+     * @return una risposta http se la valutazione è stata inserita correttamente
+     */
     @PostMapping("{id}/valutazione")
     public ResponseEntity<Void> inserisciValutazione(
             @PathVariable("id") String idSottomissione,

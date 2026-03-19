@@ -66,6 +66,11 @@ public class GestisciRichiesteHandler {
         servizioNotifiche.creaNotifica(destinatario, TipoNotifica.ACCETTA_RICHIESTA, utente.getNomeUtente() + "ha accettato la tua richiesta");
     }
 
+    /**
+     * Metodo che gestisce il rifiuto ad una richiesta
+     * @param nomeUtente il nome dell'utente
+     * @param idRichiesta l'identificativo della richiesta
+     */
     @Transactional
     public void rifiutaRichiesta(String nomeUtente, String idRichiesta){
         validazioneUtente(nomeUtente);
@@ -74,6 +79,12 @@ public class GestisciRichiesteHandler {
         servizioNotifiche.creaNotifica(r.getDestinatario(), TipoNotifica.RIFIUTO_RICHIESTA, "La richiesta è stata rifiutata");
     }
 
+    /**
+     * Metodo che gestisce l'accettazione di un invito per lo staff
+     * @param nomeUtente il nome dell'utente
+     * @param invitoStaff l'invito
+     * @return l'organizzatore dell'hackathon a cui è stato invitato lo staff, così da poterlo notificare dell'accettazione dell'invito
+     */
     private Utente accettaInvitoStaff(String nomeUtente, InvitoStaff invitoStaff){
         validazioneUtente(nomeUtente);
         Hackathon hackathon = invitoStaff.getHackathon();
@@ -81,13 +92,25 @@ public class GestisciRichiesteHandler {
         return trovaOrganizzatore(hackathon);
     }
 
+    /**
+     * Metodo che gestisce l'accettazione di un invito per i team
+     * @param nomeUtente il nome dell'utente
+     * @param invitoTeam l'invito
+     * @return il leader del team da notificare
+     */
     private Utente accettaInvitoTeam(String nomeUtente, InvitoTeam invitoTeam){
         validazioneUtente(nomeUtente);
         Team team = invitoTeam.getTeam();
         return trovaLeader(team);
     }
 
-    private Utente accettaCall(String nomeUtente, PropostaCall propostaCall){
+    /**
+     * Accetta una call
+     * @param nomeUtente il nome dell'utente che accetta la call
+     * @param propostaCall la proposta di call
+     * @return il mentore che accetta la call
+     */
+    public Utente accettaCall(String nomeUtente, PropostaCall propostaCall){
         validazioneUtente(nomeUtente);
         String link = ""; //todo completare, come lo gestiamo sto link
         Team team = repositoryMembriTeam
@@ -101,6 +124,11 @@ public class GestisciRichiesteHandler {
         return mentore.getUtente();
     }
 
+    /**
+     * Trova il leader del team
+     * @param team il team
+     * @return l'utente se è valido, altrimenti lancia un'eccezione
+     */
     private Utente trovaLeader(Team team){
         return team.getMembri().stream().filter(
                 m -> m.getRuolo() == RuoloTeam.LEADER).
@@ -110,17 +138,31 @@ public class GestisciRichiesteHandler {
                         () -> new NotFoundException("Utente non trovato"));
     }
 
-    //non so se hanno senso o meno ma sono ripetuti in tutti i metodi quindi mi sembrava meglio fare così
+    /**
+     * Controlla che l'utente sia valido
+     * @param nomeUtente il nome dell'utente
+     * @return l'utente se è valido, altrimenti lancia un'eccezione
+     */
     private Utente validazioneUtente(String nomeUtente){
         return repositoryUtenti.findByNomeUtente(nomeUtente)
                 .orElseThrow(() -> new NotFoundException("Utente non trovato"));
     }
 
+    /**
+     * Controlla che la richiesta sia valida
+     * @param idRichiesta l'id della richiesta
+     * @return la richiesta se è valida, altrimenti lancia un'eccezione
+     */
     private Richiesta validazioneRichiesta(String idRichiesta){
         return repositoryRichiesta.findById(idRichiesta)
                 .orElseThrow(() -> new NotFoundException("Invito scaduto"));
     }
 
+    /**
+     * Trova l'organizzatore dell'hackathon
+     * @param hackathon l'hackathon
+     * @return l'organizzatore se è valido, altrimenti lancia un'eccezione
+     */
     private Utente trovaOrganizzatore(Hackathon hackathon){
         return hackathon.getStaff().stream().filter(
                 s -> s.getRuolo() == RuoloStaff.ORGANIZZATORE)

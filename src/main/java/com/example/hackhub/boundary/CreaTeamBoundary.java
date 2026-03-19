@@ -16,6 +16,12 @@ public class CreaTeamBoundary {
         this.handler = handler;
     }
 
+    /**
+     * Metodo che avvia la creazione di un team
+     * @param nomeUtente il nome dell'utente che vuole creare il team
+     * @param nomeTeam il nome del team
+     * @return una nuova chiamata http
+     */
     @PostMapping("")
     public ResponseEntity<Void> avviaCreazioneTeam(
             @AuthenticationPrincipal String nomeUtente,

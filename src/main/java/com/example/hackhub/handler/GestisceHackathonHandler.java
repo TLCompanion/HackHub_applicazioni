@@ -23,7 +23,6 @@ public class GestisceHackathonHandler {
     private final RepositoryStaff repositoryStaff;
     private final RepositoryTeam repositoryTeam;
     private final RepositoryUtenti repositoryUtenti;
-    private final RepositoryHackathon repositoryHackathon;
 
     /**
      * Crea una nuova istanza di un handler per la gestione degli hackathon
@@ -36,24 +35,28 @@ public class GestisceHackathonHandler {
         this.repositoryStaff = repositoryStaff;
         this.repositoryTeam = repositoryTeam;
         this.repositoryUtenti = repositoryUtenti;
-        this.repositoryHackathon = repositoryHackathon;
     }
 
     /**
      * Segnala che un team ha violato il regolamento
-     * @param idOrganizzatore l'organizzatore da notificare
+     * @param nomeOrganizzatore l'organizzatore da notificare
      * @param team il team che ha violato il regolamento
      */
-    public void segnalaViolazione(String idOrganizzatore, Team team){
+    public void segnalaViolazione(String nomeOrganizzatore, Team team){
         if (!repositoryTeam.existsById(team.getIdTeam())) {
             throw new IllegalArgumentException("Team non trovato");
         }
-        Staff organizzatore = repositoryStaff.getStaffById(idOrganizzatore)
+        Staff organizzatore = repositoryStaff.findByUtente_NomeUtente(nomeOrganizzatore)
                 .orElseThrow(() -> new IllegalArgumentException("Organizzatore non trovato"));
         servizioNotifiche.creaNotifica(organizzatore.getUtente(), VIOLAZIONE_REGOLAMENTO,
                 "Il team " + team.getNome() + " ha violato il regolamento dell'hackathon");
     }
 
+    /**
+     * Metodo per invitare un utente a diventare mentore di un hackathon. Solo gli organizzatori possono nominare mentori e le iscrizioni devono essere aperte
+     * @param nomeUtente il nome dell'organizzatore
+     * @param nomeUtenteDaInvitare il nome dell'utente da invitare
+     */
     public void nominaMentori(String nomeUtente, String nomeUtenteDaInvitare){
         Staff organizzatore = repositoryStaff.findByUtente_NomeUtente(nomeUtente)
                 .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));

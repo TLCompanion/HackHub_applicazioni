@@ -22,6 +22,12 @@ public class GestioneCallBoundary {
         this.handler = handler;
     }
 
+    /**
+     * Avvia una nuova proposta di call
+     * @param nomeUtente l'utente che manda la proposta
+     * @param request la richiesta della proposta con i dati
+     * @return una nuova chiamata http
+     */
     @PostMapping("/propostaCall")
     public ResponseEntity<Void> avviaPropostaCall(
             @AuthenticationPrincipal String nomeUtente,

@@ -18,6 +18,12 @@ public class IscriviTeamBoundary {
         this.handler = handler;
     }
 
+    /**
+     * Metodo della boundary per iscrivere un team ad un hackathon
+     * @param nomeUtente l'utente che vuole iscrivere il team
+     * @param nomeHackathon il nome dell'hackathon a cui iscrivere il team
+     * @return una nuova chiamata http
+     */
     @PostMapping("/team")
     public ResponseEntity<Void> avviaIscrizioneHackathon(
             @AuthenticationPrincipal String nomeUtente,
@@ -27,6 +33,12 @@ public class IscriviTeamBoundary {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Metodo della boundary per eliminare un iscrizione ad un hackathon
+     * @param nomeUtente l'utente che vuole eliminare l'iscrizione
+     * @param idHackathon l'id dell'hackathon a cui è iscritta il team
+     * @return una nuova chiamata http
+     */
     @DeleteMapping("/cancella")
     public ResponseEntity<Void> annullaIscrizioneHackathon(
             @AuthenticationPrincipal String nomeUtente,

@@ -10,17 +10,32 @@ import java.util.Optional;
 
 public interface RepositoryMembriTeam extends JpaRepository<MembroTeam, String> {
 
+    /**
+     * Controlla se esiste un membro del team con l'utente specificato
+     * @param utente l'utente
+     * @return vero se esiste, false altrimenti
+     */
     boolean existsByUtente(Utente utente);
 
-    //Serve optional per gestire i null
+    /**
+     * Trova un membro del team dal suo ruolo
+     * @param ruolo il ruolo
+     * @return il membro del team, un optional vuoto se non esiste
+     */
     Optional<MembroTeam> findMembroTeamByRuolo(RuoloTeam ruolo);
 
     //TODO in uml aggiornare questo metodo
+    /**
+     * Trova un membro del team dal suo nome utente
+     * @param nomeUtente il nome dell'utente
+     * @return il membro del team, un optional vuoto se non esiste
+     */
     Optional<MembroTeam> findByUtente_NomeUtente(String nomeUtente);
 
-    Collection<Object> findByUtente_idUtente(String utenteIdUtente);
-
-    String id(String id);
-
-    Optional<MembroTeam> getMembroTeamById(String id);
+    /**
+     * Trova un membro del team dal suo id
+     * @param utenteIdUtente id dell'utente
+     * @return il membro del team, un optional vuoto se non esiste
+     */
+    Optional<MembroTeam> findByUtente_idUtente(String utenteIdUtente);
 }

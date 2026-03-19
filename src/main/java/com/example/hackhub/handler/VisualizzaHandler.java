@@ -47,7 +47,8 @@ public class VisualizzaHandler {
                 .collect(Collectors.toList());
     }
 
-    //TODO nell'uml aggiungere questi controlli con le eccezioni per tutti i casi d'uso che utilizzano questo metodo di utilità
+    //TODO nell'uml aggiungere questi controlli con le eccezioni per tutti i casi d'uso che utilizzano questo metodo di
+
     private Hackathon validaAutorizzazioni(String nomeUtente, String idHackathon) {
         verificaUtenteOrFail(nomeUtente);
         Staff staff = repositoryStaff.findByUtente_NomeUtente(nomeUtente)

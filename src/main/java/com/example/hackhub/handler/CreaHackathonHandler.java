@@ -54,6 +54,11 @@ public class CreaHackathonHandler {
         gestisciInvitiStaff(hackathon, request.nomeMentori(), request.nomeGiudice());
     }
 
+    /**
+     * Controlla che i dati siano corretti
+     * @param request la richiesta di creazione dell'hackathon
+     * @param nomeUtente l'organizzatore che crea l'hackathon
+     */
     private void validazione(HackathonRequest request, String nomeUtente) {
         if (repositoryHackathon.existsByNome(request.nome())){
             throw new ForbiddenException("Esiste già un hackathon con questo nome");
@@ -73,6 +78,11 @@ public class CreaHackathonHandler {
         }
     }
 
+    /**
+     * Costruisce un hackathon tramite builder
+     * @param builder il builder
+     * @param request il dto che contiene i dati dell'hackathon da costruire
+     */
     private void buildSteps(HackathonBuilder builder, HackathonRequest request) {
         builder.impostaNome(request.nome());
         Periodo periodo = new Periodo(request.dataInizio(), request.dataFine());

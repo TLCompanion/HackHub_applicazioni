@@ -23,6 +23,12 @@ public class CreaHackathonBoundary {
         this.handler = handler;
     }
 
+    /**
+     * Metodo che avvia la creazione di un hackathon
+     * @param nomeUtente il nome dell'utente che vuole creare l'hackathon
+     * @param request la richiesta contenente i dati dell'hackathon da creare
+     * @return una nuova chiamata http
+     */
     @PostMapping
     public ResponseEntity<Void> avviaCreazioneHackathon(
             @AuthenticationPrincipal String nomeUtente,
