@@ -7,6 +7,7 @@ import com.example.hackhub.domain.implementazione.Team;
 import com.example.hackhub.domain.implementazione.Utente;
 import com.example.hackhub.domain.implementazione.statePattern.InCorso;
 import com.example.hackhub.domain.implementazione.statePattern.IscrizioniAperte;
+import com.example.hackhub.eccezioni.NotFoundException;
 import com.example.hackhub.repository.RepositoryHackathon;
 import com.example.hackhub.repository.RepositoryStaff;
 import com.example.hackhub.repository.RepositoryTeam;
@@ -23,6 +24,7 @@ public class GestisceHackathonHandler {
     private final RepositoryStaff repositoryStaff;
     private final RepositoryTeam repositoryTeam;
     private final RepositoryUtenti repositoryUtenti;
+    private final RepositoryHackathon repositoryHackathon;
 
     /**
      * Crea una nuova istanza di un handler per la gestione degli hackathon
@@ -35,6 +37,7 @@ public class GestisceHackathonHandler {
         this.repositoryStaff = repositoryStaff;
         this.repositoryTeam = repositoryTeam;
         this.repositoryUtenti = repositoryUtenti;
+        this.repositoryHackathon = repositoryHackathon;
     }
 
     /**
@@ -73,5 +76,10 @@ public class GestisceHackathonHandler {
             throw new IllegalArgumentException("L'utente da invitare è già uno staff");
         }
         servizioNotifiche.creaInvitoStaff(nomeUtente, staffDaInvitare, hackathon, RuoloStaff.MENTORE);
+    }
+
+    public void eliminaHackathon(String nomeUtente, String idHackathon){
+        Staff organizzatore = repositoryStaff.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("Utente non trovato"));
+        Hackathon hackathon = repositoryHackathon.findById(idHackathon).orElseThrow(() -> new NotFoundException("Hackathon non trovato"));
     }
 }

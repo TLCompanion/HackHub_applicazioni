@@ -44,4 +44,12 @@ public class GestisceHackathonBoundary {
         handler.nominaMentori(nomeUtente, nomeUtenteDaInvitare);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/elimina")
+    public ResponseEntity<Void> eliminaHackathon(
+            @AuthenticationPrincipal String nomeUtente,
+            @RequestParam String idHackathon){
+        handler.eliminaHackathon(nomeUtente, idHackathon);
+        return ResponseEntity.ok().build();
+    }
 }
