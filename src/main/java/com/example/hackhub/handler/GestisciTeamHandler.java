@@ -13,8 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.example.hackhub.domain.TipoNotifica.ESPULSIONE_TEAM;
-import static com.example.hackhub.domain.TipoNotifica.USCITA;
+import static com.example.hackhub.domain.TipoNotifica.*;
 
 @Service
 public class GestisciTeamHandler {
@@ -24,35 +23,49 @@ public class GestisciTeamHandler {
     private final RepositoryMembriTeam repositoryMembriTeam;
     private final ServizioNotifiche servizioNotifiche;
     private final RepositoryIscrizioniTeam repositoryIscrizioniTeam;
-    private final RepositoryHackathon repositoryHackathon;
 
+    /**
+     * Crea una nuova istanza dell'handler per gestire il team
+     * @param repositoryTeam la repository dei team
+     * @param repositoryUtenti la repository per gli utenti
+     * @param repositoryMembriTeam la repository per i membri dell team
+     * @param servizioNotifiche il servizio per le notifiche
+     * @param repositoryIscrizioniTeam la repository per le iscrizioni dei team
+     */
     public GestisciTeamHandler(RepositoryTeam repositoryTeam, RepositoryUtenti repositoryUtenti, RepositoryMembriTeam repositoryMembriTeam, ServizioNotifiche servizioNotifiche, RepositoryIscrizioniTeam repositoryIscrizioniTeam, RepositoryHackathon repositoryHackathon) {
         this.repositoryTeam = repositoryTeam;
         this.repositoryUtenti = repositoryUtenti;
         this.repositoryMembriTeam = repositoryMembriTeam;
         this.servizioNotifiche = servizioNotifiche;
         this.repositoryIscrizioniTeam = repositoryIscrizioniTeam;
-        this.repositoryHackathon = repositoryHackathon;
     }
 
-    public void cambiaNome(String nomeUtente, String nome, Team team) {
-        //todo sul sequence manca di controllare che l'utente sia il leader del team, altrimenti non può cambiare il nome del team
-        if (repositoryUtenti.findByNomeUtente(nomeUtente).isEmpty()) {
-            throw new NotFoundException("L'utente non esiste");
-        }
-        if (repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).stream().filter(m -> m.getRuolo() == RuoloTeam.LEADER).findFirst().isEmpty()) {
+    /**
+     * Metodo per cambiare nome ad un team
+     * @param nomeUtente il leader che vuole cambiare nome
+     * @param nome il nuovo nome del team
+     */
+    public void cambiaNomeTeam(String nomeUtente, String nome) {
+        MembroTeam leader = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("L'utente non è membro di nessun team"));
+        if (leader.getRuolo() != RuoloTeam.LEADER) {
             throw new ConflictException("L'utente non è il leader del team");
         }
-        if (repositoryTeam.existsById(team.getIdTeam())) {
-            throw new NotFoundException("Il team non esiste");
-        }
+        Team team = leader.getTeam();
         if (repositoryTeam.existsByNome(team.getNome())) {
             throw new ConflictException("Esiste già un team con questo nome");
         }
         team.setNome(nome);
         repositoryTeam.save(team);
+        for (MembroTeam membro : team.getMembri()){
+            servizioNotifiche.creaNotifica(membro.getUtente(), CAMBIO_NOME_TEAM, "Il team ha cambiato nome in " + nome + ".");
+        }
     }
 
+    /**
+     * Metodo per uscire da un team
+     * @param idMembro l'id del membro che vuole uscire
+     * @param idTeam l'id del team
+     */
     public void esciDalTeam(String idMembro, String idTeam){
         if (repositoryMembriTeam.findByUtente_idUtente((idMembro)).isEmpty()) {
             throw new NotFoundException("L'utente non è membro di nessun team");
@@ -61,7 +74,7 @@ public class GestisciTeamHandler {
 //            throw new NotFoundException("Il team non esiste");
 //        }
         //todo, secondo me in questo caso non serve la stringa dell'id del team, possiamo semplicemente risalire al team dal membro del team così:
-        MembroTeam membroTeam = repositoryMembriTeam.getMembroTeamById(idMembro);
+        MembroTeam membroTeam = repositoryMembriTeam.getMembroTeamById(idMembro).orElseThrow(() -> new NotFoundException("Membro del team non trovato"));
         Team team = membroTeam.getTeam();
         team.getMembri().remove(membroTeam);
         repositoryMembriTeam.delete(membroTeam);
@@ -71,6 +84,10 @@ public class GestisciTeamHandler {
         }
     }
 
+    /**
+     * Metodo per sciogliere un team
+     * @param nomeUtente il nome dell'utente che vuole sciogliere il team
+     */
     public void sciogliTeam(String nomeUtente){
         MembroTeam membroTeam = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("L'utente non è membro di nessun team"));
         if (membroTeam.getRuolo() != RuoloTeam.LEADER) {
@@ -90,20 +107,28 @@ public class GestisciTeamHandler {
         repositoryTeam.delete(team);
     }
 
-    public void espelliMembro(String nomeUtente, String idMembro){
-        //todo sul sequence diagram non c'è il nome utente, ma pensavo che visto che è il leader che decidere di espellere un membro forse ci serve e ci servono anche qeusti controlli?
+    /**
+     * Metodo per espellere un membro da un team
+     * @param nomeUtente il nome dell'utente che vuole espellere il membro
+     * @param nomeMembro il nome del membro da espellere
+     */
+    public void espelliMembro(String nomeUtente, String nomeMembro){
         MembroTeam leader = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("L'utente non è membro di nessun team"));
         if (leader.getRuolo() != RuoloTeam.LEADER) {
             throw new ConflictException("L'utente non è il leader del team");
         }
-        //todo qui ho usato un metodo diverso della repository forse è sbagliato
-        MembroTeam membroDaEspellere = repositoryMembriTeam.getMembroTeamById(idMembro);
+        MembroTeam membroDaEspellere = repositoryMembriTeam.findByUtente_NomeUtente(nomeMembro).orElseThrow(() -> new NotFoundException("Il membro da espellere non esiste"));
         if (!membroDaEspellere.getTeam().equals(leader.getTeam())) {
             throw new ConflictException("Il membro da espellere non è nel team del leader");
         }
         Team team = leader.getTeam();
+        if (!repositoryIscrizioniTeam.findByTeam(team).isEmpty()) {
+            throw new NotFoundException("Il team è iscritto ad un'hackathon, non puoi espellere un membro");
+        }
+        if (membroDaEspellere.getId().equals(leader.getId())) {
+            throw new ConflictException("Il leader non può espellere se stesso");
+        }
         team.getMembri().remove(membroDaEspellere);
-        //todo su uml manca da aggiornare il team
         repositoryMembriTeam.delete(membroDaEspellere);
         repositoryTeam.save(team);
         for(MembroTeam m : team.getMembri()){

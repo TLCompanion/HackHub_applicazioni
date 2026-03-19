@@ -22,5 +22,5 @@ public interface RepositoryMembriTeam extends JpaRepository<MembroTeam, String> 
 
     String id(String id);
 
-    MembroTeam getMembroTeamById(String id);
+    Optional<MembroTeam> getMembroTeamById(String id);
 }

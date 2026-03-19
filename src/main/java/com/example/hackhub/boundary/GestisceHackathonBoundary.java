@@ -4,10 +4,7 @@ import com.example.hackhub.domain.implementazione.Team;
 import com.example.hackhub.handler.GestisceHackathonHandler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/gestisciHackathon")
@@ -19,12 +16,20 @@ public class GestisceHackathonBoundary {
         this.handler = handler;
     }
 
-    @PostMapping
+    @PostMapping("/segnalaViolazione")
     public ResponseEntity<Void> segnalaViolazione(
             @AuthenticationPrincipal String idOrganizzatore,
             @RequestParam Team team
     ){
         handler.segnalaViolazione(idOrganizzatore, team);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/nominaMentori")
+    public ResponseEntity<Void> nominaMentori(
+            @AuthenticationPrincipal String nomeUtente,
+            @RequestParam String nomeUtenteDaInvitare){
+        handler.nominaMentori(nomeUtente, nomeUtenteDaInvitare);
         return ResponseEntity.ok().build();
     }
 }

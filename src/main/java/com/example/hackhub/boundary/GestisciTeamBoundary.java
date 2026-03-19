@@ -1,6 +1,5 @@
 package com.example.hackhub.boundary;
 
-import com.example.hackhub.domain.implementazione.Team;
 import com.example.hackhub.handler.GestisciTeamHandler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,26 +15,41 @@ public class GestisciTeamBoundary {
         this.handler = handler;
     }
 
+    /**
+     * Metodo della boundary per cambiare nome ad un team
+     * @param nomeUtente il nome dell'utente che vuole cambiare il nome
+     * @param nome il nuovo nome del team
+     * @return una nuova chiamata http
+     */
     @PutMapping("/cambiaNome")
     public ResponseEntity<Void> cambiaNome(
             @AuthenticationPrincipal String nomeUtente,
-            @RequestParam String nome,
-            @RequestParam Team team
+            @RequestParam String nome
     ){
-        handler.cambiaNome(nomeUtente, nome, team);
-        //todo ritornare questa response entity è giusto?
+        handler.cambiaNomeTeam(nomeUtente, nome);
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Metodo della boundary per uscire da un team
+     * @param nomeUtente il nome dell'utente che vuole uscire dal team
+     * @param idTeam l'id del team
+     * @return una nuova chiamata http
+     */
     @DeleteMapping("/eliminaMembro")
     public ResponseEntity<Void> esciDalTeam(
-            @AuthenticationPrincipal String idMembro,
+            @AuthenticationPrincipal String nomeUtente,
             @RequestParam String idTeam
     ){
-        handler.esciDalTeam(idMembro, idTeam);
+        handler.esciDalTeam(nomeUtente, idTeam);
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Metodo della boundary per sciogliere un team
+     * @param nomeUtente il nome dell'utente che vuole sciogliere il team
+     * @return una nuova chiamata http
+     */
     @DeleteMapping("/sciogliTeam")
     public ResponseEntity<Void> sciogliTeam(
             @AuthenticationPrincipal String nomeUtente){
@@ -43,6 +57,12 @@ public class GestisciTeamBoundary {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Metodo della boundary per espellere un membro da un team
+     * @param nomeUtente il nome dell'utente che vuole espellere il membro
+     * @param idMembro l'id del membro da espellere
+     * @return una nuova chiamata http
+     */
     @DeleteMapping("/espelliMembro")
     public ResponseEntity<Void> espelliMembro(
             @AuthenticationPrincipal String nomeUtente,

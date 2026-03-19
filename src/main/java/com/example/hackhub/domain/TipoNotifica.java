@@ -45,9 +45,28 @@ public enum TipoNotifica {
      */
     IMPOSSIBILE_AVVIARE_HACKATHON,
 
+    /**
+     * Un membro del team esce dal suo team
+     */
     USCITA,
 
+    /**
+     * Il mentore notifica l'organizzatore che un team ha violato il regolamento
+     */
     VIOLAZIONE_REGOLAMENTO,
 
-    ESPULSIONE_TEAM
+    /**
+     * Il mentore espelle un team per violazione del regolamento
+     */
+    ESPULSIONE_TEAM,
+
+    /**
+     * Il leader di un team chiede assistenza ad un mentore legato all'hackathon a cui è iscritto
+     */
+    ASSISTENZA,
+
+    /**
+     * Il leader cambia il nome del team
+     */
+    CAMBIO_NOME_TEAM
 }
