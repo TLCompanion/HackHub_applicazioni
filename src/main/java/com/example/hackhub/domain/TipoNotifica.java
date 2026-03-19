@@ -83,5 +83,9 @@ public enum TipoNotifica {
     /**
      * Il team ha perso l'hackathon e i membri del team vengono notificati della sconfitta
      */
-    SCONFITTA
+    SCONFITTA,
+
+    HACKATHON_CANCELLATO,
+
+    SCIOGLIMENTO_TEAM
 }

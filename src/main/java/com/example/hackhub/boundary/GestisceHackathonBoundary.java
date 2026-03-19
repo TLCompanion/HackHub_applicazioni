@@ -19,15 +19,16 @@ public class GestisceHackathonBoundary {
     /**
      * Metodo della boundary per segnalare una violazione
      * @param nomeOrganizzatore il nome dell'organizzatore
-     * @param nomeTeam il nome del team che ha violato le regole
+     * @param nomeMentore il mentore che lo segnala
      * @return una nuova chiamata http
      */
     @PostMapping("/segnalaViolazione")
     public ResponseEntity<Void> segnalaViolazione(
             @AuthenticationPrincipal String nomeOrganizzatore,
+            @RequestParam String nomeMentore,
             @RequestParam String nomeTeam
     ){
-        handler.segnalaViolazione(nomeOrganizzatore, nomeTeam);
+        handler.segnalaViolazione(nomeOrganizzatore, nomeMentore, nomeTeam);
         return ResponseEntity.ok().build();
     }
 
@@ -45,11 +46,66 @@ public class GestisceHackathonBoundary {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Metodo della boundary per eliminare un hackathon
+     * @param nomeUtente l'organizzatore che lo vuole eliminare
+     * @param idHackathon l'id dell'hackathon
+     * @return una nuova chiamata http
+     */
     @DeleteMapping("/elimina")
     public ResponseEntity<Void> eliminaHackathon(
             @AuthenticationPrincipal String nomeUtente,
             @RequestParam String idHackathon){
         handler.eliminaHackathon(nomeUtente, idHackathon);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Metodo della boundary per espellere un team da un hackathon
+     * @param nomeUtente l'organizzatore che espelle il team
+     * @param nomeHackathon il nome dell'hackathon
+     * @param nomeTeam il nome del team
+     * @return una nuova chiamata http
+     */
+    @DeleteMapping("/espelleTeam")
+    public ResponseEntity<Void> espelliTeam(
+            @AuthenticationPrincipal String nomeUtente,
+            @RequestParam String nomeHackathon,
+            @RequestParam String nomeTeam) {
+        handler.espelliTeam(nomeUtente, nomeHackathon, nomeTeam);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Metodo della boundary per proclamare il vincitore di un hackathon
+     * @param nomeUtente l'organizzatore che proclama il vincitore
+     * @param nomeHackathon il nome dell'hackathon
+     * @param nomeTeam il nome del team
+     * @return una nuova chiamata http
+     */
+    @PostMapping("/proclama")
+    public ResponseEntity<Void> proclamaVincitore(
+            @AuthenticationPrincipal String nomeUtente,
+            @RequestParam String nomeHackathon,
+            @RequestParam String nomeTeam
+    ){
+        handler.proclamaVincitore(nomeUtente, nomeHackathon, nomeTeam);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Metodo della boundary per liquidare il premio al team vincitore
+     * @param nomeUtente l'organizzatore che liquida il premio
+     * @param nomeHackathon il nome dell'hackathon
+     * @param nomeTeam il nome del team
+     * @return una nuova chiamata http
+     */
+    @PostMapping("/liquidaPremio")
+    public ResponseEntity<Void> attivaLiquidazionePremio(
+            @AuthenticationPrincipal String nomeUtente,
+            @RequestParam String nomeHackathon,
+            @RequestParam String nomeTeam){
+        handler.attivaLiquidazionePremio(nomeUtente, nomeHackathon, nomeTeam);
         return ResponseEntity.ok().build();
     }
 }

@@ -2,6 +2,7 @@ package com.example.hackhub.handler;
 
 import com.example.hackhub.domain.TipoNotifica;
 import com.example.hackhub.domain.implementazione.*;
+import com.example.hackhub.eccezioni.NotFoundException;
 import com.example.hackhub.repository.RepositoryIscrizioniTeam;
 import com.example.hackhub.repository.RepositoryMembriTeam;
 import com.example.hackhub.repository.RepositorySottomissioni;
@@ -36,10 +37,10 @@ public class GestisceSottomissioneHandler {
     public void inviaSottomissione(String nomeUtente, String link) {
         // Prelevo il membro del team e risalgo allo stato dell'hackathon
         MembroTeam membro = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente)
-                .orElseThrow(() -> new RuntimeException("Membro del team non trovato"));
+                .orElseThrow(() -> new NotFoundException("Membro del team non trovato"));
         Team team = membro.getTeam();
         IscrizioneTeam iscrizioneTeam = repositoryIscrizioniTeam.findByTeam(team)
-                .orElseThrow(() -> new RuntimeException("Team non trovato"));
+                .orElseThrow(() -> new NotFoundException("Team non trovato"));
         Hackathon hackathon = iscrizioneTeam.getHackathon();
 
         // Verifico che l'invio delle sottomissioni sia consentito, se non succede niente è tutto ok
@@ -62,10 +63,10 @@ public class GestisceSottomissioneHandler {
     public void attivaRimozioneSottomissione(String nomeUtente) {
         // Prelevo il membro del team e risalgo allo stato dell'hackathon
         MembroTeam membro = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente)
-                .orElseThrow(() -> new RuntimeException("Membro del team non trovato"));
+                .orElseThrow(() -> new NotFoundException("Membro del team non trovato"));
         Team team = membro.getTeam();
         IscrizioneTeam iscrizioneTeam = repositoryIscrizioniTeam.findByTeam(team)
-                .orElseThrow(() -> new RuntimeException("Team non trovato"));
+                .orElseThrow(() -> new NotFoundException("Team non trovato"));
         Hackathon hackathon = iscrizioneTeam.getHackathon();
 
         // Verifico che la rimozione delle sottomissioni sia consentita, se non succede niente è tutto ok

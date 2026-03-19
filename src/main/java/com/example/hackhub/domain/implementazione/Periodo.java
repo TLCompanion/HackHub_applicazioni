@@ -1,5 +1,6 @@
 package com.example.hackhub.domain.implementazione;
 
+import com.example.hackhub.eccezioni.ConflictException;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
 
@@ -65,10 +66,10 @@ public class Periodo {
      */
     private void validazione(LocalDate dataInizio, LocalDate dataFine, LocalTime oraInizio, LocalTime oraFine) {
         if (dataInizio.isAfter(dataFine) || (dataInizio.isEqual(dataFine) && oraInizio.isAfter(oraFine))) {
-            throw new IllegalArgumentException("La data e ora di inizio devono essere precedenti a quelle di fine");
+            throw new ConflictException("La data e ora di inizio devono essere precedenti a quelle di fine");
         }
         if (dataInizio.isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("La data di inizio deve essere futura a oggi");
+            throw new ConflictException("La data di inizio deve essere futura a oggi");
         }
     }
 

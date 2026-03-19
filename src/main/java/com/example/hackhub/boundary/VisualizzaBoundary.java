@@ -82,4 +82,16 @@ public class VisualizzaBoundary {
         List<NotificaDTO> listaNotifiche = handler.viewNotifiche(nomeUtente);
         return ResponseEntity.status(HttpStatus.OK).body(listaNotifiche);
     }
+
+    /**
+     * Metodo del boundary che ritorna le informazioni di un hackathon pubbliche
+     * @param nomeUtente il nome utente che richiede le informazioni
+     * @return la lista di dto
+     */
+    @GetMapping("/info")
+    public ResponseEntity<List<InfoHackathonDTO>> viewInfoHackathon(
+            @AuthenticationPrincipal String nomeUtente) {
+        List<InfoHackathonDTO> infoHackathon = handler.viewInfoHackathon(nomeUtente);
+        return ResponseEntity.status(HttpStatus.OK).body(infoHackathon);
+    }
 }

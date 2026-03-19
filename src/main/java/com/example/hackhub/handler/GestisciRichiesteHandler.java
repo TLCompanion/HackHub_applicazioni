@@ -8,6 +8,7 @@ import com.example.hackhub.eccezioni.ConflictException;
 import com.example.hackhub.eccezioni.NotFoundException;
 import com.example.hackhub.repository.*;
 import com.example.hackhub.servizi.ServizioNotifiche;
+import com.example.hackhub.servizi.esterni.Calendario;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ public class GestisciRichiesteHandler {
     private final ServizioNotifiche servizioNotifiche;
     private final RepositoryStaff repositoryStaff;
     private final RepositoryMembriTeam repositoryMembriTeam;
+    private Calendario calendario;
 
     /**
      * Istanzia un handler che si occupa di gestire tutti gli inviti, sia per lo Staff sia per i Team
@@ -28,13 +30,14 @@ public class GestisciRichiesteHandler {
      * @param repositoryHackathon la repository per gli hackathon
      * @param servizioNotifiche il servizio che gestisce le notifiche
      */
-    public GestisciRichiesteHandler(RepositoryUtenti repositoryUtenti, RepositoryRichiesta repositoryRichiesta, RepositoryHackathon repositoryHackathon, ServizioNotifiche servizioNotifiche, RepositoryStaff repositoryStaff, RepositoryMembriTeam repositoryMembriTeam) {
+    public GestisciRichiesteHandler(RepositoryUtenti repositoryUtenti, RepositoryRichiesta repositoryRichiesta, RepositoryHackathon repositoryHackathon, ServizioNotifiche servizioNotifiche, RepositoryStaff repositoryStaff, RepositoryMembriTeam repositoryMembriTeam, Calendario calendario) {
         this.repositoryUtenti = repositoryUtenti;
         this.repositoryRichiesta = repositoryRichiesta;
         this.repositoryHackathon = repositoryHackathon;
         this.servizioNotifiche = servizioNotifiche;
         this.repositoryStaff = repositoryStaff;
         this.repositoryMembriTeam = repositoryMembriTeam;
+        this.calendario = calendario;
     }
 
     /**
@@ -60,6 +63,10 @@ public class GestisciRichiesteHandler {
             case PropostaCall propostaCall -> {
                 r.accetta();
                 destinatario = accettaCall(nomeUtente, propostaCall);
+            }
+            case PropostaLeader propostaLeader -> {
+                r.accetta();
+                destinatario = accettaPropostaLeader(nomeUtente, propostaLeader);
             }
             default -> throw new ConflictException("La richiesta non appartiene a nessun tipo di invito esistente");
         }
@@ -93,6 +100,18 @@ public class GestisciRichiesteHandler {
     }
 
     /**
+     * Metodo che gestisce l'accettazione di una proposta per un leader
+     * @param nomeUtente il nome dell'utente
+     * @param propostaLeader la proposta
+     * @return il leader del team da notificare
+     */
+    private Utente accettaPropostaLeader(String nomeUtente, PropostaLeader propostaLeader){
+        validazioneUtente(nomeUtente);
+        Team team = propostaLeader.getTeam();
+        return trovaLeader(team);
+    }
+
+    /**
      * Metodo che gestisce l'accettazione di un invito per i team
      * @param nomeUtente il nome dell'utente
      * @param invitoTeam l'invito
@@ -120,7 +139,7 @@ public class GestisciRichiesteHandler {
         Staff mentore = repositoryStaff.findByUtente_NomeUtente(propostaCall.getMittente())
                 .orElseThrow(() -> new NotFoundException("Mentore non trovato"));
         CallSlot callSlot = new CallSlot(propostaCall.getPeriodo(), team, mentore, link);
-        //todo manca da aggiungerlo al calendario
+        calendario.salvaCall(callSlot);
         return mentore.getUtente();
     }
 

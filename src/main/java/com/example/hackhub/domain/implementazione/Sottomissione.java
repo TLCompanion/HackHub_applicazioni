@@ -51,8 +51,6 @@ public class Sottomissione {
         this.valutazione = valutazione;
     }
 
-
-
     // METODI GETTER
 
     public String getIdSottomissione() { return idSottomissione; }

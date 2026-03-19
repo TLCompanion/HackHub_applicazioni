@@ -66,7 +66,7 @@ public class EventiTemporaliHandler {
         for (Hackathon h : hackathonDaChiudere) {
             try { h.chiudiIscrizioni(); }
             catch (TransizioneNonConsentitaException e)
-            { throw new RuntimeException("Impossibile chiudere le iscrizioni dell'hackathon " + h.getNome()); }
+            { throw new ConflictException("Impossibile chiudere le iscrizioni dell'hackathon " + h.getNome()); }
             h.setStatoEnum(IscrizioniChiuse.INSTANCE);
             repositoryHackathon.save(h);
         }
@@ -82,7 +82,7 @@ public class EventiTemporaliHandler {
         for (Hackathon h : hackathonDaValutare) {
             try { h.avviaValutazione(); }
             catch (TransizioneNonConsentitaException e)
-            { throw new RuntimeException("Impossibile avviare la valutazione dell'hackathon " + h.getNome()); }
+            { throw new ConflictException("Impossibile avviare la valutazione dell'hackathon " + h.getNome()); }
             h.setStatoEnum(ValutazioneInCorso.INSTANCE);
             repositoryHackathon.save(h);
         }

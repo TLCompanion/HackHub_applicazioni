@@ -3,6 +3,7 @@ package com.example.hackhub.servizi;
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.TipoNotifica;
 import com.example.hackhub.domain.implementazione.*;
+import com.example.hackhub.eccezioni.ConflictException;
 import com.example.hackhub.repository.RepositoryNotifica;
 import com.example.hackhub.repository.RepositoryRichiesta;
 import org.springframework.stereotype.Service;
@@ -66,7 +67,7 @@ public class ServizioNotifiche {
      */
     public void creaInvitoStaff(String nomeMittente, Utente destinatario, Hackathon hackathon, RuoloStaff ruolo) {
         if (ruolo.equals(RuoloStaff.ORGANIZZATORE))
-            throw new IllegalArgumentException("Ruolo non assegnabile");
+            throw new ConflictException("Ruolo non assegnabile");
 
         InvitoStaff invitoStaff = new InvitoStaff(
                 nomeMittente,
@@ -93,5 +94,11 @@ public class ServizioNotifiche {
                 team
         );
         repositoryRichiesta.save(invitoTeam);
+    }
+
+    public void creaPropostaLeader(String nomeMittente, Utente destinatario, Team team){
+        PropostaLeader propostaLeader = new PropostaLeader(nomeMittente, "Invito a diventare il leader del team " + team.getNome(),
+                destinatario, LocalDateTime.now().plusDays(3), team);
+        repositoryRichiesta.save(propostaLeader);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.hackhub.domain.implementazione;
 
 import com.example.hackhub.domain.RuoloTeam;
+import com.example.hackhub.eccezioni.ConflictException;
 import com.example.hackhub.eccezioni.ForbiddenException;
 import jakarta.persistence.*;
 
@@ -63,9 +64,14 @@ public class Team {
      */
     public void aggiungiMembro(MembroTeam membro) {
         if (membro.getRuolo().equals(RuoloTeam.LEADER))
-            throw new IllegalArgumentException("Tentativo di aggiungere un Leader a un Team");
+            throw new ConflictException("Tentativo di aggiungere un Leader a un Team");
         membri.add(membro);
         membro.setTeam(this);
+    }
+
+    public void rimuoviMembro(MembroTeam membro) {
+        membri.remove(membro);
+        membro.setTeam(null);
     }
 
     public void setLeader(MembroTeam membro) throws ForbiddenException {

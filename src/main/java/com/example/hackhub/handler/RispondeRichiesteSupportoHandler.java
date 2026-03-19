@@ -3,6 +3,7 @@ package com.example.hackhub.handler;
 import com.example.hackhub.domain.TipoNotifica;
 import com.example.hackhub.domain.implementazione.Notifica;
 import com.example.hackhub.domain.implementazione.Staff;
+import com.example.hackhub.eccezioni.NotFoundException;
 import com.example.hackhub.repository.RepositoryNotifica;
 import com.example.hackhub.repository.RepositoryStaff;
 import com.example.hackhub.servizi.ServizioNotifiche;
@@ -33,9 +34,9 @@ public class RispondeRichiesteSupportoHandler {
      */
     public void rispondiRichiestaSupportoConNotifica(String nomeUtente, String idNotifica) {
         Notifica notifica = repositoryNotifica.findByIdNotifica(idNotifica)
-                .orElseThrow(() -> new RuntimeException("Notifica non trovata"));
+                .orElseThrow(() -> new NotFoundException("Notifica non trovata"));
         Staff staff = repositoryStaff.findByUtente_NomeUtente(nomeUtente)
-                .orElseThrow(() -> new RuntimeException("Staff non trovato"));
+                .orElseThrow(() -> new NotFoundException("Staff non trovato"));
         servizioNotifiche.creaNotifica(notifica.getDestinatario(), TipoNotifica.RICHIESTA_SUPPORTO,
                 staff.getUtente().getNomeUtente() + " ha risposto alla tua richiesta di supporto: Consigli per superare il problema");
     }

@@ -22,6 +22,7 @@ public class GestisciTeamHandler {
     private final RepositoryMembriTeam repositoryMembriTeam;
     private final ServizioNotifiche servizioNotifiche;
     private final RepositoryIscrizioniTeam repositoryIscrizioniTeam;
+    private final GestisciRichiesteHandler gestisciRichiesteHandler;
 
     /**
      * Crea una nuova istanza dell'handler per gestire il team
@@ -31,12 +32,13 @@ public class GestisciTeamHandler {
      * @param servizioNotifiche il servizio per le notifiche
      * @param repositoryIscrizioniTeam la repository per le iscrizioni dei team
      */
-    public GestisciTeamHandler(RepositoryTeam repositoryTeam, RepositoryUtenti repositoryUtenti, RepositoryMembriTeam repositoryMembriTeam, ServizioNotifiche servizioNotifiche, RepositoryIscrizioniTeam repositoryIscrizioniTeam, RepositoryHackathon repositoryHackathon) {
+    public GestisciTeamHandler(RepositoryTeam repositoryTeam, RepositoryUtenti repositoryUtenti, RepositoryMembriTeam repositoryMembriTeam, ServizioNotifiche servizioNotifiche, RepositoryIscrizioniTeam repositoryIscrizioniTeam, RepositoryHackathon repositoryHackathon, GestisciRichiesteHandler gestisciRichiesteHandler) {
         this.repositoryTeam = repositoryTeam;
         this.repositoryUtenti = repositoryUtenti;
         this.repositoryMembriTeam = repositoryMembriTeam;
         this.servizioNotifiche = servizioNotifiche;
         this.repositoryIscrizioniTeam = repositoryIscrizioniTeam;
+        this.gestisciRichiesteHandler = gestisciRichiesteHandler;
     }
 
     /**
@@ -62,25 +64,28 @@ public class GestisciTeamHandler {
 
     /**
      * Metodo per uscire da un team
-     * @param idMembro l'id del membro che vuole uscire
-     * @param idTeam l'id del team
+     * @param nomeUtente l'id del membro che vuole uscire
+     * @param nomeTeam l'id del team
      */
-    public void esciDalTeam(String idMembro, String idTeam){
-        if (repositoryMembriTeam.findByUtente_idUtente((idMembro)).isEmpty()) {
-            throw new NotFoundException("L'utente non è membro di nessun team");
+    public void esciDalTeam(String nomeUtente, String nomeTeam){
+        MembroTeam membroTeam = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("L'utente non è membro di nessun team"));
+        Team team = repositoryTeam.findByNomeTeam(nomeTeam).orElseThrow(() -> new NotFoundException("Il team non esiste"));
+        if (!membroTeam.getTeam().equals(team)) {
+            throw new ConflictException("L'utente non è membro di questo team");
         }
-//        if (repositoryTeam.existsById(idTeam)){
-//            throw new NotFoundException("Il team non esiste");
-//        }
-        //todo, secondo me in questo caso non serve la stringa dell'id del team, possiamo semplicemente risalire al team dal membro del team così:
-        //MembroTeam membroTeam = repositoryMembriTeam.getMembroTeamById(idMembro).orElseThrow(() -> new NotFoundException("Membro del team non trovato"));
-//        Team team = membroTeam.getTeam();
-//        team.getMembri().remove(membroTeam);
-//        repositoryMembriTeam.delete(membroTeam);
-//        repositoryTeam.save(team);
-//        for(MembroTeam m : team.getMembri()){
-//            servizioNotifiche.creaNotifica(m.getUtente(), USCITA, "Il membro " + membroTeam.getUtente().getNomeUtente() + " è uscito dal team.");
-//        }
+        if (repositoryIscrizioniTeam.findByTeam(team).isPresent()){
+            throw new ConflictException("Il team è iscritto ad un'hackathon, non puoi uscire dal team");
+        }
+        if (membroTeam.getRuolo() == RuoloTeam.LEADER) {
+            if (team.getNumMembri() != 1)
+                throw new ConflictException("Prima di uscire dal team è necessario nominare un nuovo leader");
+        }
+        team.rimuoviMembro(membroTeam);
+        repositoryMembriTeam.delete(membroTeam);
+        repositoryTeam.save(team);
+        for(MembroTeam m : team.getMembri()){
+            servizioNotifiche.creaNotifica(m.getUtente(), USCITA, "Il membro " + membroTeam.getUtente().getNomeUtente() + " è uscito dal team.");
+        }
     }
 
     /**
@@ -93,15 +98,12 @@ public class GestisciTeamHandler {
             throw new ConflictException("L'utente non è il leader del team");
         }
         Team team = membroTeam.getTeam();
-
-        //controllo se è presente un iscrizione e in caso positivo la elimino
         List<IscrizioneTeam> iscrizioni = repositoryIscrizioniTeam.findAllByTeam(team);
-        //todo qui sul sequence diagram c'è un loop per ogni iscrizione trova l'hackathon ma non conviene semplicemente prenderle ed eliminarle tutte?
         if (!iscrizioni.isEmpty()) {
             repositoryIscrizioniTeam.deleteAll(iscrizioni);
         }
         for(MembroTeam m : team.getMembri()){
-            servizioNotifiche.creaNotifica(m.getUtente(), USCITA, "Il team " + team.getNome() + " è stato sciolto.");
+            servizioNotifiche.creaNotifica(m.getUtente(), SCIOGLIMENTO_TEAM, "Il team " + team.getNome() + " è stato sciolto.");
         }
         repositoryTeam.delete(team);
     }
@@ -147,13 +149,6 @@ public class GestisciTeamHandler {
         if (membroTeam.getRuolo() == RuoloTeam.LEADER) {
             throw new ConflictException("Il membro da nominare è già il leader del team");
         }
-        //todo manca la parte in cui mando la richiesta di proposta leader che è una nuova classe e poi se la accetta lo cambio se la rifiuta non faccio niente
-        leader.setRuolo(RuoloTeam.MEMBRO);
-        Team team = leader.getTeam();
-        team.setLeader(membroTeam);
-        repositoryTeam.save(team);
-        for(MembroTeam m : team.getMembri()){
-            servizioNotifiche.creaNotifica(m.getUtente(), TRASFERIMENTO_LEADER, "Il membro " + membroTeam.getUtente().getNomeUtente() + " è stato nominato leader del team.");
-        }
+        servizioNotifiche.creaPropostaLeader(nomeUtente, membroTeam.getUtente(), leader.getTeam());
     }
 }

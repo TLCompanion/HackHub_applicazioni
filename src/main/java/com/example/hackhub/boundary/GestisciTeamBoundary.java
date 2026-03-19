@@ -34,15 +34,15 @@ public class GestisciTeamBoundary {
     /**
      * Metodo della boundary per uscire da un team
      * @param nomeUtente il nome dell'utente che vuole uscire dal team
-     * @param idTeam l'id del team
+     * @param nomeTeam l'id del team
      * @return una nuova chiamata http
      */
     @DeleteMapping("/eliminaMembro")
     public ResponseEntity<Void> esciDalTeam(
             @AuthenticationPrincipal String nomeUtente,
-            @RequestParam String idTeam
+            @RequestParam String nomeTeam
     ){
-        handler.esciDalTeam(nomeUtente, idTeam);
+        handler.esciDalTeam(nomeUtente, nomeTeam);
         return ResponseEntity.ok().build();
     }
 

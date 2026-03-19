@@ -49,6 +49,11 @@ public class Hackathon {
     @NotBlank
     private String regolamento;
 
+    @Lob
+    @NotBlank
+    private String descrizione;
+
+
     @Min(1)
     private int maxIscrizioni; //Massimo numero di iscrizioni (team) che possono partecipare all'hackathon
 
@@ -86,7 +91,7 @@ public class Hackathon {
      * @param scadenzaIscrizioni data e ora di scadenza per le iscrizioni all'hackathon, deve essere una data valida e futura
      */
     public Hackathon(String nome, Periodo periodo, BigDecimal premio, String luogo, int teamMax, int teamMin,
-                     LocalDateTime scadenzaIscrizioni, String regolamento, int maxIscrizioni) {
+                     LocalDateTime scadenzaIscrizioni, String regolamento, int maxIscrizioni, String descrizione) {
         validazione(nome, periodo, premio, luogo, teamMax, teamMin, regolamento, scadenzaIscrizioni);
         this.nome = nome;
         this.periodo = periodo;
@@ -97,6 +102,7 @@ public class Hackathon {
         this.regolamento = regolamento;
         this.scadenzaIscrizioni = scadenzaIscrizioni;
         this.maxIscrizioni = maxIscrizioni;
+        this.descrizione = descrizione;
         // valori di default / inizializzazioni
         this.stato = IscrizioniAperte.INSTANCE; // stato iniziale, ad esempio "Iscrizioni Aperte"
         setStatoEnum(IscrizioniAperte.INSTANCE);
@@ -132,22 +138,22 @@ public class Hackathon {
      * @param teamMin            il numero minimo di membri che un team deve avere per iscriversi
      * @param regolamento        il regolamente
      * @param scadenzaIscrizioni la scadenza delle iscrizioni
-     * @throws IllegalArgumentException se alcuni dati non sono validi
+     * @throws ConflictException se alcuni dati non sono validi
      * @throws NullPointerException     se alcuni dati non sono stati inseriti
      */
     private void validazione(String nome, Periodo periodo, BigDecimal premio, String luogo, int teamMax, int teamMin,
-                             String regolamento, LocalDateTime scadenzaIscrizioni) throws IllegalArgumentException,
+                             String regolamento, LocalDateTime scadenzaIscrizioni) throws ConflictException,
             NullPointerException {
         if (nome == null || periodo == null || premio == null || luogo == null || regolamento == null || scadenzaIscrizioni == null)
             throw new NullPointerException("Non sono ammessi valori nulli");
-        if (nome.length() < 3) throw new IllegalArgumentException("Il nome deve avere almeno 3 caratteri di lunghezza");
-        if (premio.longValue() <= 0) throw new IllegalArgumentException("Il premio deve avere valore positivo");
-        if (luogo.length() < 3) throw new IllegalArgumentException("Il luogo deve avere almeno 3 caratteri");
-        if (teamMin < 3) throw new IllegalArgumentException("Il numero minimo di membri per team deve essere almeno 3");
+        if (nome.length() < 3) throw new ConflictException("Il nome deve avere almeno 3 caratteri di lunghezza");
+        if (premio.longValue() <= 0) throw new ConflictException("Il premio deve avere valore positivo");
+        if (luogo.length() < 3) throw new ConflictException("Il luogo deve avere almeno 3 caratteri");
+        if (teamMin < 3) throw new ConflictException("Il numero minimo di membri per team deve essere almeno 3");
         if (teamMax < teamMin)
-            throw new IllegalArgumentException("Il numero massimo di membri deve essere almeno il numero minimo");
+            throw new ConflictException("Il numero massimo di membri deve essere almeno il numero minimo");
         if (scadenzaIscrizioni.isEqual(LocalDateTime.now()) || scadenzaIscrizioni.isBefore(LocalDateTime.now()))
-            throw new IllegalArgumentException("Data oppure orario inseriti non validi");
+            throw new ConflictException("Data oppure orario inseriti non validi");
     }
 
     /**
@@ -168,7 +174,7 @@ public class Hackathon {
 
     public void rimuoviIscrizione(Team team){
         IscrizioneTeam iscrizione = iscrizioni.stream().filter(i -> i.getTeam().equals(team)).findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Il team non è iscritto a questo hackathon"));
+                .orElseThrow(() -> new ConflictException("Il team non è iscritto a questo hackathon"));
         this.iscrizioni.remove(iscrizione);
         iscrizione.setHackathon(null);
     }
@@ -297,5 +303,9 @@ public class Hackathon {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getDescrizione() {
+        return descrizione;
     }
 }

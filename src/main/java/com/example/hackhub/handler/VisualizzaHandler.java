@@ -37,12 +37,12 @@ public class VisualizzaHandler {
     private Hackathon validaAutorizzazioni(String nomeUtente, String idHackathon) {
         verificaUtenteOrFail(nomeUtente);
         Staff staff = repositoryStaff.findByUtente_NomeUtente(nomeUtente)
-                .orElseThrow(() -> new RuntimeException("L'utente non è membro di nessuno staff"));
+                .orElseThrow(() -> new ConflictException("L'utente non è membro di nessuno staff"));
         if (!staff.getHackathon().getIdHackathon().equals(idHackathon)) {
             throw new ConflictException("L'utente non è membro dello staff di questo hackathon");
         }
         return repositoryHackathon.findByIdHackathon(idHackathon)
-                .orElseThrow(() -> new RuntimeException("Hackathon non trovato"));
+                .orElseThrow(() -> new NotFoundException("Hackathon non trovato"));
     }
 
     private Utente verificaUtenteOrFail(String nomeUtente) {
@@ -111,5 +111,25 @@ public class VisualizzaHandler {
         List<Notifica> listNotifiche = repositoryNotifica.findAllByDestinatario(utente);
         return listNotifiche.stream().map(n -> new NotificaDTO(n.getPayload()))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Metodo che ritorna la lista di informazioni pubbliche destinate all'utente di riferimento
+     * @param nomeUtente il nome dell'utente destinatario delle info
+     * @return la lista di hackathon dto
+     */
+    public List<InfoHackathonDTO> viewInfoHackathon(String nomeUtente){
+        verificaUtenteOrFail(nomeUtente);
+        List<Hackathon> listHackathon = repositoryHackathon.findAll();
+        List<InfoHackathonDTO> listInfoHackathonDTO = new ArrayList<>();
+        for (Hackathon h : listHackathon){
+            int numeroTeamIscritti = h.getIscrizioni().size();
+            int postiRimanenti = h.getMaxIscrizioni() - numeroTeamIscritti;
+            listInfoHackathonDTO.add(new InfoHackathonDTO(h.getNome(), h.getPeriodo().getDataInizio(), h.getPeriodo().getDataFine(), h.getLuogo(),
+                    h.getPremio(), h.getTeamMin(), h.getTeamMax(), h.getRegolamento(), h.getScadenzaIscrizioni(),
+                    h.getStato(), numeroTeamIscritti, h.getMaxIscrizioni(), postiRimanenti,
+                    h.getDescrizione(), h.getRegolamento()));
+        }
+        return listInfoHackathonDTO;
     }
 }
