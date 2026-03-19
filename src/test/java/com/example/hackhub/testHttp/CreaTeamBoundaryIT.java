@@ -67,7 +67,7 @@ class CreaTeamBoundaryIT {
         eseguiCreazione(UTENTE_1, NOME_TEAM)
                 .andExpect(status().isNoContent());
 
-        Team team = repositoryTeam.findByNome(NOME_TEAM)
+        Team team = repositoryTeam.findByNomeTeam(NOME_TEAM)
                 .orElseThrow(() -> new AssertionError("Team non trovato nel database"));
 
         assertEquals(NOME_TEAM, team.getNome());
@@ -97,7 +97,7 @@ class CreaTeamBoundaryIT {
         eseguiCreazione(UTENTE_1, NOME_TEAM)
                 .andExpect(status().isForbidden());
 
-        assertFalse(repositoryTeam.findByNome(NOME_TEAM).isPresent());
+        assertFalse(repositoryTeam.findByNomeTeam(NOME_TEAM).isPresent());
     }
 
     @Test
@@ -114,7 +114,7 @@ class CreaTeamBoundaryIT {
         eseguiCreazione("utente_inesistente", NOME_TEAM)
                 .andExpect(status().isNotFound());
 
-        assertFalse(repositoryTeam.findByNome(NOME_TEAM).isPresent());
+        assertFalse(repositoryTeam.findByNomeTeam(NOME_TEAM).isPresent());
     }
 
     private ResultActions eseguiCreazione(String nomeUtente, String nomeTeam) throws Exception {

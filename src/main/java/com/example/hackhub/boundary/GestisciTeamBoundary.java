@@ -1,5 +1,6 @@
 package com.example.hackhub.boundary;
 
+import com.example.hackhub.domain.implementazione.MembroTeam;
 import com.example.hackhub.handler.GestisciTeamHandler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -69,6 +70,14 @@ public class GestisciTeamBoundary {
             @RequestParam String idMembro
     ){
         handler.espelliMembro(nomeUtente, idMembro);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/trasferisciRuolo")
+    public ResponseEntity<Void> trasferisceRuoloLeader(
+            @AuthenticationPrincipal String nomeUtente,
+            @RequestParam String nomeMembro){
+        handler.trasferisceRuoloLeader(nomeUtente, nomeMembro);
         return ResponseEntity.ok().build();
     }
 }

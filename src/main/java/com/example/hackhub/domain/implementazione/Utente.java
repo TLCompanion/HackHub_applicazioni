@@ -24,6 +24,10 @@ public class Utente {
 
     @Column(nullable = false)
     private String passwordHash; // password hashata
+
+    @Column
+    private String recapitoBancario;
+
     /**
      * Crea un Utente, dato un nome, un id e un ruolo.
      *
@@ -60,4 +64,8 @@ public class Utente {
     public String getPasswordHash() { return passwordHash; }
 
     public void setNomeUtente(String nomeUtente) { this.nomeUtente = nomeUtente; }
+
+    public String getRecapitoBancario() {
+        return recapitoBancario;
+    }
 }

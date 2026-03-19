@@ -68,5 +68,20 @@ public enum TipoNotifica {
     /**
      * Il leader cambia il nome del team
      */
-    CAMBIO_NOME_TEAM
+    CAMBIO_NOME_TEAM,
+
+    /**
+     * Trasferisce il ruolo di leader ad un altro membro del team
+     */
+    TRASFERIMENTO_LEADER,
+
+    /**
+     * Il team ha vinto l'hackathon, e i membri del team vengono notificati della vittoria
+     */
+    VITTORIA,
+
+    /**
+     * Il team ha perso l'hackathon e i membri del team vengono notificati della sconfitta
+     */
+    SCONFITTA
 }

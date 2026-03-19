@@ -71,6 +71,7 @@ public class Team {
     public void setLeader(MembroTeam membro) throws ForbiddenException {
         if (this.hasLeader()) throw new ForbiddenException("Il team ha già un leader");
         membri.add(membro);
+        membro.setRuolo(RuoloTeam.LEADER);
     }
 
     private boolean hasLeader() {

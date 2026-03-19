@@ -45,7 +45,7 @@ public class IscriviTeamHandler {
             throw new ForbiddenException("L'utente non è il leader del team");
 
         Team team = membroTeam.getTeam();
-        Hackathon hackathon = repositoryHackathon.findByNome(nomeHackathon).orElseThrow(() ->
+        Hackathon hackathon = repositoryHackathon.findByNomeHackathon(nomeHackathon).orElseThrow(() ->
                 new NotFoundException("Hackathon non trovato"));
         checkIscrizioneInHackathon(hackathon, team);
 
@@ -80,28 +80,18 @@ public class IscriviTeamHandler {
      * @param idHackathon l'identificativo dell'hackathon
      */
     public void annullaIscrizioneHackathon(String nomeUtente, String idHackathon){
-        Hackathon hackathon = repositoryHackathon.findById(idHackathon).orElseThrow(() ->
+        Hackathon hackathon = repositoryHackathon.findByIdHackathon(idHackathon).orElseThrow(() ->
                 new NotFoundException("Hackathon non trovato"));
-
         if(hackathon.getStato() instanceof InCorso){
             throw new ConflictException("Non è possibile annullare l'iscrizione ad un hackathon in corso");
         }
-
         MembroTeam leader = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() ->
                 new NotFoundException("L'utente non è membro di nessun team"));
-
-        //todo again qui nel sequence diagram manca il check che è il leader, è da aggiungere?
         if (!leader.getRuolo().equals(RuoloTeam.LEADER)) {
             throw new ForbiddenException("L'utente non è il leader del team");
         }
-
         Team team = leader.getTeam();
-        //todo non c'è neanche il getIscrizione o il controllo che l'iscrizione esista o meno
-        IscrizioneTeam iscrizione = repositoryIscrizioniTeam.findByTeamAndHackathon(team, hackathon).
-                orElseThrow(() -> new NotFoundException("Il team non è iscritto a questo hackathon"));
-
-        //todo qui sul sequence diagram rimuove l'iscrizione dall'entità hackathon tramite il team però non so se si può fare senza prenderla dalla repository, per adesso ho messo così
-        repositoryIscrizioniTeam.delete(iscrizione);
+        hackathon.rimuoviIscrizione(team);
         repositoryHackathon.save(hackathon);
     }
 }

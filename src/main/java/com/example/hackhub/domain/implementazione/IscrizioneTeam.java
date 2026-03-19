@@ -64,8 +64,6 @@ public class IscrizioneTeam {
         this.sottomissione = sottomissione;
     }
 
-    public void rimuoviSottomissione() { sottomissione = null; }
-
     public String getId() { return idIscrizione; }
 
     public Team getTeam() { return team; }

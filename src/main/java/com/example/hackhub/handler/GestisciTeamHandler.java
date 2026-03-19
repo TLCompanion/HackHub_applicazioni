@@ -135,4 +135,26 @@ public class GestisciTeamHandler {
             servizioNotifiche.creaNotifica(m.getUtente(), ESPULSIONE_TEAM, "Il membro " + membroDaEspellere.getUtente().getNomeUtente() + " è stato espulso dal team.");
         }
     }
+
+    public void trasferisceRuoloLeader(String nomeUtente, String nomeMembro) {
+        MembroTeam leader = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("L'utente non è membro di nessun team"));
+        if (leader.getRuolo() != RuoloTeam.LEADER) {
+            throw new ConflictException("L'utente non è il leader del team");
+        }
+        MembroTeam membroTeam = repositoryMembriTeam.findByUtente_NomeUtente(nomeMembro).orElseThrow(() -> new NotFoundException("Il membro da nominare non esiste"));
+        if (!membroTeam.getTeam().equals(leader.getTeam())) {
+            throw new ConflictException("Il membro da nominare non è nel team del leader");
+        }
+        if (membroTeam.getRuolo() == RuoloTeam.LEADER) {
+            throw new ConflictException("Il membro da nominare è già il leader del team");
+        }
+        //todo manca la parte in cui mando la richiesta di proposta leader che è una nuova classe e poi se la accetta lo cambio se la rifiuta non faccio niente
+        leader.setRuolo(RuoloTeam.MEMBRO);
+        Team team = leader.getTeam();
+        team.setLeader(membroTeam);
+        repositoryTeam.save(team);
+        for(MembroTeam m : team.getMembri()){
+            servizioNotifiche.creaNotifica(m.getUtente(), TRASFERIMENTO_LEADER, "Il membro " + membroTeam.getUtente().getNomeUtente() + " è stato nominato leader del team.");
+        }
+    }
 }

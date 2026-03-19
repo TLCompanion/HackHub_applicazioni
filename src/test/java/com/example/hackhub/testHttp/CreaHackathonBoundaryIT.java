@@ -86,7 +86,7 @@ class CreaHackathonBoundaryIT {
         eseguiCreazione(body)
                 .andExpect(status().isNoContent());
 
-        Hackathon hackathon = repositoryHackathon.findByNome(NOME_HACKATHON)
+        Hackathon hackathon = repositoryHackathon.findByNomeHackathon(NOME_HACKATHON)
                 .orElseThrow(() -> new AssertionError("Hackathon non trovato nel database"));
 
         assertAll(
@@ -156,7 +156,7 @@ class CreaHackathonBoundaryIT {
         eseguiCreazione(body)
                 .andExpect(status().isForbidden());
 
-        assertFalse(repositoryHackathon.findByNome(NOME_HACKATHON).isPresent());
+        assertFalse(repositoryHackathon.findByNomeHackathon(NOME_HACKATHON).isPresent());
         verify(servizioNotifiche, never()).creaInvitoStaff(any(), any(), any(), any());
     }
 
@@ -173,7 +173,7 @@ class CreaHackathonBoundaryIT {
         eseguiCreazione(body)
                 .andExpect(status().isForbidden());
 
-        assertFalse(repositoryHackathon.findByNome(NOME_HACKATHON).isPresent());
+        assertFalse(repositoryHackathon.findByNomeHackathon(NOME_HACKATHON).isPresent());
         verify(servizioNotifiche, never()).creaInvitoStaff(any(), any(), any(), any());
     }
 
@@ -190,7 +190,7 @@ class CreaHackathonBoundaryIT {
         eseguiCreazione(body)
                 .andExpect(status().isNotFound());
 
-        assertFalse(repositoryHackathon.findByNome(NOME_HACKATHON).isPresent());
+        assertFalse(repositoryHackathon.findByNomeHackathon(NOME_HACKATHON).isPresent());
         verify(servizioNotifiche, never()).creaInvitoStaff(any(), any(), any(), any());
     }
 

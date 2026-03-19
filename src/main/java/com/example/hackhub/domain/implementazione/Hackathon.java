@@ -166,6 +166,12 @@ public class Hackathon {
         iscrizione.setHackathon(this);
     }
 
+    public void rimuoviIscrizione(Team team){
+        IscrizioneTeam iscrizione = iscrizioni.stream().filter(i -> i.getTeam().equals(team)).findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Il team non è iscritto a questo hackathon"));
+        this.iscrizioni.remove(iscrizione);
+        iscrizione.setHackathon(null);
+    }
     /**
      * Avvia l'hackathon se è presente almeno un giudice e un mentore, altrimenti lancia un'eccezione
      *
