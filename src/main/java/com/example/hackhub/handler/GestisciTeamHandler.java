@@ -45,8 +45,9 @@ public class GestisciTeamHandler {
 
     /**
      * Metodo per cambiare nome ad un team
+     *
      * @param nomeUtente il leader che vuole cambiare nome
-     * @param nome il nuovo nome del team
+     * @param nome       il nuovo nome del team
      */
     public void cambiaNomeTeam(String nomeUtente, String nome) {
         MembroTeam leader = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("L'utente non è membro di nessun team"));
@@ -66,12 +67,12 @@ public class GestisciTeamHandler {
 
     /**
      * Metodo per uscire da un team
+     *
      * @param nomeUtente l'id del membro che vuole uscire
-     * @param nomeTeam l'id del team
      */
-    public void esciDalTeam(String nomeUtente, String nomeTeam){
+    public void esciDalTeam(String nomeUtente){
         MembroTeam membroTeam = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("L'utente non è membro di nessun team"));
-        Team team = repositoryTeam.findByNome(nomeTeam).orElseThrow(() -> new NotFoundException("Il team non esiste"));
+        Team team = repositoryTeam.findByNome(membroTeam.getTeam().getNome()).orElseThrow(() -> new NotFoundException("Il team non esiste"));
         if (!membroTeam.getTeam().equals(team)) {
             throw new ConflictException("L'utente non è membro di questo team");
         }

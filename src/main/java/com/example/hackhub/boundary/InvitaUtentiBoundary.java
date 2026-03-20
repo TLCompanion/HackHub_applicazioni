@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/inviti")
+@RequestMapping("/api/team")
 public class InvitaUtentiBoundary {
 
     private final InvitaUtentiHandler handler;
@@ -25,7 +25,7 @@ public class InvitaUtentiBoundary {
      * @param nomeUtenteDaInvitare l'utente da invitare
      * @return una nuova risposta http
      */
-    @PostMapping("/utenti")
+    @PostMapping("/mio/invito")
     public ResponseEntity<Void> InvitaUtenti(@AuthenticationPrincipal String nomeUtente,
                                              @RequestParam String nomeUtenteDaInvitare){
         handler.invitaUtenti(nomeUtente, nomeUtenteDaInvitare);

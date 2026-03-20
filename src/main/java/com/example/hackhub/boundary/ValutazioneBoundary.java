@@ -29,9 +29,9 @@ public class ValutazioneBoundary {
      * @param nomeUtente il nome dell'utente che sta inserendo la valutazione
      * @return una risposta http se la valutazione è stata inserita correttamente
      */
-    @PostMapping("{id}/valutazione")
+    @PostMapping("{idSottomissione}/valutazione")
     public ResponseEntity<Void> inserisciValutazione(
-            @PathVariable("id") String idSottomissione,
+            @PathVariable String idSottomissione,
             @Valid @RequestBody ValutazioneRequest request,
             @AuthenticationPrincipal String nomeUtente
     ) {

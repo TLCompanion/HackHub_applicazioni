@@ -4,13 +4,10 @@ import com.example.hackhub.handler.RispondeRichiesteSupportoHandler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/richieste_supporto")
+@RequestMapping("/api/richieste-supporto")
 @Validated
 public class RispondeRichiesteSupportoBoundary {
 
@@ -26,7 +23,7 @@ public class RispondeRichiesteSupportoBoundary {
      * @param idNotifica l'id della notifica che richiede supporto a un mentore di un hackathon
      * @return l'esito della chiamata http, e salva nel db una proposta call oppure una notifica di risposta
      */
-    @PutMapping("/risposta")
+    @PostMapping("risposta")
     public ResponseEntity<Void> rispondiRichiestaSupportoConNotifica(
             @RequestParam String idNotifica,
             @AuthenticationPrincipal String nomeUtente) {

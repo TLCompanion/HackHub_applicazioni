@@ -28,7 +28,7 @@ public class GestioneCallBoundary {
      * @param request la richiesta della proposta con i dati
      * @return una nuova chiamata http
      */
-    @PostMapping("/propostaCall")
+    @PostMapping("/proposta")
     public ResponseEntity<Void> avviaPropostaCall(
             @AuthenticationPrincipal String nomeUtente,
             @RequestBody @Valid PropostaCallRequest request

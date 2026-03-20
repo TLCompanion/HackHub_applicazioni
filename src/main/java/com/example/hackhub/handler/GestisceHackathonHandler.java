@@ -2,15 +2,14 @@ package com.example.hackhub.handler;
 
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.implementazione.*;
-import com.example.hackhub.domain.implementazione.statePattern.Concluso;
-import com.example.hackhub.domain.implementazione.statePattern.InCorso;
-import com.example.hackhub.domain.implementazione.statePattern.IscrizioniAperte;
+import com.example.hackhub.domain.implementazione.statePattern.*;
 import com.example.hackhub.eccezioni.BadRequestException;
 import com.example.hackhub.eccezioni.ConflictException;
 import com.example.hackhub.eccezioni.NotFoundException;
 import com.example.hackhub.repository.*;
 import com.example.hackhub.servizi.ServizioNotifiche;
 import com.example.hackhub.servizi.esterni.SistemaDiPagamento;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,21 +44,19 @@ public class GestisceHackathonHandler {
         this.sistemaDiPagamento = sistemaDiPagamento;
     }
 
-    /**
-     * Segnala che un team ha violato il regolamento
-     *
-     * @param nomeOrganizzatore l'organizzatore da notificare
-     * @param nomeTeam          il nome del team che ha violato il regolamento
-     */
-    public void segnalaViolazione(String nomeOrganizzatore, String nomeMentore, String nomeTeam) {
+
+    @Transactional
+    public void segnalaViolazione(String nomeMentore, String nomeTeam, String nomeHackathon) {
+        Staff mentore = validaAutorizzazione(nomeMentore, RuoloStaff.MENTORE);
         Team team = repositoryTeam.findByNome(nomeTeam).orElseThrow(() -> new NotFoundException("Team non trovato"));
-        Staff mentore = checkMentore(nomeMentore);
-        Staff organizzatore = checkOrganizzatore(nomeOrganizzatore);
+        Hackathon hackathon = repositoryHackathon.findByNome(nomeHackathon).orElseThrow(() -> new NotFoundException("Hackathon non trovato"));
+        checkStessoHackathon(hackathon, mentore);
+        Staff organizzatore = hackathon.getStaff().stream().filter(s -> s.getRuolo() == RuoloStaff.ORGANIZZATORE).findFirst().orElseThrow(() -> new NotFoundException("Organizzatore non trovato"));
         IscrizioneTeam iscrizioneTeam = repositoryIscrizioniTeam.findByTeam(team).orElseThrow(() -> new NotFoundException("Il team non è iscritto a nessun hackathon"));
-        if (!iscrizioneTeam.getHackathon().equals(organizzatore.getHackathon())) {
-            throw new ConflictException("Il team non fa parte dello stesso hackathon dell'organizzatore");
+        if (!iscrizioneTeam.getHackathon().equals(mentore.getHackathon())) {
+            throw new ConflictException("Il team non fa parte dello stesso hackathon del mentore");
         }
-        if (!(organizzatore.getHackathon().getStato() instanceof InCorso)) {
+        if (!(hackathon.getStato() instanceof InCorso)) {
             throw new ConflictException("Non è possibile segnalare una violazione se l'hackathon non è in corso");
         }
         if (!mentore.getHackathon().equals(organizzatore.getHackathon())) {
@@ -74,16 +71,19 @@ public class GestisceHackathonHandler {
      *
      * @param nomeUtente           il nome dell'organizzatore
      * @param nomeUtenteDaInvitare il nome dell'utente da invitare
+     * @param nomeHackathon il nome dell'hackathon
      */
-    public void nominaMentori(String nomeUtente, String nomeUtenteDaInvitare) {
-        Staff organizzatore = checkOrganizzatore(nomeUtente);
+    @Transactional
+    public void nominaMentori(String nomeUtente, String nomeUtenteDaInvitare, String nomeHackathon) {
+        Staff organizzatore = validaAutorizzazione(nomeUtente, RuoloStaff.ORGANIZZATORE);
         Utente staffDaInvitare = repositoryUtenti.findByNomeUtente(nomeUtenteDaInvitare)
                 .orElseThrow(() -> new NotFoundException("Utente da invitare non trovato"));
-        Hackathon hackathon = checkHackathon(organizzatore.getHackathon().getNome(), organizzatore);
+        Hackathon hackathon = repositoryHackathon.findByNome(nomeHackathon).orElseThrow(() -> new NotFoundException("Hackathon non trovato"));
+        checkStessoHackathon(hackathon, organizzatore);
         if (!(hackathon.getStato() instanceof IscrizioniAperte)) {
-            throw new ConflictException("Non è possibile nominare mentori se le iscrizioni non sono aperte");
+            throw new ConflictException("Non è possibile nominare mentori al di fuori della fase 'iscrizioni aperte'");
         }
-        if (repositoryStaff.findByUtente_NomeUtente(nomeUtenteDaInvitare).isPresent()) {
+        if (hackathon.getStaff().stream().anyMatch(s -> s.getUtente().equals(staffDaInvitare))) {
             throw new BadRequestException("L'utente da invitare è già nello staff");
         }
         servizioNotifiche.creaInvitoStaff(nomeUtente, staffDaInvitare, hackathon, RuoloStaff.MENTORE);
@@ -95,11 +95,13 @@ public class GestisceHackathonHandler {
      * @param nomeUtente    l'organizzatore
      * @param nomeHackathon il nome dell'hackathon
      */
+    @Transactional
     public void eliminaHackathon(String nomeUtente, String nomeHackathon) {
-        Staff organizzatore = checkOrganizzatore(nomeUtente);
-        Hackathon hackathon = checkHackathon(nomeHackathon, organizzatore);
-        if (hackathon.getStato() instanceof InCorso) {
-            throw new ConflictException("Non è possibile eliminare un hackathon in corso");
+        Staff organizzatore = validaAutorizzazione(nomeUtente, RuoloStaff.ORGANIZZATORE);
+        Hackathon hackathon = repositoryHackathon.findByNome(nomeHackathon).orElseThrow(() -> new NotFoundException("Hackathon non trovato"));
+        checkStessoHackathon(hackathon, organizzatore);
+        if (hackathon.getStato() instanceof IscrizioniAperte || hackathon.getStato() instanceof IscrizioniChiuse) {
+            throw new ConflictException("Non è possibile eliminare un hackathon in corso o concluso");
         }
         List<Team> teams = repositoryIscrizioniTeam.findAllByHackathon(hackathon).stream().map(IscrizioneTeam::getTeam).toList();
         for (Team t : teams) {
@@ -117,9 +119,11 @@ public class GestisceHackathonHandler {
      * @param nomeHackathon il nome dell'hackathon
      * @param nomeTeam      il nome del team
      */
+    @Transactional
     public void espelliTeam(String nomeUtente, String nomeHackathon, String nomeTeam) {
-        Staff organizzatore = checkOrganizzatore(nomeUtente);
-        Hackathon hackathon = checkHackathon(nomeHackathon, organizzatore);
+        Staff organizzatore = validaAutorizzazione(nomeUtente, RuoloStaff.ORGANIZZATORE);
+        Hackathon hackathon = repositoryHackathon.findByNome(nomeHackathon).orElseThrow(() -> new NotFoundException("Hackathon non trovato"));
+        checkStessoHackathon(hackathon, organizzatore);
         Team team = repositoryTeam.findByNome(nomeTeam)
                 .orElseThrow(() -> new NotFoundException("Team non trovato"));
         if (repositoryIscrizioniTeam.findByTeamAndHackathon(team, hackathon).isEmpty()) {
@@ -142,10 +146,12 @@ public class GestisceHackathonHandler {
      * @param nomeHackathon il nome dell'hackathon
      * @param nomeTeam      il nome del team vincitore
      */
+    @Transactional
     public void proclamaVincitore(String nomeUtente, String nomeHackathon, String nomeTeam) {
-        Staff organizzatore = checkOrganizzatore(nomeUtente);
-        Hackathon hackathon = checkHackathon(nomeHackathon, organizzatore);
-        if (hackathon.getStato() instanceof Concluso) {
+        Staff organizzatore = validaAutorizzazione(nomeUtente, RuoloStaff.ORGANIZZATORE);
+        Hackathon hackathon = repositoryHackathon.findByNome(nomeHackathon).orElseThrow(() -> new NotFoundException("Hackathon non trovato"));
+        checkStessoHackathon(hackathon, organizzatore);
+        if (!(hackathon.getStato() instanceof Concluso)) {
             throw new ConflictException("Hackathon non concluso, impossibile proclamare il vincitore");
         }
         Team team = repositoryTeam.findByNome(nomeTeam).orElseThrow(() -> new NotFoundException("Team non trovato"));
@@ -169,9 +175,11 @@ public class GestisceHackathonHandler {
      * @param nomeHackathon il nome dell'hackathon
      * @param nomeTeam      il nome del team
      */
+    @Transactional
     public void attivaLiquidazionePremio(String nomeUtente, String nomeHackathon, String nomeTeam) {
-        Staff organizzatore = checkOrganizzatore(nomeUtente);
-        Hackathon hackathon = checkHackathon(nomeHackathon, organizzatore);
+        Staff organizzatore = validaAutorizzazione(nomeUtente, RuoloStaff.ORGANIZZATORE);
+        Hackathon hackathon = repositoryHackathon.findByNome(nomeHackathon).orElseThrow(() -> new NotFoundException("Hackathon non trovato"));
+        checkStessoHackathon(hackathon, organizzatore);
         Team team = repositoryTeam.findByNome(nomeTeam).orElseThrow(() -> new NotFoundException("Team non trovato"));
         IscrizioneTeam iscrizione = repositoryIscrizioniTeam.findByTeamAndHackathon(team, hackathon).orElseThrow(() -> new NotFoundException("Iscrizione del team all'hackathon non trovata"));
         if (!(hackathon.getStato() instanceof Concluso)) {
@@ -185,28 +193,18 @@ public class GestisceHackathonHandler {
         }
     }
 
-    private Staff checkOrganizzatore(String nomeUtente) {
-        Staff organizzatore = repositoryStaff.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("Organizzatore non trovato"));
-        if (organizzatore.getRuolo() != RuoloStaff.ORGANIZZATORE) {
-            throw new ConflictException("Solo gli organizzatori possono eseguire questa operazione");
-        }
-        return organizzatore;
+
+    private Staff validaAutorizzazione(String nomeUtente, RuoloStaff ruoloStaff){
+        Staff utente = repositoryStaff.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("L'utente non è un membro dello staff"));
+        if (utente.getRuolo() != ruoloStaff) throw new ConflictException("L'utente non ha i permessi necessari per eseguire questa operazione");
+        return utente;
     }
 
-    private Hackathon checkHackathon(String nomeHackathon, Staff organizzatore) {
-        Hackathon hackathon = repositoryHackathon.findByNome(nomeHackathon).orElseThrow(() -> new NotFoundException("Hackathon non trovato"));
-        if (!organizzatore.getHackathon().equals(hackathon)) {
-            throw new ConflictException("L'organizzatore non coincide con l'hackathon scelto");
+    private void checkStessoHackathon(Hackathon hackathon, Staff staff) {
+        if (!staff.getHackathon().equals(hackathon)) {
+            throw new ConflictException("Il membro dello staff non fa parte dello stesso hackathon");
         }
-        return hackathon;
     }
 
-    private Staff checkMentore(String nomeUtente) {
-        Staff mentore = repositoryStaff.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("Organizzatore non trovato"));
-        if (mentore.getRuolo() != RuoloStaff.MENTORE) {
-            throw new ConflictException("Solo i mentori possono eseguire questa operazione");
-        }
-        return mentore;
-    }
 }
 

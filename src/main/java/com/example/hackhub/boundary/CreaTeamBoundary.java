@@ -7,7 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/creaTeam")
+@RequestMapping("/api/team")
 public class CreaTeamBoundary {
 
     private final CreaTeamHandler handler;
@@ -22,7 +22,7 @@ public class CreaTeamBoundary {
      * @param nomeTeam il nome del team
      * @return una nuova chiamata http
      */
-    @PostMapping("")
+    @PostMapping()
     public ResponseEntity<Void> avviaCreazioneTeam(
             @AuthenticationPrincipal String nomeUtente,
             @RequestBody String nomeTeam

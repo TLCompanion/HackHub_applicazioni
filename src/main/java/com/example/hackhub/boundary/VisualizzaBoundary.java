@@ -6,15 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 //TODO controllare tutto uml di questi casi d'uso attentamente
 @RestController
-@RequestMapping("/api/visualizzaListe")
+@RequestMapping("/api")
 @Validated
 public class VisualizzaBoundary {
 
@@ -26,40 +23,40 @@ public class VisualizzaBoundary {
 
     /**
      * Metodo del boundary che ritorna una lista di valutazioni
-     * @param idHackathon id dell'hackathon di riferimento
+     * @param nomeHackathon id dell'hackathon di riferimento
      * @return esito della chiamata http
      */
-    @GetMapping("/valutazioni")
+    @GetMapping("hackathon/{nomeHackathon}/valutazioni")
     public ResponseEntity<List<ValutazioneRequest>> viewValutazioni(
-            @RequestParam String idHackathon,
+            @PathVariable String nomeHackathon,
             @AuthenticationPrincipal String nomeUtente) {
-        List<ValutazioneRequest> listaValutazioni = handler.viewValutazioni(nomeUtente, idHackathon);
+        List<ValutazioneRequest> listaValutazioni = handler.viewValutazioni(nomeUtente, nomeHackathon);
         return ResponseEntity.status(HttpStatus.OK).body(listaValutazioni);
     }
 
     /**
      * Metodo del boundary che ritorna una lista di sottomissioni
-     * @param idHackathon id dell'hackathon di riferimento
+     * @param nomeHackathon id dell'hackathon di riferimento
      * @return esito della chiamata http
      */
-    @GetMapping("/sottomissioni")
+    @GetMapping("/hackathon/{nomeHackathon}/sottomissioni")
     public ResponseEntity<List<SottomissioneDTO>> viewSottomissioni(
-            @RequestParam String idHackathon,
+            @PathVariable String nomeHackathon,
             @AuthenticationPrincipal String nomeUtente) {
-        List<SottomissioneDTO> listaSottomissioni = handler.viewSottomissioni(nomeUtente, idHackathon);
+        List<SottomissioneDTO> listaSottomissioni = handler.viewSottomissioni(nomeUtente, nomeHackathon);
         return ResponseEntity.status(HttpStatus.OK).body(listaSottomissioni);
     }
 
     /**
      * Metodo del boundary che ritorna una lista di iscrizioni
-     * @param idHackathon id dell'hackathon di riferimento
+     * @param nomeHackathon id dell'hackathon di riferimento
      * @return esito della chiamata http
      */
-    @GetMapping("/iscrizioni")
+    @GetMapping("/hackathon/{nomeHackathon}/iscrizioni")
     public ResponseEntity<List<IscrizioneTeamDTO>> viewIscrizioni(
-            @RequestParam String idHackathon,
+            @PathVariable String nomeHackathon,
             @AuthenticationPrincipal String nomeUtente) {
-        List<IscrizioneTeamDTO> listaIscrizioni = handler.viewIscrizioni(nomeUtente, idHackathon);
+        List<IscrizioneTeamDTO> listaIscrizioni = handler.viewIscrizioni(nomeUtente, nomeHackathon);
         return ResponseEntity.status(HttpStatus.OK).body(listaIscrizioni);
     }
 
@@ -88,7 +85,7 @@ public class VisualizzaBoundary {
      * @param nomeUtente il nome utente che richiede le informazioni
      * @return la lista di dto
      */
-    @GetMapping("/info")
+    @GetMapping("/hackathon")
     public ResponseEntity<List<InfoHackathonDTO>> viewInfoHackathon(
             @AuthenticationPrincipal String nomeUtente) {
         List<InfoHackathonDTO> infoHackathon = handler.viewInfoHackathon(nomeUtente);

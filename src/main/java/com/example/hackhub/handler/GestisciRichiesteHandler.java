@@ -21,7 +21,7 @@ public class GestisciRichiesteHandler {
     private final ServizioNotifiche servizioNotifiche;
     private final RepositoryStaff repositoryStaff;
     private final RepositoryMembriTeam repositoryMembriTeam;
-    private Calendario calendario;
+    private final Calendario calendario;
 
     /**
      * Istanzia un handler che si occupa di gestire tutti gli inviti, sia per lo Staff sia per i Team

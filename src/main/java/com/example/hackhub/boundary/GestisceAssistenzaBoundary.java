@@ -20,18 +20,18 @@ public class GestisceAssistenzaBoundary {
 
     /**
      * Metodo per chiedere assistenza
-     * @param nomeUtente il nome utente
-     * @param idMentore l'id del mentore
+     * @param nomeUtente il nome utente del leader
+     * @param nomeMentore l'id del mentore
      * @param idHackathon l'id dell'hackathon
      * @return una nuova richiesta di assistenza
      */
-    @PostMapping("/richiediAssistenza")
+    @PostMapping("/richiesta")
     public ResponseEntity<Void> richiediAssistenza(
         @AuthenticationPrincipal String nomeUtente,
-        @RequestParam String idMentore,
+        @RequestParam String nomeMentore,
         @RequestParam String idHackathon
     ){
-        handler.chiediAssistenza(nomeUtente, idMentore, idHackathon);
+        handler.chiediAssistenza(nomeUtente, nomeMentore, idHackathon);
         return ResponseEntity.ok().build();
     }
 }

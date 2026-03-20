@@ -8,6 +8,7 @@ import com.example.hackhub.eccezioni.BadRequestException;
 import com.example.hackhub.eccezioni.NotFoundException;
 import com.example.hackhub.repository.RepositoryUtenti;
 import com.example.hackhub.servizi.ServizioJwt;
+import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +38,7 @@ public class EffettuaAutenticazioneHandler {
      * e partecipare agli hackathon
      * @param request il dto di richiesta di registrazione
      */
+    @Transactional
     public void attivaRegistrazione(RegisterRequest request) {
         // Codifica della password in hash
         // Creo l'Utente nuovo e lo salvo nel database
@@ -52,6 +54,7 @@ public class EffettuaAutenticazioneHandler {
      * @param request la richiesta
      * @return una nuova authResponse
      */
+    @Transactional
     public AuthResponse attivaAutenticazione(LoginRequest request) {
         // Prelevo l'utente dal db, se non esiste esco
         Utente utente = repositoryUtenti.findByNomeUtente(request.nomeUtente())

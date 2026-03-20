@@ -10,6 +10,7 @@ import com.example.hackhub.repository.RepositoryMembriTeam;
 import com.example.hackhub.repository.RepositoryUtenti;
 import com.example.hackhub.servizi.ServizioNotifiche;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class InvitaUtentiHandler {
@@ -35,8 +36,9 @@ public class InvitaUtentiHandler {
      * @param nomeUtente il nome dell'utente da invitare
      * @param nomeUtenteDaInvitare l'utente da invitare
      */
+    @Transactional
     public void invitaUtenti(String nomeUtente, String nomeUtenteDaInvitare) {
-        MembroTeam leader = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("membro non presente nel team"));
+        MembroTeam leader = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("Membro non presente nel team"));
         if (leader.getRuolo()!= RuoloTeam.LEADER) {
             throw new ConflictException("Solo il leader può invitare utenti");
         }

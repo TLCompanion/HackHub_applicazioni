@@ -6,7 +6,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/gestisciTeam")
+@RequestMapping("/api/team")
 public class GestisciTeamBoundary {
 
     private final GestisciTeamHandler handler;
@@ -16,32 +16,28 @@ public class GestisciTeamBoundary {
     }
 
     /**
-     * Metodo della boundary per cambiare nome ad un team
+     * Metodo della boundary per cambiare nome a un team
      * @param nomeUtente il nome dell'utente che vuole cambiare il nome
-     * @param nome il nuovo nome del team
      * @return una nuova chiamata http
      */
-    @PostMapping("/cambiaNome")
+    @PatchMapping()
     public ResponseEntity<Void> cambiaNome(
             @AuthenticationPrincipal String nomeUtente,
-            @RequestParam String nome
-    ){
-        handler.cambiaNomeTeam(nomeUtente, nome);
+            @RequestBody String nuovoNome){
+        handler.cambiaNomeTeam(nomeUtente, nuovoNome);
         return ResponseEntity.ok().build();
     }
 
     /**
      * Metodo della boundary per uscire da un team
      * @param nomeUtente il nome dell'utente che vuole uscire dal team
-     * @param nomeTeam l'id del team
      * @return una nuova chiamata http
      */
-    @DeleteMapping("/eliminaMembro")
+    @DeleteMapping("/membri/me")
     public ResponseEntity<Void> esciDalTeam(
-            @AuthenticationPrincipal String nomeUtente,
-            @RequestParam String nomeTeam
+            @AuthenticationPrincipal String nomeUtente
     ){
-        handler.esciDalTeam(nomeUtente, nomeTeam);
+        handler.esciDalTeam(nomeUtente);
         return ResponseEntity.ok().build();
     }
 
@@ -50,7 +46,7 @@ public class GestisciTeamBoundary {
      * @param nomeUtente il nome dell'utente che vuole sciogliere il team
      * @return una nuova chiamata http
      */
-    @DeleteMapping("/sciogliTeam")
+    @DeleteMapping("/mio")
     public ResponseEntity<Void> sciogliTeam(
             @AuthenticationPrincipal String nomeUtente){
         handler.sciogliTeam(nomeUtente);
@@ -60,19 +56,19 @@ public class GestisciTeamBoundary {
     /**
      * Metodo della boundary per espellere un membro da un team
      * @param nomeUtente il nome dell'utente che vuole espellere il membro
-     * @param idMembro l'id del membro da espellere
+     * @param nomeMembro l'id del membro da espellere
      * @return una nuova chiamata http
      */
-    @DeleteMapping("/espelliMembro")
+    @DeleteMapping("/membri/{nomeMembro}")
     public ResponseEntity<Void> espelliMembro(
             @AuthenticationPrincipal String nomeUtente,
-            @RequestParam String idMembro
+            @PathVariable String nomeMembro
     ){
-        handler.espelliMembro(nomeUtente, idMembro);
+        handler.espelliMembro(nomeUtente, nomeMembro);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/trasferisciRuolo")
+    @PostMapping("/leader")
     public ResponseEntity<Void> trasferisceRuoloLeader(
             @AuthenticationPrincipal String nomeUtente,
             @RequestParam String nomeMembro){

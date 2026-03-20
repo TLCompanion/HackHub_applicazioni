@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Validated
 @RestController
-@RequestMapping("/api/iscrizioni")
+@RequestMapping("/api/hackathon")
 public class IscriviTeamBoundary {
 
     private final IscriviTeamHandler handler;
@@ -20,14 +20,14 @@ public class IscriviTeamBoundary {
 
     /**
      * Metodo della boundary per iscrivere un team ad un hackathon
-     * @param nomeUtente l'utente che vuole iscrivere il team
+     * @param nomeUtente il nome utente del leader che vuole iscrivere il team
      * @param nomeHackathon il nome dell'hackathon a cui iscrivere il team
      * @return una nuova chiamata http
      */
-    @PostMapping("/team")
+    @PostMapping("{nomeHackathon}/iscrizioni")
     public ResponseEntity<Void> avviaIscrizioneHackathon(
             @AuthenticationPrincipal String nomeUtente,
-            @RequestParam String nomeHackathon
+            @PathVariable String nomeHackathon
     ) {
         handler.avviaIscrizioneHackathon(nomeUtente, nomeHackathon);
         return ResponseEntity.noContent().build();
@@ -36,15 +36,15 @@ public class IscriviTeamBoundary {
     /**
      * Metodo della boundary per eliminare un iscrizione ad un hackathon
      * @param nomeUtente l'utente che vuole eliminare l'iscrizione
-     * @param idHackathon l'id dell'hackathon a cui è iscritta il team
+     * @param nomeHackathon l'id dell'hackathon a cui è iscritta il team
      * @return una nuova chiamata http
      */
-    @DeleteMapping("/cancella")
+    @DeleteMapping("{nomeHackathon}/iscrizioni/mia")
     public ResponseEntity<Void> annullaIscrizioneHackathon(
             @AuthenticationPrincipal String nomeUtente,
-            @RequestParam String idHackathon
+            @PathVariable String nomeHackathon
     ) {
-        handler.annullaIscrizioneHackathon(nomeUtente, idHackathon);
+        handler.annullaIscrizioneHackathon(nomeUtente, nomeHackathon);
         return ResponseEntity.noContent().build();
     }
 }

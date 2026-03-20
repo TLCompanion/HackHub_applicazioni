@@ -1,13 +1,12 @@
 package com.example.hackhub.boundary;
 
-import com.example.hackhub.domain.implementazione.Team;
 import com.example.hackhub.handler.GestisceHackathonHandler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/gestisciHackathon")
+@RequestMapping("/api/hackathon")
 public class GestisceHackathonBoundary {
 
     private final GestisceHackathonHandler handler;
@@ -18,17 +17,16 @@ public class GestisceHackathonBoundary {
 
     /**
      * Metodo della boundary per segnalare una violazione
-     * @param nomeOrganizzatore il nome dell'organizzatore
-     * @param nomeMentore il mentore che lo segnala
+     * @param nomeMentore il nome del mentore che segnala la violazione
+     * @param nomeTeam il nome del team che ha commesso la violazione
      * @return una nuova chiamata http
      */
-    @PostMapping("/segnalaViolazione")
+    @PostMapping("/{nomeHackathon}/violazione")
     public ResponseEntity<Void> segnalaViolazione(
-            @AuthenticationPrincipal String nomeOrganizzatore,
-            @RequestParam String nomeMentore,
-            @RequestParam String nomeTeam
-    ){
-        handler.segnalaViolazione(nomeOrganizzatore, nomeMentore, nomeTeam);
+            @AuthenticationPrincipal String nomeMentore,
+            @RequestParam String nomeTeam,
+            @PathVariable String nomeHackathon){
+        handler.segnalaViolazione(nomeMentore, nomeTeam, nomeHackathon);
         return ResponseEntity.ok().build();
     }
 
@@ -38,11 +36,12 @@ public class GestisceHackathonBoundary {
      * @param nomeUtenteDaInvitare il nome dell'utente da invitare
      * @return una nuova chiamata http
      */
-    @PostMapping("/nominaMentori")
+    @PostMapping("/{nomeHackathon}/nomine-mentori")
     public ResponseEntity<Void> nominaMentori(
             @AuthenticationPrincipal String nomeUtente,
-            @RequestParam String nomeUtenteDaInvitare){
-        handler.nominaMentori(nomeUtente, nomeUtenteDaInvitare);
+            @RequestParam String nomeUtenteDaInvitare,
+            @PathVariable String nomeHackathon){
+        handler.nominaMentori(nomeUtente, nomeUtenteDaInvitare, nomeHackathon);
         return ResponseEntity.ok().build();
     }
 
@@ -53,10 +52,10 @@ public class GestisceHackathonBoundary {
      * @return una nuova chiamata http
      */
     //todo cambiare sul sequence e mettere nomeHackathon e non idHacakthon
-    @DeleteMapping("/elimina")
+    @DeleteMapping("/{nomeHackathon}")
     public ResponseEntity<Void> eliminaHackathon(
             @AuthenticationPrincipal String nomeUtente,
-            @RequestParam String nomeHackathon){
+            @PathVariable String nomeHackathon){
         handler.eliminaHackathon(nomeUtente, nomeHackathon);
         return ResponseEntity.ok().build();
     }
@@ -68,11 +67,11 @@ public class GestisceHackathonBoundary {
      * @param nomeTeam il nome del team
      * @return una nuova chiamata http
      */
-    @PostMapping("/espelleTeam")
+    @PostMapping("/{nomeHackathon}/team/{nomeTeam}/espulsione")
     public ResponseEntity<Void> espelliTeam(
             @AuthenticationPrincipal String nomeUtente,
-            @RequestParam String nomeHackathon,
-            @RequestParam String nomeTeam) {
+            @PathVariable String nomeHackathon,
+            @PathVariable String nomeTeam) {
         handler.espelliTeam(nomeUtente, nomeHackathon, nomeTeam);
         return ResponseEntity.ok().build();
     }
@@ -84,10 +83,10 @@ public class GestisceHackathonBoundary {
      * @param nomeTeam il nome del team
      * @return una nuova chiamata http
      */
-    @PostMapping("/proclama")
+    @PostMapping("/{nomeHackathon}/vincitore")
     public ResponseEntity<Void> proclamaVincitore(
             @AuthenticationPrincipal String nomeUtente,
-            @RequestParam String nomeHackathon,
+            @PathVariable String nomeHackathon,
             @RequestParam String nomeTeam
     ){
         handler.proclamaVincitore(nomeUtente, nomeHackathon, nomeTeam);
@@ -101,10 +100,10 @@ public class GestisceHackathonBoundary {
      * @param nomeTeam il nome del team
      * @return una nuova chiamata http
      */
-    @PostMapping("/liquidaPremio")
+    @PostMapping("/{nomeHackathon}/liquidazione-premio")
     public ResponseEntity<Void> attivaLiquidazionePremio(
             @AuthenticationPrincipal String nomeUtente,
-            @RequestParam String nomeHackathon,
+            @PathVariable String nomeHackathon,
             @RequestParam String nomeTeam){
         handler.attivaLiquidazionePremio(nomeUtente, nomeHackathon, nomeTeam);
         return ResponseEntity.ok().build();

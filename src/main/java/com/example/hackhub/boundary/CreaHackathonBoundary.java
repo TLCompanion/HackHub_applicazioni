@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/api/creaHackathon")
+@RequestMapping("/api/hackathon")
 @Validated
 public class CreaHackathonBoundary {
 

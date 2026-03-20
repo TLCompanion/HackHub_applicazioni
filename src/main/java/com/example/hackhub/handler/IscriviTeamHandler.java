@@ -76,10 +76,11 @@ public class IscriviTeamHandler {
     /**
      * Annulla l'iscrizione ad un hackathon
      * @param nomeUtente il nome dell'utente
-     * @param idHackathon l'identificativo dell'hackathon
+     * @param nomeHackathon il nome dell'hackathon
      */
-    public void annullaIscrizioneHackathon(String nomeUtente, String idHackathon){
-        Hackathon hackathon = repositoryHackathon.findByIdHackathon(idHackathon).orElseThrow(() ->
+    @Transactional
+    public void annullaIscrizioneHackathon(String nomeUtente, String nomeHackathon){
+        Hackathon hackathon = repositoryHackathon.findByNome(nomeHackathon).orElseThrow(() ->
                 new NotFoundException("Hackathon non trovato"));
         if(hackathon.getStato() instanceof InCorso){
             throw new ConflictException("Non è possibile annullare l'iscrizione ad un hackathon in corso");

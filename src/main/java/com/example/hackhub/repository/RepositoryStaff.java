@@ -17,9 +17,9 @@ public interface RepositoryStaff extends JpaRepository<Staff, String> {
     Optional<Staff> findByUtente_NomeUtente(String nomeUtente);
 
     /**
-     * Trova un membro dello staff dal suo id
-     * @param id l'id del membro dello staff
+     * Trova un membro dello staff dal suo nome
+     * @param nomeUtente il nome dell'utente
      * @return il membro dello staff se esiste, altrimenti un optional vuoto
      */
-    Optional<Staff> getStaffByIdStaff(String id);
+    Optional<Staff> getStaffByUtente_NomeUtente(String nomeUtente);
 }

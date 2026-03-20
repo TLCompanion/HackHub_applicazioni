@@ -1,13 +1,17 @@
 package com.example.hackhub.handler;
 
+import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.TipoNotifica;
 import com.example.hackhub.domain.implementazione.*;
+import com.example.hackhub.eccezioni.ConflictException;
 import com.example.hackhub.eccezioni.NotFoundException;
+import com.example.hackhub.repository.RepositoryHackathon;
 import com.example.hackhub.repository.RepositoryIscrizioniTeam;
 import com.example.hackhub.repository.RepositoryMembriTeam;
-import com.example.hackhub.repository.RepositorySottomissioni;
+import com.example.hackhub.repository.RepositoryStaff;
 import com.example.hackhub.servizi.ServizioNotifiche;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class GestisceSottomissioneHandler {
@@ -16,6 +20,7 @@ public class GestisceSottomissioneHandler {
     private final RepositoryIscrizioniTeam repositoryIscrizioniTeam;
     private final RepositoryMembriTeam repositoryMembriTeam;
     private final ServizioNotifiche servizioNotifiche;
+    private final RepositoryHackathon repositoryHackathon;
 
     /**
      * Metodo che istanzia l'handler per la gestione delle sottomissioni
@@ -23,25 +28,28 @@ public class GestisceSottomissioneHandler {
      * @param repositoryMembriTeam la repo per i membri team
      * @param servizioNotifiche il servizio per l'invio delle notifiche
      */
-    public GestisceSottomissioneHandler(RepositoryIscrizioniTeam repositoryIscrizioniTeam, RepositoryMembriTeam repositoryMembriTeam, ServizioNotifiche  servizioNotifiche) {
+    public GestisceSottomissioneHandler(RepositoryIscrizioniTeam repositoryIscrizioniTeam, RepositoryMembriTeam repositoryMembriTeam, ServizioNotifiche  servizioNotifiche, RepositoryHackathon repositoryHackathon) {
         this.repositoryIscrizioniTeam = repositoryIscrizioniTeam;
         this.repositoryMembriTeam = repositoryMembriTeam;
         this.servizioNotifiche = servizioNotifiche;
+        this.repositoryHackathon = repositoryHackathon;
     }
 
     /**
      * Metodo che crea una sottomissione e la invia
+     *
      * @param nomeUtente il nome utente del membro che invia la sottomissione
-     * @param link il link a un file online o a una repository di GitHub
+     * @param link       il link a un file online o a una repository di GitHub
+     * @param nomeHackathon il nome dell'hackathon
      */
-    public void inviaSottomissione(String nomeUtente, String link) {
+    @Transactional
+    public void inviaSottomissione(String nomeUtente, String link, String nomeHackathon) {
         // Prelevo il membro del team e risalgo allo stato dell'hackathon
-        MembroTeam membro = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente)
-                .orElseThrow(() -> new NotFoundException("Membro del team non trovato"));
+        MembroTeam membro = validaAutorizzazione(nomeUtente);
         Team team = membro.getTeam();
         IscrizioneTeam iscrizioneTeam = repositoryIscrizioniTeam.findByTeam(team)
                 .orElseThrow(() -> new NotFoundException("Team non trovato"));
-        Hackathon hackathon = iscrizioneTeam.getHackathon();
+        Hackathon hackathon = checkStessoHackathon(nomeHackathon, iscrizioneTeam);
 
         // Verifico che l'invio delle sottomissioni sia consentito, se non succede niente è tutto ok
         hackathon.getStato().verificaInvioSottomissioneConsentito(iscrizioneTeam.getHackathon());
@@ -58,16 +66,17 @@ public class GestisceSottomissioneHandler {
 
     /**
      * Metodo che rimuove una sottomissione di un team
-     * @param nomeUtente il nome utente del membro che attiva la rimozione della sottomissione
+     *
+     * @param nomeUtente    il nome utente del membro che attiva la rimozione della sottomissione
+     * @param nomeHackathon il nome dell'hackathon
      */
-    public void attivaRimozioneSottomissione(String nomeUtente) {
-        // Prelevo il membro del team e risalgo allo stato dell'hackathon
-        MembroTeam membro = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente)
-                .orElseThrow(() -> new NotFoundException("Membro del team non trovato"));
+    @Transactional
+    public void attivaRimozioneSottomissione(String nomeUtente, String nomeHackathon) {
+        MembroTeam membro = validaAutorizzazione(nomeUtente);
         Team team = membro.getTeam();
         IscrizioneTeam iscrizioneTeam = repositoryIscrizioniTeam.findByTeam(team)
                 .orElseThrow(() -> new NotFoundException("Team non trovato"));
-        Hackathon hackathon = iscrizioneTeam.getHackathon();
+        Hackathon hackathon = checkStessoHackathon(nomeHackathon, iscrizioneTeam);
 
         // Verifico che la rimozione delle sottomissioni sia consentita, se non succede niente è tutto ok
         hackathon.getStato().verificaInvioSottomissioneConsentito(iscrizioneTeam.getHackathon());
@@ -78,5 +87,16 @@ public class GestisceSottomissioneHandler {
         for (MembroTeam m : team.getMembri())
             if (!m.equals(membro))
                 servizioNotifiche.creaNotifica(m.getUtente(), TipoNotifica.SOTTOMISSIONE_RIMOSSA, membro.getUtente().getNomeUtente() + " ha attivato la rimozione della sottomissione dell'hackathon " + hackathon.getNome());
+    }
+
+    private Hackathon checkStessoHackathon(String nomeHackathon, IscrizioneTeam iscrizioneTeam) {
+        Hackathon hackathon = repositoryHackathon.findByNome(nomeHackathon).orElseThrow(() -> new NotFoundException("Hackathon non trovato"));
+        if (!hackathon.getIscrizioni().contains(iscrizioneTeam))
+            throw new NotFoundException("Il team non è iscritto all'hackathon");
+        return hackathon;
+    }
+
+    private MembroTeam validaAutorizzazione(String nomeUtente){
+        return repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("L'utente non è un membro di un team"));
     }
 }

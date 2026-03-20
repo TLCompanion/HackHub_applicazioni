@@ -34,14 +34,14 @@ public class VisualizzaHandler {
 
     //TODO nell'uml aggiungere questi controlli con le eccezioni per tutti i casi d'uso che utilizzano questo metodo di
 
-    private Hackathon validaAutorizzazioni(String nomeUtente, String idHackathon) {
+    private Hackathon validaAutorizzazioni(String nomeUtente, String nomeHackathon) {
         verificaUtenteOrFail(nomeUtente);
         Staff staff = repositoryStaff.findByUtente_NomeUtente(nomeUtente)
                 .orElseThrow(() -> new ConflictException("L'utente non è membro di nessuno staff"));
-        if (!staff.getHackathon().getIdHackathon().equals(idHackathon)) {
+        if (!staff.getHackathon().getNome().equals(nomeHackathon)) {
             throw new ConflictException("L'utente non è membro dello staff di questo hackathon");
         }
-        return repositoryHackathon.findByIdHackathon(idHackathon)
+        return repositoryHackathon.findByNome(nomeHackathon)
                 .orElseThrow(() -> new NotFoundException("Hackathon non trovato"));
     }
 

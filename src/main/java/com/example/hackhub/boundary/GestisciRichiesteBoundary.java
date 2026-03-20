@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Validated
 @RestController
-@RequestMapping("/api/gestisciRichiesta")
+@RequestMapping("/api/richieste")
 public class GestisciRichiesteBoundary {
 
     private final GestisciRichiesteHandler handler;
