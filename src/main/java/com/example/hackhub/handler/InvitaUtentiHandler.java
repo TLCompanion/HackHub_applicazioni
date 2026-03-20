@@ -1,6 +1,7 @@
 package com.example.hackhub.handler;
 
 import com.example.hackhub.domain.RuoloTeam;
+import com.example.hackhub.domain.implementazione.MembroTeam;
 import com.example.hackhub.domain.implementazione.Team;
 import com.example.hackhub.domain.implementazione.Utente;
 import com.example.hackhub.eccezioni.ConflictException;
@@ -29,27 +30,22 @@ public class InvitaUtentiHandler {
         this.servizioNotifiche = servizioNotifiche;
     }
 
-    //todo questo è da riguardare, sicuro ci va il leader nel boundary perchè è quello che inizia la chiamata http
     /**
      * Metodo per invitare utenti ad un team
      * @param nomeUtente il nome dell'utente da invitare
-     * @param team il team a cui invitarlo
+     * @param nomeUtenteDaInvitare l'utente da invitare
      */
-    public void invitaUtenti(String nomeUtente, Team team) {
-        Utente utente = repositoryUtenti.findByNomeUtente(nomeUtente)
+    public void invitaUtenti(String nomeUtente, String nomeUtenteDaInvitare) {
+        MembroTeam leader = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("membro non presente nel team"));
+        if (leader.getRuolo()!= RuoloTeam.LEADER) {
+            throw new ConflictException("Solo il leader può invitare utenti");
+        }
+        Utente utente = repositoryUtenti.findByNomeUtente(nomeUtenteDaInvitare)
                 .orElseThrow(() -> new NotFoundException("Utente non trovato"));
-
         if (repositoryMembriTeam.findByUtente_NomeUtente(utente.getNomeUtente()).isPresent()) {
             throw new ConflictException("L'utente appartiene già a un team");
         }
-
-        String leader = team.getMembri().stream()
-                .filter(membro -> membro.getRuolo() == RuoloTeam.LEADER)
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException("Leader del team non trovato"))
-                .getUtente()
-                .getNomeUtente();
-
-        servizioNotifiche.creaInvitoTeam(leader, utente, team);
+        Team team = leader.getTeam();
+        servizioNotifiche.creaInvitoTeam(leader.getUtente().getNomeUtente(), utente, team);
     }
 }

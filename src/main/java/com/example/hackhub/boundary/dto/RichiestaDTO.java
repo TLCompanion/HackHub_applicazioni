@@ -1,6 +1,5 @@
 package com.example.hackhub.boundary.dto;
 
-import com.example.hackhub.domain.RuoloStaff;
 import jakarta.validation.constraints.*;
 
 /**

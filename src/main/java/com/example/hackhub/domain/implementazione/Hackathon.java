@@ -49,11 +49,6 @@ public class Hackathon {
     @NotBlank
     private String regolamento;
 
-    @Lob
-    @NotBlank
-    private String descrizione;
-
-
     @Min(1)
     private int maxIscrizioni; //Massimo numero di iscrizioni (team) che possono partecipare all'hackathon
 
@@ -91,7 +86,7 @@ public class Hackathon {
      * @param scadenzaIscrizioni data e ora di scadenza per le iscrizioni all'hackathon, deve essere una data valida e futura
      */
     public Hackathon(String nome, Periodo periodo, BigDecimal premio, String luogo, int teamMax, int teamMin,
-                     LocalDateTime scadenzaIscrizioni, String regolamento, int maxIscrizioni, String descrizione) {
+                     LocalDateTime scadenzaIscrizioni, String regolamento, int maxIscrizioni) {
         validazione(nome, periodo, premio, luogo, teamMax, teamMin, regolamento, scadenzaIscrizioni);
         this.nome = nome;
         this.periodo = periodo;
@@ -102,7 +97,6 @@ public class Hackathon {
         this.regolamento = regolamento;
         this.scadenzaIscrizioni = scadenzaIscrizioni;
         this.maxIscrizioni = maxIscrizioni;
-        this.descrizione = descrizione;
         // valori di default / inizializzazioni
         this.stato = IscrizioniAperte.INSTANCE; // stato iniziale, ad esempio "Iscrizioni Aperte"
         setStatoEnum(IscrizioniAperte.INSTANCE);
@@ -303,9 +297,5 @@ public class Hackathon {
 
     public void setNome(String nome) {
         this.nome = nome;
-    }
-
-    public String getDescrizione() {
-        return descrizione;
     }
 }

@@ -22,13 +22,13 @@ public class InvitaUtentiBoundary {
     /**
      * Metodo della boundary che invita un utente ad un team
      * @param nomeUtente il nome dell'utente che invita
-     * @param team il team
+     * @param nomeUtenteDaInvitare l'utente da invitare
      * @return una nuova risposta http
      */
     @PostMapping("/utenti")
     public ResponseEntity<Void> InvitaUtenti(@AuthenticationPrincipal String nomeUtente,
-                                             @RequestParam Team team){
-        handler.invitaUtenti(nomeUtente, team);
+                                             @RequestParam String nomeUtenteDaInvitare){
+        handler.invitaUtenti(nomeUtente, nomeUtenteDaInvitare);
         return ResponseEntity.noContent().build();
     }
 }

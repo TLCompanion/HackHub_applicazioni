@@ -49,14 +49,15 @@ public class GestisceHackathonBoundary {
     /**
      * Metodo della boundary per eliminare un hackathon
      * @param nomeUtente l'organizzatore che lo vuole eliminare
-     * @param idHackathon l'id dell'hackathon
+     * @param nomeHackathon l'id dell'hackathon
      * @return una nuova chiamata http
      */
+    //todo cambiare sul sequence e mettere nomeHackathon e non idHacakthon
     @DeleteMapping("/elimina")
     public ResponseEntity<Void> eliminaHackathon(
             @AuthenticationPrincipal String nomeUtente,
-            @RequestParam String idHackathon){
-        handler.eliminaHackathon(nomeUtente, idHackathon);
+            @RequestParam String nomeHackathon){
+        handler.eliminaHackathon(nomeUtente, nomeHackathon);
         return ResponseEntity.ok().build();
     }
 

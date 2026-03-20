@@ -128,7 +128,7 @@ public class VisualizzaHandler {
             listInfoHackathonDTO.add(new InfoHackathonDTO(h.getNome(), h.getPeriodo().getDataInizio(), h.getPeriodo().getDataFine(), h.getLuogo(),
                     h.getPremio(), h.getTeamMin(), h.getTeamMax(), h.getRegolamento(), h.getScadenzaIscrizioni(),
                     h.getStato(), numeroTeamIscritti, h.getMaxIscrizioni(), postiRimanenti,
-                    h.getDescrizione(), h.getRegolamento()));
+                    h.getRegolamento()));
         }
         return listInfoHackathonDTO;
     }

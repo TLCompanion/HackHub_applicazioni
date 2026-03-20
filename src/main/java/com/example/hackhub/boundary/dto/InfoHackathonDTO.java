@@ -22,7 +22,6 @@ public record InfoHackathonDTO(
         @Min(5) int numeroTeamIscritti,
         @Max(20) int maxIscrizioni,
         @NotBlank int postiRimanenti,
-        @NotBlank String descrizioneBreve,
         @NotBlank String regolamentoDisponibile
 ) {
 }
