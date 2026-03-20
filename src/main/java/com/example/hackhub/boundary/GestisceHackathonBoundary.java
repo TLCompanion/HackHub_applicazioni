@@ -38,7 +38,7 @@ public class GestisceHackathonBoundary {
      * @param nomeUtenteDaInvitare il nome dell'utente da invitare
      * @return una nuova chiamata http
      */
-    @PutMapping("/nominaMentori")
+    @PostMapping("/nominaMentori")
     public ResponseEntity<Void> nominaMentori(
             @AuthenticationPrincipal String nomeUtente,
             @RequestParam String nomeUtenteDaInvitare){
@@ -68,7 +68,7 @@ public class GestisceHackathonBoundary {
      * @param nomeTeam il nome del team
      * @return una nuova chiamata http
      */
-    @DeleteMapping("/espelleTeam")
+    @PostMapping("/espelleTeam")
     public ResponseEntity<Void> espelliTeam(
             @AuthenticationPrincipal String nomeUtente,
             @RequestParam String nomeHackathon,

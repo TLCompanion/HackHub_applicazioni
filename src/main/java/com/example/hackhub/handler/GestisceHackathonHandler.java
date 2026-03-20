@@ -52,7 +52,7 @@ public class GestisceHackathonHandler {
      * @param nomeTeam          il nome del team che ha violato il regolamento
      */
     public void segnalaViolazione(String nomeOrganizzatore, String nomeMentore, String nomeTeam) {
-        Team team = repositoryTeam.findByNomeTeam(nomeTeam).orElseThrow(() -> new NotFoundException("Team non trovato"));
+        Team team = repositoryTeam.findByNome(nomeTeam).orElseThrow(() -> new NotFoundException("Team non trovato"));
         Staff mentore = checkMentore(nomeMentore);
         Staff organizzatore = checkOrganizzatore(nomeOrganizzatore);
         IscrizioneTeam iscrizioneTeam = repositoryIscrizioniTeam.findByTeam(team).orElseThrow(() -> new NotFoundException("Il team non è iscritto a nessun hackathon"));
@@ -120,7 +120,7 @@ public class GestisceHackathonHandler {
     public void espelliTeam(String nomeUtente, String nomeHackathon, String nomeTeam) {
         Staff organizzatore = checkOrganizzatore(nomeUtente);
         Hackathon hackathon = checkHackathon(nomeHackathon, organizzatore);
-        Team team = repositoryTeam.findByNomeTeam(nomeTeam)
+        Team team = repositoryTeam.findByNome(nomeTeam)
                 .orElseThrow(() -> new NotFoundException("Team non trovato"));
         if (repositoryIscrizioniTeam.findByTeamAndHackathon(team, hackathon).isEmpty()) {
             throw new NotFoundException("Iscrizione del team all'hackathon non trovata");
@@ -148,7 +148,7 @@ public class GestisceHackathonHandler {
         if (hackathon.getStato() instanceof Concluso) {
             throw new ConflictException("Hackathon non concluso, impossibile proclamare il vincitore");
         }
-        Team team = repositoryTeam.findByNomeTeam(nomeTeam).orElseThrow(() -> new NotFoundException("Team non trovato"));
+        Team team = repositoryTeam.findByNome(nomeTeam).orElseThrow(() -> new NotFoundException("Team non trovato"));
         for (MembroTeam m : team.getMembri()) {
             servizioNotifiche.creaNotifica(m.getUtente(), VITTORIA, "Il tuo team ha vinto l'hackathon");
         }
@@ -172,7 +172,7 @@ public class GestisceHackathonHandler {
     public void attivaLiquidazionePremio(String nomeUtente, String nomeHackathon, String nomeTeam) {
         Staff organizzatore = checkOrganizzatore(nomeUtente);
         Hackathon hackathon = checkHackathon(nomeHackathon, organizzatore);
-        Team team = repositoryTeam.findByNomeTeam(nomeTeam).orElseThrow(() -> new NotFoundException("Team non trovato"));
+        Team team = repositoryTeam.findByNome(nomeTeam).orElseThrow(() -> new NotFoundException("Team non trovato"));
         IscrizioneTeam iscrizione = repositoryIscrizioniTeam.findByTeamAndHackathon(team, hackathon).orElseThrow(() -> new NotFoundException("Iscrizione del team all'hackathon non trovata"));
         if (!(hackathon.getStato() instanceof Concluso)) {
             throw new ConflictException("Hackathon non concluso, impossibile liquidare il premio");
@@ -194,7 +194,7 @@ public class GestisceHackathonHandler {
     }
 
     private Hackathon checkHackathon(String nomeHackathon, Staff organizzatore) {
-        Hackathon hackathon = repositoryHackathon.findByNomeHackathon(nomeHackathon).orElseThrow(() -> new NotFoundException("Hackathon non trovato"));
+        Hackathon hackathon = repositoryHackathon.findByNome(nomeHackathon).orElseThrow(() -> new NotFoundException("Hackathon non trovato"));
         if (!organizzatore.getHackathon().equals(hackathon)) {
             throw new ConflictException("L'organizzatore non coincide con l'hackathon scelto");
         }

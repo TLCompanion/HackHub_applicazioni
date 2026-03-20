@@ -17,6 +17,8 @@ import static com.example.hackhub.domain.TipoNotifica.*;
 @Service
 public class GestisciTeamHandler {
 
+    //TODO togliere sia qui che nel uml le repo inutilizzate (se nel sequence sono utilizzate capire perchè alla fine
+    // non sono servite e aggiornare anche quello)
     private final RepositoryTeam repositoryTeam;
     private final RepositoryUtenti repositoryUtenti;
     private final RepositoryMembriTeam repositoryMembriTeam;
@@ -69,7 +71,7 @@ public class GestisciTeamHandler {
      */
     public void esciDalTeam(String nomeUtente, String nomeTeam){
         MembroTeam membroTeam = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("L'utente non è membro di nessun team"));
-        Team team = repositoryTeam.findByNomeTeam(nomeTeam).orElseThrow(() -> new NotFoundException("Il team non esiste"));
+        Team team = repositoryTeam.findByNome(nomeTeam).orElseThrow(() -> new NotFoundException("Il team non esiste"));
         if (!membroTeam.getTeam().equals(team)) {
             throw new ConflictException("L'utente non è membro di questo team");
         }
@@ -123,7 +125,7 @@ public class GestisciTeamHandler {
             throw new ConflictException("Il membro da espellere non è nel team del leader");
         }
         Team team = leader.getTeam();
-        if (!repositoryIscrizioniTeam.findByTeam(team).isEmpty()) {
+        if (repositoryIscrizioniTeam.findByTeam(team).isPresent()) {
             throw new NotFoundException("Il team è iscritto ad un'hackathon, non puoi espellere un membro");
         }
         if (membroDaEspellere.getIdMembroTeam().equals(leader.getIdMembroTeam())) {

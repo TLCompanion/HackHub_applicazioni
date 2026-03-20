@@ -2,11 +2,15 @@ package com.example.hackhub.domain.implementazione;
 
 import com.example.hackhub.domain.RuoloTeam;
 import com.example.hackhub.domain.StatoRichiesta;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 import java.time.LocalDateTime;
 
+@Entity
+@DiscriminatorValue("PROPOSTA_LEADER")
 public class PropostaLeader extends Richiesta {
 
     @ManyToOne

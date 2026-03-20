@@ -20,8 +20,6 @@ public interface RepositoryTeam extends JpaRepository<Team, String> {
      * @param nomeTeam il nome del team
      * @return il team se esiste, altrimenti un Optional vuoto
      */
-    //todo secondo me questi due fanno praticamente la stessa cosa e possiamo usare solo uno dei due
-    Optional<Team> findByNomeTeam(String nomeTeam);
-
-    Team getTeamByIdTeam(String idTeam);
+    //TODO nei sequence cambiare i findByNomeTeam con questo
+    Optional<Team> findByNome(String nomeTeam);
 }

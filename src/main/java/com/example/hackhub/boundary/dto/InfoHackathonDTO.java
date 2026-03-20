@@ -17,11 +17,11 @@ public record InfoHackathonDTO(
         @Max(6) @Min(3) int teamMax,
         @NotBlank String regolamento,
         @NotNull LocalDateTime scadenzaIscrizioni,
-        StatoHackathon stato,
+        @NotNull StatoHackathon stato,
         //todo scegliere un minimo e un massimo per queste
         @Min(5) int numeroTeamIscritti,
-        @Max(20) int maxIscrizioni,
-        @NotBlank int postiRimanenti,
+        @Max(40) int maxIscrizioni,
+        int postiRimanenti,
         @NotBlank String regolamentoDisponibile
 ) {
 }

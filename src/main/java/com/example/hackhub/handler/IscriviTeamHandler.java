@@ -3,7 +3,6 @@ package com.example.hackhub.handler;
 import com.example.hackhub.domain.RuoloTeam;
 import com.example.hackhub.domain.implementazione.*;
 import com.example.hackhub.domain.implementazione.statePattern.InCorso;
-import com.example.hackhub.domain.implementazione.statePattern.IscrizioniChiuse;
 import com.example.hackhub.eccezioni.ConflictException;
 import com.example.hackhub.eccezioni.ForbiddenException;
 import com.example.hackhub.eccezioni.NotFoundException;
@@ -45,7 +44,7 @@ public class IscriviTeamHandler {
             throw new ForbiddenException("L'utente non è il leader del team");
 
         Team team = membroTeam.getTeam();
-        Hackathon hackathon = repositoryHackathon.findByNomeHackathon(nomeHackathon).orElseThrow(() ->
+        Hackathon hackathon = repositoryHackathon.findByNome(nomeHackathon).orElseThrow(() ->
                 new NotFoundException("Hackathon non trovato"));
         checkIscrizioneInHackathon(hackathon, team);
 

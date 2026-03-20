@@ -21,7 +21,7 @@ public class GestisciTeamBoundary {
      * @param nome il nuovo nome del team
      * @return una nuova chiamata http
      */
-    @PutMapping("/cambiaNome")
+    @PostMapping("/cambiaNome")
     public ResponseEntity<Void> cambiaNome(
             @AuthenticationPrincipal String nomeUtente,
             @RequestParam String nome
@@ -72,7 +72,7 @@ public class GestisciTeamBoundary {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/trasferisciRuolo")
+    @PostMapping("/trasferisciRuolo")
     public ResponseEntity<Void> trasferisceRuoloLeader(
             @AuthenticationPrincipal String nomeUtente,
             @RequestParam String nomeMembro){
