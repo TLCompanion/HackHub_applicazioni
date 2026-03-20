@@ -1,11 +1,4 @@
 package com.example.hackhub.servizi.esterni;
 
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-
-@Service
-public class SistemaDiPagamento {
-
-    public void pagaPremio(String recapitoOrg, String recapitoBancario, BigDecimal premio){}
+public interface SistemaDiPagamento {
 }

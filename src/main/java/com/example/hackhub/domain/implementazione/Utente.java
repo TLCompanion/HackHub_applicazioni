@@ -43,9 +43,6 @@ public class Utente {
 
     }
 
-    //PrePersist serve per fare operazioni prima di salvare l'entità nel database, in questo caso per assegnare un id
-    // univoco all'utente se non è già stato assegnato, viene automaticamente chiamato da JPA/Hibernate quando si
-    // salva l'entità per la prima volta.
     @PrePersist
     private void assegnaId() {
         if (this.idUtente == null) {
@@ -67,5 +64,9 @@ public class Utente {
 
     public String getRecapitoBancario() {
         return recapitoBancario;
+    }
+
+    public void setRecapitoBancario(String recapitoBancario) {
+        this.recapitoBancario = recapitoBancario;
     }
 }

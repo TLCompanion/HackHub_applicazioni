@@ -8,7 +8,7 @@ import com.example.hackhub.eccezioni.ConflictException;
 import com.example.hackhub.eccezioni.NotFoundException;
 import com.example.hackhub.repository.*;
 import com.example.hackhub.servizi.ServizioNotifiche;
-import com.example.hackhub.servizi.esterni.Calendario;
+import com.example.hackhub.servizi.esterni.CalendarioMock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +21,7 @@ public class GestisciRichiesteHandler {
     private final ServizioNotifiche servizioNotifiche;
     private final RepositoryStaff repositoryStaff;
     private final RepositoryMembriTeam repositoryMembriTeam;
-    private final Calendario calendario;
+    private final CalendarioMock calendario;
 
     /**
      * Istanzia un handler che si occupa di gestire tutti gli inviti, sia per lo Staff sia per i Team
@@ -30,7 +30,7 @@ public class GestisciRichiesteHandler {
      * @param repositoryHackathon la repository per gli hackathon
      * @param servizioNotifiche il servizio che gestisce le notifiche
      */
-    public GestisciRichiesteHandler(RepositoryUtenti repositoryUtenti, RepositoryRichiesta repositoryRichiesta, RepositoryHackathon repositoryHackathon, ServizioNotifiche servizioNotifiche, RepositoryStaff repositoryStaff, RepositoryMembriTeam repositoryMembriTeam, Calendario calendario) {
+    public GestisciRichiesteHandler(RepositoryUtenti repositoryUtenti, RepositoryRichiesta repositoryRichiesta, RepositoryHackathon repositoryHackathon, ServizioNotifiche servizioNotifiche, RepositoryStaff repositoryStaff, RepositoryMembriTeam repositoryMembriTeam, CalendarioMock calendario) {
         this.repositoryUtenti = repositoryUtenti;
         this.repositoryRichiesta = repositoryRichiesta;
         this.repositoryHackathon = repositoryHackathon;

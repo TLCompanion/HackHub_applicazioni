@@ -21,8 +21,8 @@ public class Staff {
     @JoinColumn(name = "utente_id_utente", nullable = false)
     private Utente utente;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "hackathon_id_hackathon", nullable = false)
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "hackathon_id_hackathon", nullable = true)
     private Hackathon hackathon;
 
     @Enumerated(EnumType.STRING)

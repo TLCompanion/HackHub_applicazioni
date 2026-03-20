@@ -8,7 +8,7 @@ import com.example.hackhub.eccezioni.ConflictException;
 import com.example.hackhub.eccezioni.NotFoundException;
 import com.example.hackhub.repository.*;
 import com.example.hackhub.servizi.ServizioNotifiche;
-import com.example.hackhub.servizi.esterni.SistemaDiPagamento;
+import com.example.hackhub.servizi.esterni.SistemaDiPagamentoMock;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +25,7 @@ public class GestisceHackathonHandler {
     private final RepositoryUtenti repositoryUtenti;
     private final RepositoryHackathon repositoryHackathon;
     private final RepositoryIscrizioniTeam repositoryIscrizioniTeam;
-    private final SistemaDiPagamento sistemaDiPagamento;
+    private final SistemaDiPagamentoMock sistemaDiPagamento;
 
     /**
      * Crea una nuova istanza di un handler per la gestione degli hackathon
@@ -34,7 +34,7 @@ public class GestisceHackathonHandler {
      * @param repositoryStaff   la repository dello staff
      * @param repositoryTeam    la repository dei team
      */
-    public GestisceHackathonHandler(ServizioNotifiche servizioNotifiche, RepositoryStaff repositoryStaff, RepositoryTeam repositoryTeam, RepositoryUtenti repositoryUtenti, RepositoryHackathon repositoryHackathon, RepositoryIscrizioniTeam repositoryIscrizioniTeam, SistemaDiPagamento sistemaDiPagamento) {
+    public GestisceHackathonHandler(ServizioNotifiche servizioNotifiche, RepositoryStaff repositoryStaff, RepositoryTeam repositoryTeam, RepositoryUtenti repositoryUtenti, RepositoryHackathon repositoryHackathon, RepositoryIscrizioniTeam repositoryIscrizioniTeam, SistemaDiPagamentoMock sistemaDiPagamento) {
         this.servizioNotifiche = servizioNotifiche;
         this.repositoryStaff = repositoryStaff;
         this.repositoryTeam = repositoryTeam;
@@ -100,7 +100,7 @@ public class GestisceHackathonHandler {
         Staff organizzatore = validaAutorizzazione(nomeUtente, RuoloStaff.ORGANIZZATORE);
         Hackathon hackathon = repositoryHackathon.findByNome(nomeHackathon).orElseThrow(() -> new NotFoundException("Hackathon non trovato"));
         checkStessoHackathon(hackathon, organizzatore);
-        if (hackathon.getStato() instanceof IscrizioniAperte || hackathon.getStato() instanceof IscrizioniChiuse) {
+        if (!(hackathon.getStato() instanceof IscrizioniAperte || hackathon.getStato() instanceof IscrizioniChiuse)) {
             throw new ConflictException("Non è possibile eliminare un hackathon in corso o concluso");
         }
         List<Team> teams = repositoryIscrizioniTeam.findAllByHackathon(hackathon).stream().map(IscrizioneTeam::getTeam).toList();

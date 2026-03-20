@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface RepositoryHackathon extends JpaRepository<Hackathon, String> {
 
@@ -35,6 +37,15 @@ public interface RepositoryHackathon extends JpaRepository<Hackathon, String> {
      * @return l'hackathon, un optional vuoto se non esiste
      */
     Optional<Hackathon> findByIdHackathon(String idHackathon);
+
+    /**
+     * Recupera un Hackathon insieme alla sua collezione di staff usando JOIN FETCH per evitare problemi di lazy loading
+     * quando l'entità viene consultata fuori dal contesto transazionale (es. nei test).
+     * @param idHackathon l'id dell'hackathon
+     * @return l'hackathon con lo staff inizializzato
+     */
+    @Query("SELECT h FROM Hackathon h LEFT JOIN FETCH h.staff WHERE h.idHackathon = :idHackathon")
+    Optional<Hackathon> findByIdFetchStaff(@Param("idHackathon") String idHackathon);
 
     /**
      * Query per trovare tutti gli hackathon che hanno iscrizioni chiuse e la data di inizio passata, quindi pronti per essere avviati

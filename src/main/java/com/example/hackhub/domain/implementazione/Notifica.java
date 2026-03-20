@@ -2,9 +2,7 @@ package com.example.hackhub.domain.implementazione;
 
 import com.example.hackhub.domain.TipoNotifica;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -20,8 +18,8 @@ public class Notifica {
     @JoinColumn(name = "destinatario_id_utente", nullable = false)
     private Utente destinatario;
     @Enumerated(EnumType.STRING)
-    @Column(insertable=false, updatable=false)
-    private TipoNotifica tipo;
+    @Column(nullable = false)
+    private TipoNotifica tipoNotifica;
     @Column(nullable = false)
     private String payload;
 
@@ -30,11 +28,11 @@ public class Notifica {
      * Creazione di una notifica
      * @param payload il payload associato
      * @param destinatario i destinatari
-     * @param tipo il tipo di notifica
+     * @param tipoNotifica il tipo di notifica
      */
-    public Notifica(String payload, Utente destinatario, TipoNotifica tipo) {
+    public Notifica(String payload, Utente destinatario, TipoNotifica tipoNotifica) {
         this.destinatario = destinatario;
-        this.tipo = tipo;
+        this.tipoNotifica = tipoNotifica;
         this.payload = payload;
     }
 
@@ -59,8 +57,8 @@ public class Notifica {
         return destinatario;
     }
 
-    public TipoNotifica getTipo() {
-        return tipo;
+    public TipoNotifica getTipoNotifica() {
+        return tipoNotifica;
     }
 
     public String getPayload() {

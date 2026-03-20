@@ -43,7 +43,7 @@ public class GestisceSottomissioneHandler {
      * @param nomeHackathon il nome dell'hackathon
      */
     @Transactional
-    public void inviaSottomissione(String nomeUtente, String link, String nomeHackathon) {
+    public void inviaSottomissione(String nomeUtente, String nomeHackathon, String link) {
         // Prelevo il membro del team e risalgo allo stato dell'hackathon
         MembroTeam membro = validaAutorizzazione(nomeUtente);
         Team team = membro.getTeam();
@@ -80,7 +80,8 @@ public class GestisceSottomissioneHandler {
 
         // Verifico che la rimozione delle sottomissioni sia consentita, se non succede niente è tutto ok
         hackathon.getStato().verificaInvioSottomissioneConsentito(iscrizioneTeam.getHackathon());
-
+        if (iscrizioneTeam.getSottomissione() == null)
+            throw new ConflictException("Non è presente nessuna sottomissione da rimuovere");
         // Altrimenti rimuovo la sottomissione e notifico il resto del team
         iscrizioneTeam.rimuoviSottomissione();
         repositoryIscrizioniTeam.save(iscrizioneTeam);

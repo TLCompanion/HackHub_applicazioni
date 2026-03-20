@@ -55,7 +55,7 @@ public class GestisciTeamHandler {
             throw new ConflictException("L'utente non è il leader del team");
         }
         Team team = leader.getTeam();
-        if (repositoryTeam.existsByNome(team.getNome())) {
+        if (repositoryTeam.existsByNome(nome)) {
             throw new ConflictException("Esiste già un team con questo nome");
         }
         team.setNome(nome);

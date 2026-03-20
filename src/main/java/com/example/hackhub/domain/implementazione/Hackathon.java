@@ -2,8 +2,7 @@ package com.example.hackhub.domain.implementazione;
 
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.StatoEnum;
-import com.example.hackhub.domain.implementazione.statePattern.IscrizioniAperte;
-import com.example.hackhub.domain.implementazione.statePattern.StatoHackathon;
+import com.example.hackhub.domain.implementazione.statePattern.*;
 import com.example.hackhub.eccezioni.ConflictException;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
@@ -228,7 +227,28 @@ public class Hackathon {
     //TODO aggiungere altri metodi per gestire le transizioni di stato
 
 
-    // METODI GETTER E SETTER
+
+//chat ha detto che è fondamentale e infatti non mi funzionavano i test senza perchè non essendo lo stato (oggetto)
+// persistito nel db quando i test lo prendevano ottenevano null, questo metodo diciamo che "ricostruisce" lo stato a
+// partire dallo statoEnum che invece è persistito, e viene chiamato automaticamente da JPA/Hibernate dopo che l'entità
+// è stata caricata dal database, in questo modo anche nei test lo stato viene inizializzato correttamente e non
+// otteniamo più null
+    @PostLoad
+    private void initStatoFromEnum() {
+        if (this.statoEnum == null) {
+            this.stato = IscrizioniAperte.INSTANCE;
+            return;
+        }
+        switch (this.statoEnum) {
+            case ISCRIZIONI_APERTE -> this.stato = IscrizioniAperte.INSTANCE;
+            case ISCRIZIONI_CHIUSE -> this.stato = IscrizioniChiuse.INSTANCE;
+            case IN_CORSO -> this.stato = InCorso.INSTANCE;
+            case VALUTAZIONE_IN_CORSO -> this.stato = ValutazioneInCorso.INSTANCE;
+            case CONCLUSO -> this.stato = Concluso.INSTANCE;
+            default -> this.stato = IscrizioniAperte.INSTANCE;
+        }
+    }
+
 
     public int getTeamMax() {
         return teamMax;
