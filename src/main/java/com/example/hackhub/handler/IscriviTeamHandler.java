@@ -37,13 +37,13 @@ public class IscriviTeamHandler {
      */
     @Transactional
     public void avviaIscrizioneHackathon(String nomeUtente, String nomeHackathon) {
-        MembroTeam membroTeam = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() ->
+        MembroTeam leader = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() ->
                 new NotFoundException("L'utente non è membro di nessun team"));
 
-        if (!membroTeam.getRuolo().equals(RuoloTeam.LEADER))
+        if (!leader.getRuolo().equals(RuoloTeam.LEADER))
             throw new ForbiddenException("L'utente non è il leader del team");
 
-        Team team = membroTeam.getTeam();
+        Team team = leader.getTeam();
         Hackathon hackathon = repositoryHackathon.findByNome(nomeHackathon).orElseThrow(() ->
                 new NotFoundException("Hackathon non trovato"));
         checkIscrizioneInHackathon(hackathon, team);
