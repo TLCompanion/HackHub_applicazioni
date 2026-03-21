@@ -7,8 +7,6 @@ import java.util.Optional;
 
 public interface RepositoryStaff extends JpaRepository<Staff, String> {
 
-    //TODO aggiornare questo metodo in uml
-
     /**
      * Trova un membro dello staff dal suo nome
      *

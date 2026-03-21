@@ -24,7 +24,6 @@ public interface RepositoryTeam extends JpaRepository<Team, String> {
      * @param nomeTeam il nome del team
      * @return il team se esiste, altrimenti un Optional vuoto
      */
-    //TODO nei sequence cambiare i findByNomeTeam con questo
     Optional<Team> findByNome(String nomeTeam);
 
     /**

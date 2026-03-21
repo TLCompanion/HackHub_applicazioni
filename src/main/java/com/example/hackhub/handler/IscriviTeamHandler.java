@@ -39,12 +39,7 @@ public class IscriviTeamHandler {
      */
     @Transactional
     public void avviaIscrizioneHackathon(String nomeUtente, String nomeHackathon) {
-        MembroTeam leader = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() ->
-                new NotFoundException("L'utente non è membro di nessun team"));
-
-        if (!leader.getRuolo().equals(RuoloTeam.LEADER))
-            throw new ForbiddenException("L'utente non è il leader del team");
-
+        MembroTeam leader = validazioneLeader(nomeUtente);
         Team team = leader.getTeam();
         Hackathon hackathon = repositoryHackathon.findByNome(nomeHackathon).orElseThrow(() ->
                 new NotFoundException("Hackathon non trovato"));
@@ -55,6 +50,14 @@ public class IscriviTeamHandler {
         repositoryHackathon.save(hackathon);
     }
 
+    private MembroTeam validazioneLeader(String nomeUtente){
+        MembroTeam leader = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() ->
+                new NotFoundException("L'utente non è membro di nessun team"));
+
+        if (!leader.getRuolo().equals(RuoloTeam.LEADER))
+            throw new ForbiddenException("L'utente non è il leader del team");
+        return leader;
+    }
     /**
      * Controlla che un team si possa iscrivere ad un hackathon
      *
@@ -66,12 +69,11 @@ public class IscriviTeamHandler {
         if (team.getNumMembri() < hackathon.getTeamMin() || team.getNumMembri() > hackathon.getTeamMax())
             throw new ConflictException("Il numero di membri del team non è compatibile con i requisiti dell'hackathon");
 
-        IscrizioneTeam iscrizioneEsistente = repositoryIscrizioniTeam.findByTeamAndHackathon(team, hackathon).
-                orElse(null);
-        if (iscrizioneEsistente != null)
+        IscrizioneTeam iscrizioneEsistente = repositoryIscrizioniTeam.findByTeamAndHackathon(team, hackathon).orElse(null);
+        if (iscrizioneEsistente != null) {
             if (iscrizioneEsistente.getHackathon().equals(hackathon))
                 throw new ConflictException("Il team è già iscritto a questo hackathon");
-
+        }
         if (hackathon.getIscrizioni().size() >= hackathon.getMaxIscrizioni())
             throw new ConflictException("Il numero massimo di iscrizioni è già stato raggiunto");
     }
@@ -89,11 +91,7 @@ public class IscriviTeamHandler {
         if (hackathon.getStato() instanceof InCorso) {
             throw new ConflictException("Non è possibile annullare l'iscrizione ad un hackathon in corso");
         }
-        MembroTeam leader = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() ->
-                new NotFoundException("L'utente non è membro di nessun team"));
-        if (!leader.getRuolo().equals(RuoloTeam.LEADER)) {
-            throw new ForbiddenException("L'utente non è il leader del team");
-        }
+        MembroTeam leader = validazioneLeader(nomeUtente);
         Team team = leader.getTeam();
         hackathon.rimuoviIscrizione(team);
         repositoryHackathon.save(hackathon);
