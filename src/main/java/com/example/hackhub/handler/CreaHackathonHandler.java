@@ -49,9 +49,9 @@ public class CreaHackathonHandler {
         builder.reset();
         buildSteps(builder, request);
         Hackathon hackathon = builder.getRisultato();
-        repositoryHackathon.save(hackathon);
         gestisciOrganizzatore(nomeUtente, hackathon);
         gestisciInvitiStaff(hackathon, request.nomeMentori(), request.nomeGiudice());
+        repositoryHackathon.save(hackathon);
     }
 
     /**
