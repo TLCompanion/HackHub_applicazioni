@@ -24,9 +24,11 @@ public class Notifica {
     private String payload;
 
     public Notifica() {}
+
     /**
      * Creazione di una notifica
-     * @param payload il payload associato
+     *
+     * @param payload      il payload associato
      * @param destinatario i destinatari
      * @param tipoNotifica il tipo di notifica
      */
@@ -45,9 +47,6 @@ public class Notifica {
             this.idNotifica = "N-" + UUID.randomUUID();
         }
     }
-
-    // METODI GETTER
-
 
     public String getIdNotifica() {
         return idNotifica;

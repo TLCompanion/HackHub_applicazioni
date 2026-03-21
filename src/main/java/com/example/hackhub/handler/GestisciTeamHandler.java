@@ -17,30 +17,24 @@ import static com.example.hackhub.domain.TipoNotifica.*;
 @Service
 public class GestisciTeamHandler {
 
-    //TODO togliere sia qui che nel uml le repo inutilizzate (se nel sequence sono utilizzate capire perchè alla fine
-    // non sono servite e aggiornare anche quello)
     private final RepositoryTeam repositoryTeam;
-    private final RepositoryUtenti repositoryUtenti;
     private final RepositoryMembriTeam repositoryMembriTeam;
     private final ServizioNotifiche servizioNotifiche;
     private final RepositoryIscrizioniTeam repositoryIscrizioniTeam;
-    private final GestisciRichiesteHandler gestisciRichiesteHandler;
 
     /**
      * Crea una nuova istanza dell'handler per gestire il team
-     * @param repositoryTeam la repository dei team
-     * @param repositoryUtenti la repository per gli utenti
-     * @param repositoryMembriTeam la repository per i membri dell team
-     * @param servizioNotifiche il servizio per le notifiche
+     *
+     * @param repositoryTeam           la repository dei team
+     * @param repositoryMembriTeam     la repository per i membri dell team
+     * @param servizioNotifiche        il servizio per le notifiche
      * @param repositoryIscrizioniTeam la repository per le iscrizioni dei team
      */
-    public GestisciTeamHandler(RepositoryTeam repositoryTeam, RepositoryUtenti repositoryUtenti, RepositoryMembriTeam repositoryMembriTeam, ServizioNotifiche servizioNotifiche, RepositoryIscrizioniTeam repositoryIscrizioniTeam, RepositoryHackathon repositoryHackathon, GestisciRichiesteHandler gestisciRichiesteHandler) {
+    public GestisciTeamHandler(RepositoryTeam repositoryTeam, RepositoryMembriTeam repositoryMembriTeam, ServizioNotifiche servizioNotifiche, RepositoryIscrizioniTeam repositoryIscrizioniTeam) {
         this.repositoryTeam = repositoryTeam;
-        this.repositoryUtenti = repositoryUtenti;
         this.repositoryMembriTeam = repositoryMembriTeam;
         this.servizioNotifiche = servizioNotifiche;
         this.repositoryIscrizioniTeam = repositoryIscrizioniTeam;
-        this.gestisciRichiesteHandler = gestisciRichiesteHandler;
     }
 
     /**
@@ -60,7 +54,7 @@ public class GestisciTeamHandler {
         }
         team.setNome(nome);
         repositoryTeam.save(team);
-        for (MembroTeam membro : team.getMembri()){
+        for (MembroTeam membro : team.getMembri()) {
             servizioNotifiche.creaNotifica(membro.getUtente(), CAMBIO_NOME_TEAM, "Il team ha cambiato nome in " + nome + ".");
         }
     }
@@ -70,13 +64,13 @@ public class GestisciTeamHandler {
      *
      * @param nomeUtente l'id del membro che vuole uscire
      */
-    public void esciDalTeam(String nomeUtente){
+    public void esciDalTeam(String nomeUtente) {
         MembroTeam membroTeam = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("L'utente non è membro di nessun team"));
         Team team = repositoryTeam.findByNome(membroTeam.getTeam().getNome()).orElseThrow(() -> new NotFoundException("Il team non esiste"));
         if (!membroTeam.getTeam().equals(team)) {
             throw new ConflictException("L'utente non è membro di questo team");
         }
-        if (repositoryIscrizioniTeam.findByTeam(team).isPresent()){
+        if (repositoryIscrizioniTeam.findByTeam(team).isPresent()) {
             throw new ConflictException("Il team è iscritto ad un'hackathon, non puoi uscire dal team");
         }
         if (membroTeam.getRuolo() == RuoloTeam.LEADER) {
@@ -86,16 +80,17 @@ public class GestisciTeamHandler {
         team.rimuoviMembro(membroTeam);
         repositoryMembriTeam.delete(membroTeam);
         repositoryTeam.save(team);
-        for(MembroTeam m : team.getMembri()){
+        for (MembroTeam m : team.getMembri()) {
             servizioNotifiche.creaNotifica(m.getUtente(), USCITA, "Il membro " + membroTeam.getUtente().getNomeUtente() + " è uscito dal team.");
         }
     }
 
     /**
      * Metodo per sciogliere un team
+     *
      * @param nomeUtente il nome dell'utente che vuole sciogliere il team
      */
-    public void sciogliTeam(String nomeUtente){
+    public void sciogliTeam(String nomeUtente) {
         MembroTeam membroTeam = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("L'utente non è membro di nessun team"));
         if (membroTeam.getRuolo() != RuoloTeam.LEADER) {
             throw new ConflictException("L'utente non è il leader del team");
@@ -105,7 +100,7 @@ public class GestisciTeamHandler {
         if (!iscrizioni.isEmpty()) {
             repositoryIscrizioniTeam.deleteAll(iscrizioni);
         }
-        for(MembroTeam m : team.getMembri()){
+        for (MembroTeam m : team.getMembri()) {
             servizioNotifiche.creaNotifica(m.getUtente(), SCIOGLIMENTO_TEAM, "Il team " + team.getNome() + " è stato sciolto.");
         }
         repositoryTeam.delete(team);
@@ -113,10 +108,11 @@ public class GestisciTeamHandler {
 
     /**
      * Metodo per espellere un membro da un team
+     *
      * @param nomeUtente il nome dell'utente che vuole espellere il membro
      * @param nomeMembro il nome del membro da espellere
      */
-    public void espelliMembro(String nomeUtente, String nomeMembro){
+    public void espelliMembro(String nomeUtente, String nomeMembro) {
         MembroTeam leader = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("L'utente non è membro di nessun team"));
         if (leader.getRuolo() != RuoloTeam.LEADER) {
             throw new ConflictException("L'utente non è il leader del team");
@@ -135,7 +131,7 @@ public class GestisciTeamHandler {
         team.getMembri().remove(membroDaEspellere);
         repositoryMembriTeam.delete(membroDaEspellere);
         repositoryTeam.save(team);
-        for(MembroTeam m : team.getMembri()){
+        for (MembroTeam m : team.getMembri()) {
             servizioNotifiche.creaNotifica(m.getUtente(), ESPULSIONE_TEAM, "Il membro " + membroDaEspellere.getUtente().getNomeUtente() + " è stato espulso dal team.");
         }
     }

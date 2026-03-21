@@ -14,16 +14,16 @@ public class Utente {
 
     @Id
     @Column(nullable = false, updatable = false)
-    private String idUtente; // Identificativo univoco dell'Utente
+    private String idUtente;
 
     @Column(nullable = false, unique = true)
-    private String nomeUtente; // Nome identificativo dell'Utente, unico in tutta la piattaforma
+    private String nomeUtente;
 
     @Column(nullable = false)
-    private String email; // Email dell'utente
+    private String email;
 
     @Column(nullable = false)
-    private String passwordHash; // password hashata
+    private String passwordHash;
 
     @Column
     private String recapitoBancario;
@@ -50,17 +50,25 @@ public class Utente {
         }
     }
 
-    // DI SEGUITO SONO RIPORTATI TUTTI I METODI GETTER
+    public String getNomeUtente() {
+        return this.nomeUtente;
+    }
 
-    public String getNomeUtente() { return this.nomeUtente; }
+    public String getIdUtente() {
+        return idUtente;
+    }
 
-    public String getIdUtente() { return idUtente; }
+    public String getEmail() {
+        return email;
+    }
 
-    public String getEmail() { return email; }
+    public String getPasswordHash() {
+        return passwordHash;
+    }
 
-    public String getPasswordHash() { return passwordHash; }
-
-    public void setNomeUtente(String nomeUtente) { this.nomeUtente = nomeUtente; }
+    public void setNomeUtente(String nomeUtente) {
+        this.nomeUtente = nomeUtente;
+    }
 
     public String getRecapitoBancario() {
         return recapitoBancario;

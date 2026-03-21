@@ -12,7 +12,8 @@ public interface RepositoryIscrizioniTeam extends JpaRepository<IscrizioneTeam, 
 
     /**
      * Trova un iscrizione dal team e dall'hackathon
-     * @param team il team
+     *
+     * @param team      il team
      * @param hackathon l'hackathon
      * @return l'iscrizione, un optional vuoto se non esiste
      */
@@ -20,6 +21,7 @@ public interface RepositoryIscrizioniTeam extends JpaRepository<IscrizioneTeam, 
 
     /**
      * Trova tutte le iscrizioni relative ad un hackathon
+     *
      * @param hackathon l'hackathon
      * @return la lista delle iscrizioni, se non esiste nessuna iscrizione ritorna una lista vuota
      */
@@ -27,6 +29,7 @@ public interface RepositoryIscrizioniTeam extends JpaRepository<IscrizioneTeam, 
 
     /**
      * Trova un iscrizione dal team associato
+     *
      * @param team il team
      * @return l'iscrizione, un optional vuoto se non esiste
      */

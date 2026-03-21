@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-public class ValutazioneHandler{
+public class ValutazioneHandler {
 
     private final RepositorySottomissioni repositorySottomissioni;
     private final RepositoryHackathon repositoryHackathon;
@@ -26,10 +26,11 @@ public class ValutazioneHandler{
 
     /**
      * Crea una nuova istanza di un handler per la valutazione delle sottomissioni
+     *
      * @param repositorySottomissioni la repository delle sottomissioni
-     * @param repositoryHackathon la repository degli hackathon
-     * @param repositoryStaff la repository dello staff
-     * @param servizioNotifiche il servizio per le notifiche
+     * @param repositoryHackathon     la repository degli hackathon
+     * @param repositoryStaff         la repository dello staff
+     * @param servizioNotifiche       il servizio per le notifiche
      */
     public ValutazioneHandler(RepositorySottomissioni repositorySottomissioni, RepositoryHackathon repositoryHackathon,
                               RepositoryStaff repositoryStaff, ServizioNotifiche servizioNotifiche, RepositoryIscrizioniTeam repositoryIscrizioniTeam, RepositoryValutazioni repositoryValutazioni) {
@@ -43,15 +44,16 @@ public class ValutazioneHandler{
 
     /**
      * Avvia l'inserimento di una nuova valutazione per una sottomissione
+     *
      * @param idSottomissione l'id della sottomissione da valutare
-     * @param nomeUtente il nome utente del giudice che sta valutando la sottomissione
-     * @param request la valutazione con i suoi componenti
+     * @param nomeUtente      il nome utente del giudice che sta valutando la sottomissione
+     * @param request         la valutazione con i suoi componenti
      */
     @Transactional
-    public void avviaInserimentoValutazione(String idSottomissione, String nomeUtente, ValutazioneRequest request){
+    public void avviaInserimentoValutazione(String idSottomissione, String nomeUtente, ValutazioneRequest request) {
         Sottomissione sottomissione = repositorySottomissioni.findById(idSottomissione).orElseThrow(() ->
                 new NotFoundException("Sottomissione non trovata"));
-        Hackathon hackathon = repositoryStaff.findByUtente_NomeUtente(nomeUtente).orElseThrow( () ->
+        Hackathon hackathon = repositoryStaff.findByUtente_NomeUtente(nomeUtente).orElseThrow(() ->
                 new NotFoundException("Giudice non trovato")).getHackathon();
 
         try {
@@ -67,7 +69,8 @@ public class ValutazioneHandler{
 
     /**
      * Verifica che l'utente che vuole valutare le sottomissioni sia il giudice dell'hackathon
-     * @param hackathon l'hackathon
+     *
+     * @param hackathon  l'hackathon
      * @param nomeUtente il nome utente dell'utente che vuole valutare
      */
     private void verificaGiudiceAutorizzato(Hackathon hackathon, String nomeUtente) {
@@ -80,9 +83,10 @@ public class ValutazioneHandler{
 
     /**
      * Crea o aggiorna una valutazione per una sottomissione
+     *
      * @param sottomissione la sottomissione da valutare
-     * @param punteggio il punteggio associato
-     * @param giudizio il giudizio associato
+     * @param punteggio     il punteggio associato
+     * @param giudizio      il giudizio associato
      */
     private void creaOAggiornaValutazione(Sottomissione sottomissione, int punteggio, String giudizio) {
         Valutazione valutazione = sottomissione.getValutazione();
@@ -100,6 +104,7 @@ public class ValutazioneHandler{
 
     /**
      * Conclude l'hackathon se tutte le sottomissioni sono state valutate
+     *
      * @param hackathon l'hackathon
      */
     private void concludiHackathonSeTutteValutate(Hackathon hackathon) {
@@ -117,7 +122,8 @@ public class ValutazioneHandler{
                     .flatMap(team -> team.getMembri().stream())
                     .map(MembroTeam::getUtente)
                     .toList();
-            for (Utente u : utentiDestinatari) servizioNotifiche.creaNotifica(u, TipoNotifica.VALUTAZIONE_CONCLUSA, messaggio);
+            for (Utente u : utentiDestinatari)
+                servizioNotifiche.creaNotifica(u, TipoNotifica.VALUTAZIONE_CONCLUSA, messaggio);
         }
     }
 

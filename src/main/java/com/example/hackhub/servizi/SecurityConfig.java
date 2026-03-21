@@ -10,27 +10,29 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-    public class SecurityConfig {
+public class SecurityConfig {
 
-        private final JwtFiltro filtro;
+    private final JwtFiltro filtro;
 
-        @Bean
-        SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-            return http
-                    .csrf(AbstractHttpConfigurer::disable)
-                    .authorizeHttpRequests(auth -> auth
-                            .requestMatchers("/api/autenticazione/**").permitAll()
-                            .anyRequest().authenticated()
-                    )
-                    .addFilterBefore(filtro, UsernamePasswordAuthenticationFilter.class)
-                    .build();
-        }
-
-        public SecurityConfig (JwtFiltro filtro) { this.filtro = filtro; }
-
-        @Bean
-        public PasswordEncoder passwordEncoder() {
-            return new BCryptPasswordEncoder();
-        }
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) {
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/autenticazione/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(filtro, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
+
+    public SecurityConfig(JwtFiltro filtro) {
+        this.filtro = filtro;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}
 

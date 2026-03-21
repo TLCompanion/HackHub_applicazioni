@@ -22,8 +22,7 @@ public class Periodo {
     @NotNull
     private LocalTime oraFine;
 
-    public Periodo() {
-    }
+    public Periodo() {}
 
     /**
      * Creazione di un periodo di tempo con validazione per assicurarsi che la data e ora di inizio siano precedenti a
@@ -59,10 +58,11 @@ public class Periodo {
 
     /**
      * Controlla che i dati inseriti siano validi
+     *
      * @param dataInizio la data di inizio
-     * @param dataFine la data di fine
-     * @param oraInizio l'ora di inizio
-     * @param oraFine l'ora di fine
+     * @param dataFine   la data di fine
+     * @param oraInizio  l'ora di inizio
+     * @param oraFine    l'ora di fine
      */
     private void validazione(LocalDate dataInizio, LocalDate dataFine, LocalTime oraInizio, LocalTime oraFine) {
         if (dataInizio.isAfter(dataFine) || (dataInizio.isEqual(dataFine) && oraInizio.isAfter(oraFine))) {
@@ -72,9 +72,6 @@ public class Periodo {
             throw new ConflictException("La data di inizio deve essere futura a oggi");
         }
     }
-
-
-    // METODI GETTER
 
     public LocalDate getDataInizio() {
         return dataInizio;

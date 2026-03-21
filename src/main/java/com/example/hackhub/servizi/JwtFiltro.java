@@ -38,20 +38,15 @@ public class JwtFiltro extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws ServletException, IOException {
         String header = request.getHeader("Authorization");
-        String token = null;
-        String nomeUtente = null;
-
-        // Verifica che ci sia header e che inizi con Bearer
+        String token;
+        String nomeUtente;
         if (header != null && header.startsWith("Bearer ")) {
-            token = header.substring(7); // Rimuove Bearer
+            token = header.substring(7);
             try {
                 nomeUtente = servizioJwt.estraiNomeUtente(token);
-                // ricavo l'utente se non c'è già autenticazione, e valido il token
                 if (nomeUtente != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     Utente utente = repositoryUtenti.findByNomeUtente(nomeUtente).orElse(null);
-
                     if (utente != null) {
-                        // Valido il token e creo un oggetto Authentication
                         servizioJwt.validaToken(token, utente);
                         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(nomeUtente,
                                 null, Collections.emptyList());
@@ -63,7 +58,7 @@ public class JwtFiltro extends OncePerRequestFilter {
                 SecurityContextHolder.clearContext();
             }
         }
-        chain.doFilter(request, response); // Continua la catena
+        chain.doFilter(request, response);
     }
 
 }

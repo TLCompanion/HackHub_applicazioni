@@ -25,12 +25,16 @@ public class ServizioJwt {
 
     /**
      * Metodo helper per prelevare la chiave
+     *
      * @return la chiave segreta per firmare i token Jwt, ottenuta dalla stringa jwtSecret
      */
-    private SecretKey getSigningKey() { return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8)); }
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+    }
 
     /**
      * Metodo che genera un token Jwt per un Utente che tenta di accedere alla piattaforma
+     *
      * @param utente l'oggetto Utente che prova ad autenticarsi alla piattaforma
      * @return un token Jwt
      */
@@ -38,7 +42,7 @@ public class ServizioJwt {
         if (utente == null) throw new IllegalArgumentException("L'utente passato è nullo");
 
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime()+jwtExpirationMs);
+        Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
 
         return Jwts.builder()
                 .subject(utente.getNomeUtente())
@@ -50,6 +54,7 @@ public class ServizioJwt {
 
     /**
      * Metodo per estrarre il nomeUtente da un token Jwt
+     *
      * @param token il token Jwt da cui si deve effettuare l'estrazione
      * @return nomeUtente
      */
@@ -66,7 +71,8 @@ public class ServizioJwt {
 
     /**
      * Verifica che un token Jwt sia valido per un certo Utente
-     * @param token il token Jwt da validare
+     *
+     * @param token  il token Jwt da validare
      * @param utente l'utente che prova l'autenticazione alla piattaforma
      * @throws RuntimeException se viene lanciata un'eccezione
      */
@@ -82,8 +88,7 @@ public class ServizioJwt {
                     .getPayload();
             if (!claims.getSubject().equals(utente.getNomeUtente()))
                 throw new JwtException("Token non corrispondente all'utente");
-        }
-        catch (JwtException | IllegalArgumentException e) {
+        } catch (JwtException | IllegalArgumentException e) {
             throw new RuntimeException("Token Jwt non valido o scaduto");
         }
     }

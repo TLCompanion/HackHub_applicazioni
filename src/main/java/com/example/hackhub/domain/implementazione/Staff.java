@@ -21,8 +21,8 @@ public class Staff {
     @JoinColumn(name = "utente_id_utente", nullable = false)
     private Utente utente;
 
-    @ManyToOne(optional = true)
-    @JoinColumn(name = "hackathon_id_hackathon", nullable = true)
+    @ManyToOne
+    @JoinColumn(name = "hackathon_id_hackathon")
     private Hackathon hackathon;
 
     @Enumerated(EnumType.STRING)
@@ -31,22 +31,18 @@ public class Staff {
 
     /**
      * Creazione di un membro dello staff
+     *
      * @param utente l'utente associato allo staff
-     * @param ruolo il ruolo ricoperto
+     * @param ruolo  il ruolo ricoperto
      */
-    // N.B. Non è necessario passare l'hackathon come parametro, poiché lo staff viene associato all'hackathon tramite
-    // il metodo setHackathon() dopo la creazione dello staff, in questo modo si evita di creare un ciclo di dipendenze
-    // tra le classi Staff e Hackathon, che potrebbe complicare la gestione delle entità e delle relazioni tra di esse.
-    public Staff(Utente utente,  RuoloStaff ruolo) {
+    public Staff(Utente utente, RuoloStaff ruolo) {
         this.utente = utente;
         this.ruolo = ruolo;
     }
 
-    public Staff() {}
+    public Staff() {
+    }
 
-    //PrePersist serve per fare operazioni prima di salvare l'entità nel database, in questo caso per assegnare un id
-    // univoco all'hackathon se non è già stato assegnato, viene automaticamente chiamato da JPA/Hibernate quando si
-    // salva l'entità per la prima volta.
     @PrePersist
     private void assegnaId() {
         if (this.idStaff == null) {
@@ -54,13 +50,9 @@ public class Staff {
         }
     }
 
-    //metodi getter
-
-    public RuoloStaff getRuolo() {return ruolo;}
-
-    public String getIdHackathon() {return hackathon.getIdHackathon();}
-
-    public String getIdUtente() {return utente.getIdUtente();}
+    public RuoloStaff getRuolo() {
+        return ruolo;
+    }
 
     public Utente getUtente() {
         return utente;

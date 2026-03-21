@@ -9,33 +9,32 @@ import java.util.UUID;
  * Un utente registrato alla piattaforma che diventa parte di un team
  */
 @Entity
-@Table(name = "membro_team", uniqueConstraints = @UniqueConstraint(columnNames = "id_utente"))
+@Table(name = "membro_team")
 public class MembroTeam {
 
     @Id
     @Column(nullable = false, updatable = false)
     private String idMembroTeam;
 
-    //private String idUtente
     @OneToOne(optional = false)
     @JoinColumn(name = "utente_id_utente")
     private Utente utente;
 
-    //private String idTeam
     @ManyToOne(optional = false)
-    @JoinColumn(name = "team_id_team",nullable = false)
+    @JoinColumn(name = "team_id_team", nullable = false)
     private Team team;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private RuoloTeam ruolo; //ruolo che il membro ricopre all'interno del Team
+    private RuoloTeam ruolo;
 
     public MembroTeam() {}
 
     /**
      * Creazione di un membro del team
-     * @param utente l'utente che diventa membro del team
-     * @param team il team a cui appartiene
+     *
+     * @param utente    l'utente che diventa membro del team
+     * @param team      il team a cui appartiene
      * @param ruoloTeam il ruolo del membro del team
      */
     public MembroTeam(Utente utente, Team team, RuoloTeam ruoloTeam) {
@@ -43,10 +42,6 @@ public class MembroTeam {
         this.team = team;
         this.ruolo = ruoloTeam;
     }
-
-    //PrePersist serve per fare operazioni prima di salvare l'entità nel database, in questo caso per assegnare un id
-    // univoco al membro team se non è già stato assegnato, viene automaticamente chiamato da JPA/Hibernate quando si
-    // salva l'entità per la prima volta.
 
     /**
      * Assegna un id univoco ad ogni membro di un team
@@ -58,23 +53,27 @@ public class MembroTeam {
         }
     }
 
-    // METODI GETTER
+    public String getIdMembroTeam() {
+        return idMembroTeam;
+    }
 
-    public String getIdMembroTeam() { return idMembroTeam; }
+    public RuoloTeam getRuolo() {
+        return ruolo;
+    }
 
-    public String getIdUtente() { return utente.getIdUtente(); }
+    public Utente getUtente() {
+        return utente;
+    }
 
-    public String getIdTeam() { return team.getIdTeam(); }
+    public Team getTeam() {
+        return team;
+    }
 
-    public RuoloTeam getRuolo() { return ruolo; }
+    public void setRuolo(RuoloTeam r) {
+        this.ruolo = r;
+    }
 
-    public Utente getUtente() { return utente; }
-
-    public Team getTeam() { return team; }
-
-    // METODO SETTER
-
-    public void setRuolo(RuoloTeam r) { this.ruolo = r; }
-
-    public void setTeam(Team t) { this.team = t; }
+    public void setTeam(Team t) {
+        this.team = t;
+    }
 }

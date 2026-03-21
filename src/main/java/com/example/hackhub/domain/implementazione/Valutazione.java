@@ -22,11 +22,13 @@ public class Valutazione {
     @Column(nullable = false)
     private String descrizione;
 
-    public Valutazione() {}
+    public Valutazione() {
+    }
 
     /**
      * Creazione di una valutazione per una sottomissione
-     * @param voto il voto assegnato dal Giudice
+     *
+     * @param voto        il voto assegnato dal Giudice
      * @param descrizione la motivazione del voto assegnato
      */
     public Valutazione(int voto, String descrizione) {
@@ -34,9 +36,6 @@ public class Valutazione {
         this.descrizione = descrizione;
     }
 
-    //PrePersist serve per fare operazioni prima di salvare l'entità nel database, in questo caso per assegnare un id
-    // univoco alla valutazione se non è già stato assegnato, viene automaticamente chiamato da JPA/Hibernate quando si
-    // salva l'entità per la prima volta.
     @PrePersist
     private void assegnaId() {
         if (this.idValutazione == null) {
@@ -44,17 +43,23 @@ public class Valutazione {
         }
     }
 
+    public String getIdValutazione() {
+        return idValutazione;
+    }
 
+    public int getVoto() {
+        return voto;
+    }
 
-    // METODI GETTER E SETTER
+    public String getDescrizione() {
+        return descrizione;
+    }
 
-    public String getIdValutazione() { return idValutazione; }
+    public void setVoto(int voto) {
+        this.voto = voto;
+    }
 
-    public int getVoto() { return voto; }
-
-    public String getDescrizione() { return descrizione; }
-
-    public void setVoto(int voto) { this.voto = voto; }
-
-    public void setDescrizione(String descrizione) { this.descrizione = descrizione; }
+    public void setDescrizione(String descrizione) {
+        this.descrizione = descrizione;
+    }
 }

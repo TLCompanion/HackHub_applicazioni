@@ -21,11 +21,12 @@ public class InvitaUtentiHandler {
 
     /**
      * Crea un istanza dell'handler per invitare gli utenti
-     * @param repositoryUtenti la repository degli utenti
+     *
+     * @param repositoryUtenti     la repository degli utenti
      * @param repositoryMembriTeam la repository dei membri del team
-     * @param servizioNotifiche il servizio per le notifiche
+     * @param servizioNotifiche    il servizio per le notifiche
      */
-    public InvitaUtentiHandler(RepositoryUtenti repositoryUtenti, RepositoryMembriTeam repositoryMembriTeam, ServizioNotifiche servizioNotifiche){
+    public InvitaUtentiHandler(RepositoryUtenti repositoryUtenti, RepositoryMembriTeam repositoryMembriTeam, ServizioNotifiche servizioNotifiche) {
         this.repositoryUtenti = repositoryUtenti;
         this.repositoryMembriTeam = repositoryMembriTeam;
         this.servizioNotifiche = servizioNotifiche;
@@ -33,13 +34,14 @@ public class InvitaUtentiHandler {
 
     /**
      * Metodo per invitare utenti ad un team
-     * @param nomeUtente il nome dell'utente da invitare
+     *
+     * @param nomeUtente           il nome dell'utente da invitare
      * @param nomeUtenteDaInvitare l'utente da invitare
      */
     @Transactional
     public void invitaUtenti(String nomeUtente, String nomeUtenteDaInvitare) {
         MembroTeam leader = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("Membro non presente nel team"));
-        if (leader.getRuolo()!= RuoloTeam.LEADER) {
+        if (leader.getRuolo() != RuoloTeam.LEADER) {
             throw new ConflictException("Solo il leader può invitare utenti");
         }
         Utente utente = repositoryUtenti.findByNomeUtente(nomeUtenteDaInvitare)

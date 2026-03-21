@@ -8,9 +8,7 @@ import com.example.hackhub.repository.RepositoryNotifica;
 import com.example.hackhub.repository.RepositoryRichiesta;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 
 /**
@@ -24,30 +22,33 @@ public class ServizioNotifiche {
 
     /**
      * Crea una nuovo servizio notifiche
-     * @param repositoryNotifica il repository delle notifiche
+     *
+     * @param repositoryNotifica  il repository delle notifiche
      * @param repositoryRichiesta il repository delle richieste
      */
-    public ServizioNotifiche(RepositoryNotifica repositoryNotifica, RepositoryRichiesta repositoryRichiesta){
+    public ServizioNotifiche(RepositoryNotifica repositoryNotifica, RepositoryRichiesta repositoryRichiesta) {
         this.repositoryNotifica = repositoryNotifica;
         this.repositoryRichiesta = repositoryRichiesta;
     }
 
     /**
      * Crea una nuova notifica
+     *
      * @param destinatario i destinatari
-     * @param tipo il tipo della notifica
-     * @param messaggio il messaggio da inviare
+     * @param tipo         il tipo della notifica
+     * @param messaggio    il messaggio da inviare
      */
-    public void creaNotifica(Utente destinatario, TipoNotifica tipo, String messaggio){
+    public void creaNotifica(Utente destinatario, TipoNotifica tipo, String messaggio) {
         Notifica notifica = new Notifica(messaggio, destinatario, tipo);
         repositoryNotifica.save(notifica);
     }
 
     /**
      * Crea una proposta di call
+     *
      * @param nomeMittente il nome del mittente
      * @param destinatario il nome del destinatario
-     * @param periodo la durata della call
+     * @param periodo      la durata della call
      */
     public void creaPropostaCall(String nomeMittente, Utente destinatario, Periodo periodo) {
         PropostaCall propostaCall = new PropostaCall(nomeMittente,
@@ -60,10 +61,11 @@ public class ServizioNotifiche {
 
     /**
      * Metodo che istanzia un Invito allo Staff di un hackathon
+     *
      * @param nomeMittente il nome del mittente
      * @param destinatario il destinatario
-     * @param hackathon l'hackathon associato
-     * @param ruolo il ruolo offerto
+     * @param hackathon    l'hackathon associato
+     * @param ruolo        il ruolo offerto
      */
     public void creaInvitoStaff(String nomeMittente, Utente destinatario, Hackathon hackathon, RuoloStaff ruolo) {
         if (ruolo.equals(RuoloStaff.ORGANIZZATORE))
@@ -81,9 +83,10 @@ public class ServizioNotifiche {
 
     /**
      * Crea un invito da inviare per entrare in un team
+     *
      * @param nomeMittente il nome del mittente
      * @param destinatario il destinatario
-     * @param team il team associato
+     * @param team         il team associato
      */
     public void creaInvitoTeam(String nomeMittente, Utente destinatario, Team team) {
         InvitoTeam invitoTeam = new InvitoTeam(
@@ -96,7 +99,7 @@ public class ServizioNotifiche {
         repositoryRichiesta.save(invitoTeam);
     }
 
-    public void creaPropostaLeader(String nomeMittente, Utente destinatario, Team team){
+    public void creaPropostaLeader(String nomeMittente, Utente destinatario, Team team) {
         PropostaLeader propostaLeader = new PropostaLeader(nomeMittente, "Invito a diventare il leader del team " + team.getNome(),
                 destinatario, LocalDateTime.now().plusDays(3), team);
         repositoryRichiesta.save(propostaLeader);

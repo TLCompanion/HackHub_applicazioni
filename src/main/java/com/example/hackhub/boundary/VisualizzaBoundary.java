@@ -9,7 +9,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-//TODO controllare tutto uml di questi casi d'uso attentamente
 @RestController
 @RequestMapping("/api")
 @Validated

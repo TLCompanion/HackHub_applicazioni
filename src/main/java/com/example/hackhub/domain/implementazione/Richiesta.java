@@ -4,7 +4,6 @@ import com.example.hackhub.domain.StatoRichiesta;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -31,10 +30,12 @@ public abstract class Richiesta {
     @Column(nullable = false)
     private LocalDateTime scadenza;
 
-    public Richiesta(){}
+    public Richiesta() {
+    }
 
     /**
      * Creazione di una nuova richiesta
+     *
      * @param nomeMittente il mittente della richiesta
      */
     public Richiesta(String nomeMittente, String payload, Utente destinatario, LocalDateTime scadenza) {
@@ -44,10 +45,6 @@ public abstract class Richiesta {
         this.payload = payload;
         this.scadenza = scadenza;
     }
-
-    //PrePersist serve per fare operazioni prima di salvare l'entità nel database, in questo caso per assegnare un id
-    // univoco alla richiesta se non è già stato assegnato, viene automaticamente chiamato da JPA/Hibernate quando si
-    // salva l'entità per la prima volta.
 
     /**
      * Assegna un id univoco ad ogni richiesta
@@ -73,19 +70,30 @@ public abstract class Richiesta {
         this.setStato(StatoRichiesta.RIFIUTATO);
     }
 
-    // METODI GETTER
 
-    public String getIdRichiesta() { return idRichiesta; }
+    public String getIdRichiesta() {
+        return idRichiesta;
+    }
 
-    public String getMittente() { return nomeMittente; }
+    public String getMittente() {
+        return nomeMittente;
+    }
 
-    public Utente getDestinatario() { return destinatario; }
+    public Utente getDestinatario() {
+        return destinatario;
+    }
 
-    public StatoRichiesta getStato() { return stato; }
+    public StatoRichiesta getStato() {
+        return stato;
+    }
 
-    public String getPayload() { return payload; }
+    public String getPayload() {
+        return payload;
+    }
 
-    public LocalDateTime getScadenza() { return scadenza; }
+    public LocalDateTime getScadenza() {
+        return scadenza;
+    }
 
     public void setStato(StatoRichiesta stato) {
         this.stato = stato;

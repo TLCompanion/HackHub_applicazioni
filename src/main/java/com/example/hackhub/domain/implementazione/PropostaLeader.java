@@ -48,8 +48,5 @@ public class PropostaLeader extends Richiesta {
         team.setLeader(leader);
     }
 
-
-    // METODI GETTER
-
     public Team getTeam() { return team; }
 }

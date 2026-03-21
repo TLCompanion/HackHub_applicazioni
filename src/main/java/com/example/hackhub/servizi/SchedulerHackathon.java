@@ -12,7 +12,7 @@ public class SchedulerHackathon {
         this.eventiTemporaliHandler = eventiTemporaliHandler;
     }
 
-    @Scheduled(fixedRate = 60000) // Esegue il controllo ogni 60 secondi (1 minuto)
+    @Scheduled(fixedRate = 60000)
     public void eseguiControlloScadenze() {
         eventiTemporaliHandler.gestisciScadenzeTemporali();
     }

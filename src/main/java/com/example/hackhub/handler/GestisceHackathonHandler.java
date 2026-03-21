@@ -71,7 +71,7 @@ public class GestisceHackathonHandler {
      *
      * @param nomeUtente           il nome dell'organizzatore
      * @param nomeUtenteDaInvitare il nome dell'utente da invitare
-     * @param nomeHackathon il nome dell'hackathon
+     * @param nomeHackathon        il nome dell'hackathon
      */
     @Transactional
     public void nominaMentori(String nomeUtente, String nomeUtenteDaInvitare, String nomeHackathon) {
@@ -194,9 +194,10 @@ public class GestisceHackathonHandler {
     }
 
 
-    private Staff validaAutorizzazione(String nomeUtente, RuoloStaff ruoloStaff){
+    private Staff validaAutorizzazione(String nomeUtente, RuoloStaff ruoloStaff) {
         Staff utente = repositoryStaff.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("L'utente non è un membro dello staff"));
-        if (utente.getRuolo() != ruoloStaff) throw new ConflictException("L'utente non ha i permessi necessari per eseguire questa operazione");
+        if (utente.getRuolo() != ruoloStaff)
+            throw new ConflictException("L'utente non ha i permessi necessari per eseguire questa operazione");
         return utente;
     }
 

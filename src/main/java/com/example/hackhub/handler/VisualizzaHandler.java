@@ -22,6 +22,7 @@ public class VisualizzaHandler {
 
     /**
      * Costruttore che inizializza questo handler per visualizzare liste di oggetti
+     *
      * @param repositoryHackathon la repository degli hackathon
      */
     public VisualizzaHandler(RepositoryHackathon repositoryHackathon, RepositoryRichiesta repositoryRichiesta, RepositoryNotifica repositoryNotifica, RepositoryUtenti repositoryUtenti, RepositoryStaff repositoryStaff) {
@@ -52,6 +53,7 @@ public class VisualizzaHandler {
 
     /**
      * Metodo che ritorna la lista di valutazioni delle sottomissioni consegnate a un hackathon
+     *
      * @param idHackathon l'id dell'hackathon di riferimento
      * @return la lista delle valutazioni
      */
@@ -66,6 +68,7 @@ public class VisualizzaHandler {
 
     /**
      * Metodo che ritorna la lista di sottomissioni consegnate in un hackathon
+     *
      * @param idHackathon l'id dell'hackathon di riferimento
      * @return la lista di sottomissioni
      */
@@ -74,12 +77,13 @@ public class VisualizzaHandler {
         List<Sottomissione> sottomissioni = new ArrayList<>();
         for (IscrizioneTeam i : hackathon.getIscrizioni()) sottomissioni.add(i.getSottomissione());
 
-        return  sottomissioni.stream().map(s -> new SottomissioneDTO
+        return sottomissioni.stream().map(s -> new SottomissioneDTO
                 (s.getLink(), s.getValutazione().getDescrizione(), s.getValutazione().getVoto())).collect(Collectors.toList());
     }
 
     /**
      * Metodo che ritorna la lista di iscrizioni effettuate a un hackathon
+     *
      * @param idHackathon l'id dell'hackathon di riferimento
      * @return la lista delle iscrizioni
      */
@@ -91,6 +95,7 @@ public class VisualizzaHandler {
 
     /**
      * Metodo che ritorna la lista di richieste pendenti in formato JSON
+     *
      * @param nomeUtente il nome utente dell'utente destinatario delle richieste
      * @return una lista di richieste JSON
      */
@@ -103,6 +108,7 @@ public class VisualizzaHandler {
 
     /**
      * Metodo che ritorna la lista di notifiche destinate all'utente di riferimento
+     *
      * @param nomeUtente il nome utente dell'utente destinatario delle notifiche
      * @return la lista di notifiche dto
      */
@@ -115,14 +121,15 @@ public class VisualizzaHandler {
 
     /**
      * Metodo che ritorna la lista di informazioni pubbliche destinate all'utente di riferimento
+     *
      * @param nomeUtente il nome dell'utente destinatario delle info
      * @return la lista di hackathon dto
      */
-    public List<InfoHackathonDTO> viewInfoHackathon(String nomeUtente){
+    public List<InfoHackathonDTO> viewInfoHackathon(String nomeUtente) {
         verificaUtenteOrFail(nomeUtente);
         List<Hackathon> listHackathon = repositoryHackathon.findAll();
         List<InfoHackathonDTO> listInfoHackathonDTO = new ArrayList<>();
-        for (Hackathon h : listHackathon){
+        for (Hackathon h : listHackathon) {
             int numeroTeamIscritti = h.getIscrizioni().size();
             int postiRimanenti = h.getMaxIscrizioni() - numeroTeamIscritti;
             listInfoHackathonDTO.add(new InfoHackathonDTO(h.getNome(), h.getPeriodo().getDataInizio(), h.getPeriodo().getDataFine(), h.getLuogo(),

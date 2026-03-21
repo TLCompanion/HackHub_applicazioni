@@ -44,7 +44,7 @@ public class EventiTemporaliHandler {
         LocalDateTime now = LocalDateTime.now();
         List<Hackathon> hackathonDaAvviare = repositoryHackathon.findHackathonDaAvviare(StatoEnum.ISCRIZIONI_CHIUSE,
                 now.toLocalDate(), now.toLocalTime());
-        for(Hackathon h: hackathonDaAvviare){
+        for (Hackathon h : hackathonDaAvviare) {
             try {
                 h.avviaHackathon();
                 h.setStatoEnum(InCorso.INSTANCE);
@@ -64,9 +64,11 @@ public class EventiTemporaliHandler {
         StatoHackathon stato = IscrizioniAperte.INSTANCE;
         List<Hackathon> hackathonDaChiudere = repositoryHackathon.findHackathonDaChiudere(StatoEnum.ISCRIZIONI_APERTE, LocalDateTime.now());
         for (Hackathon h : hackathonDaChiudere) {
-            try { h.chiudiIscrizioni(); }
-            catch (TransizioneNonConsentitaException e)
-            { throw new ConflictException("Impossibile chiudere le iscrizioni dell'hackathon " + h.getNome()); }
+            try {
+                h.chiudiIscrizioni();
+            } catch (TransizioneNonConsentitaException e) {
+                throw new ConflictException("Impossibile chiudere le iscrizioni dell'hackathon " + h.getNome());
+            }
             h.setStatoEnum(IscrizioniChiuse.INSTANCE);
             repositoryHackathon.save(h);
         }
@@ -80,9 +82,11 @@ public class EventiTemporaliHandler {
         StatoHackathon stato = InCorso.INSTANCE;
         List<Hackathon> hackathonDaValutare = repositoryHackathon.findHackathonDaValutare(StatoEnum.IN_CORSO, LocalDateTime.now());
         for (Hackathon h : hackathonDaValutare) {
-            try { h.avviaValutazione(); }
-            catch (TransizioneNonConsentitaException e)
-            { throw new ConflictException("Impossibile avviare la valutazione dell'hackathon " + h.getNome()); }
+            try {
+                h.avviaValutazione();
+            } catch (TransizioneNonConsentitaException e) {
+                throw new ConflictException("Impossibile avviare la valutazione dell'hackathon " + h.getNome());
+            }
             h.setStatoEnum(ValutazioneInCorso.INSTANCE);
             repositoryHackathon.save(h);
         }
@@ -90,10 +94,11 @@ public class EventiTemporaliHandler {
 
     /**
      * Trova l'organizzatore dell'hackathon
+     *
      * @param hackathon l'hackathon
      * @return l'organizzatore
      */
-    private Utente trovaOrganizzatore(Hackathon hackathon){
+    private Utente trovaOrganizzatore(Hackathon hackathon) {
         return hackathon.getStaff().stream().filter(
                         s -> s.getRuolo() == RuoloStaff.ORGANIZZATORE)
                 .map(Staff::getUtente)
@@ -104,6 +109,7 @@ public class EventiTemporaliHandler {
 
     /**
      * Notifica gli utenti dell'inizio dell'hackathon
+     *
      * @param hackathon l'hackathon
      */
     private void notificaUtenti(Hackathon hackathon) {

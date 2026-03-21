@@ -51,7 +51,6 @@ public class GestisceHackathonBoundary {
      * @param nomeHackathon l'id dell'hackathon
      * @return una nuova chiamata http
      */
-    //todo cambiare sul sequence e mettere nomeHackathon e non idHacakthon
     @DeleteMapping("/{nomeHackathon}")
     public ResponseEntity<Void> eliminaHackathon(
             @AuthenticationPrincipal String nomeUtente,

@@ -2,7 +2,6 @@ package com.example.hackhub.domain.implementazione;
 
 import com.example.hackhub.domain.RuoloTeam;
 import com.example.hackhub.domain.StatoRichiesta;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -20,13 +19,15 @@ public class InvitoTeam extends Richiesta {
     }
 
     public InvitoTeam() {}
+
     /**
      * Costruttore che inizializza un invito a entrare in un team
+     *
      * @param nomeMittente il nome del mittente
-     * @param payload il messaggio
+     * @param payload      il messaggio
      * @param destinatario il destinatario
-     * @param scadenza la scadenza dell'invito
-     * @param team il team
+     * @param scadenza     la scadenza dell'invito
+     * @param team         il team
      */
     public InvitoTeam(String nomeMittente, String payload, Utente destinatario, LocalDateTime scadenza, Team team) {
         super(nomeMittente, payload, destinatario, scadenza);
@@ -40,8 +41,7 @@ public class InvitoTeam extends Richiesta {
         team.aggiungiMembro(membro);
     }
 
-
-    // METODI GETTER
-
-    public Team getTeam() { return team; }
+    public Team getTeam() {
+        return team;
+    }
 }

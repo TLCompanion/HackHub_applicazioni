@@ -11,6 +11,7 @@ import com.example.hackhub.repository.RepositoryHackathon;
 import com.example.hackhub.repository.RepositoryUtenti;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,9 +25,10 @@ public class CreaHackathonHandler {
 
     /**
      * Crea un handler che si occupa di gestire tutte le operazioni necessarie per creare un hackathon
-     * @param repositoryUtenti la repository per recuperare gli utenti che saranno organizzatori, mentori e giudici
+     *
+     * @param repositoryUtenti    la repository per recuperare gli utenti che saranno organizzatori, mentori e giudici
      * @param repositoryHackathon la repository per salvare l'hackathon creato
-     * @param servizioNotifiche il servizio per inviare le notifiche agli utenti invitati come giudici e mentori
+     * @param servizioNotifiche   il servizio per inviare le notifiche agli utenti invitati come giudici e mentori
      */
     public CreaHackathonHandler(RepositoryUtenti repositoryUtenti, RepositoryHackathon
             repositoryHackathon, ServizioNotifiche servizioNotifiche) {
@@ -39,7 +41,8 @@ public class CreaHackathonHandler {
      * Avvia la creazione di un hackathon, verificando che il nome dell'hackathon non sia già esistente. Se tutte le
      * verifiche passano, imposta i dati dell'hackathon usando il builder, imposta l'organizzatore, invia gli inviti a
      * giudice e mentori, e salva l'hackathon nel database.
-     * @param request la richiesta di creazione
+     *
+     * @param request    la richiesta di creazione
      * @param nomeUtente il nome utente dell'organizzatore che sta creando l'hackathon
      */
     @Transactional
@@ -56,11 +59,12 @@ public class CreaHackathonHandler {
 
     /**
      * Controlla che i dati siano corretti
-     * @param request la richiesta di creazione dell'hackathon
+     *
+     * @param request    la richiesta di creazione dell'hackathon
      * @param nomeUtente l'organizzatore che crea l'hackathon
      */
     private void validazione(HackathonRequest request, String nomeUtente) {
-        if (repositoryHackathon.existsByNome(request.nome())){
+        if (repositoryHackathon.existsByNome(request.nome())) {
             throw new ForbiddenException("Esiste già un hackathon con questo nome");
         }
         if (repositoryUtenti.findByNomeUtente(request.nomeGiudice()).isEmpty() || request.nomeMentori().stream().
@@ -80,6 +84,7 @@ public class CreaHackathonHandler {
 
     /**
      * Costruisce un hackathon tramite builder
+     *
      * @param builder il builder
      * @param request il dto che contiene i dati dell'hackathon da costruire
      */
@@ -98,7 +103,8 @@ public class CreaHackathonHandler {
 
     /**
      * Gestione degli inviti allo staff per un hackathon
-     * @param hackathon l'hackathon
+     *
+     * @param hackathon   l'hackathon
      * @param nomiMentori i nomi degli utenti che si vogliono invitare come mentori
      * @param nomeGiudice il nome dell'utente che si vuole invitare come giudice
      */
@@ -114,6 +120,7 @@ public class CreaHackathonHandler {
 
     /**
      * Controlla che i nomi degli utenti legati allo staff siano presenti nel sistema
+     *
      * @param nomiMentori i nomi dei mentori
      * @param nomeGiudice il nome del giudice
      * @return una nuova HashMap che associa l'utente esistente al suo ruolo
@@ -123,7 +130,7 @@ public class CreaHackathonHandler {
                 new NotFoundException("L'utente specificato non esiste: " + nome))).toList();
         Utente giudice = repositoryUtenti.findByNomeUtente(nomeGiudice).orElseThrow(() ->
                 new NotFoundException("L'utente specificato non esiste: " + nomeGiudice));
-        return new HashMap<>(){{
+        return new HashMap<>() {{
             put(giudice, RuoloStaff.GIUDICE);
             mentori.forEach(mentore -> put(mentore, RuoloStaff.MENTORE));
         }};
@@ -131,8 +138,9 @@ public class CreaHackathonHandler {
 
     /**
      * Controlla che l'organizzatore esista come utente e lo aggiunge allo staff
+     *
      * @param nomeUtente il nome utente dell'organizzatore
-     * @param hackathon l'hackathon
+     * @param hackathon  l'hackathon
      */
     private void gestisciOrganizzatore(String nomeUtente, Hackathon hackathon) {
         Utente organizzatore = repositoryUtenti.findByNomeUtente(nomeUtente).orElseThrow(() ->

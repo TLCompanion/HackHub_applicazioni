@@ -103,10 +103,6 @@ public class Hackathon {
         this.iscrizioni = new ArrayList<>();
     }
 
-    //PrePersist serve per fare operazioni prima di salvare l'entità nel database, in questo caso per assegnare un id
-    // univoco all'hackathon se non è già stato assegnato, viene automaticamente chiamato da JPA/Hibernate quando si
-    // salva l'entità per la prima volta.
-
     /**
      * Assegna un id univoco ad un hackathon
      */
@@ -116,9 +112,6 @@ public class Hackathon {
             this.idHackathon = "H-" + UUID.randomUUID();
         }
     }
-
-    // Metodo che lancia eccezioni se ci sono incongruenze nei campi passati alla creazione, altrimenti non
-    // fa niente
 
     /**
      * Lancia eccezioni se ci sono dei parametri sbagliati dell'hackathon
@@ -131,8 +124,8 @@ public class Hackathon {
      * @param teamMin            il numero minimo di membri che un team deve avere per iscriversi
      * @param regolamento        il regolamente
      * @param scadenzaIscrizioni la scadenza delle iscrizioni
-     * @throws ConflictException se alcuni dati non sono validi
-     * @throws NullPointerException     se alcuni dati non sono stati inseriti
+     * @throws ConflictException    se alcuni dati non sono validi
+     * @throws NullPointerException se alcuni dati non sono stati inseriti
      */
     private void validazione(String nome, Periodo periodo, BigDecimal premio, String luogo, int teamMax, int teamMin,
                              String regolamento, LocalDateTime scadenzaIscrizioni) throws ConflictException,
@@ -165,12 +158,13 @@ public class Hackathon {
         iscrizione.setHackathon(this);
     }
 
-    public void rimuoviIscrizione(Team team){
+    public void rimuoviIscrizione(Team team) {
         IscrizioneTeam iscrizione = iscrizioni.stream().filter(i -> i.getTeam().equals(team)).findFirst()
                 .orElseThrow(() -> new ConflictException("Il team non è iscritto a questo hackathon"));
         this.iscrizioni.remove(iscrizione);
         iscrizione.setHackathon(null);
     }
+
     /**
      * Avvia l'hackathon se è presente almeno un giudice e un mentore, altrimenti lancia un'eccezione
      *
@@ -224,15 +218,6 @@ public class Hackathon {
         }
     }
 
-    //TODO aggiungere altri metodi per gestire le transizioni di stato
-
-
-
-//chat ha detto che è fondamentale e infatti non mi funzionavano i test senza perchè non essendo lo stato (oggetto)
-// persistito nel db quando i test lo prendevano ottenevano null, questo metodo diciamo che "ricostruisce" lo stato a
-// partire dallo statoEnum che invece è persistito, e viene chiamato automaticamente da JPA/Hibernate dopo che l'entità
-// è stata caricata dal database, in questo modo anche nei test lo stato viene inizializzato correttamente e non
-// otteniamo più null
     @PostLoad
     private void initStatoFromEnum() {
         if (this.statoEnum == null) {

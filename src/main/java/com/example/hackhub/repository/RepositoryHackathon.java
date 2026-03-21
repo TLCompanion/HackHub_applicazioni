@@ -11,13 +11,12 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 public interface RepositoryHackathon extends JpaRepository<Hackathon, String> {
 
     /**
      * Controlla che esista un hackathon con il nome specificato
+     *
      * @param nome il nome
      * @return true se esiste, false altrimenti
      */
@@ -25,6 +24,7 @@ public interface RepositoryHackathon extends JpaRepository<Hackathon, String> {
 
     /**
      * Trova l'hackathon con il nome specificato
+     *
      * @param nomeHackathon il nome dell'hackathon
      * @return l'hackathon, un optional vuoto se non esiste
      */
@@ -33,6 +33,7 @@ public interface RepositoryHackathon extends JpaRepository<Hackathon, String> {
 
     /**
      * Trova l'hackathon dal suo id
+     *
      * @param idHackathon l'id dell'hackathon
      * @return l'hackathon, un optional vuoto se non esiste
      */
@@ -41,6 +42,7 @@ public interface RepositoryHackathon extends JpaRepository<Hackathon, String> {
     /**
      * Recupera un Hackathon insieme alla sua collezione di staff usando JOIN FETCH per evitare problemi di lazy loading
      * quando l'entità viene consultata fuori dal contesto transazionale (es. nei test).
+     *
      * @param idHackathon l'id dell'hackathon
      * @return l'hackathon con lo staff inizializzato
      */
@@ -49,8 +51,9 @@ public interface RepositoryHackathon extends JpaRepository<Hackathon, String> {
 
     /**
      * Query per trovare tutti gli hackathon che hanno iscrizioni chiuse e la data di inizio passata, quindi pronti per essere avviati
-     * @param stato lo stato dell'hackathon
-     * @param today la data corrente
+     *
+     * @param stato   lo stato dell'hackathon
+     * @param today   la data corrente
      * @param nowTime l'ora corrente
      * @return la lista degli hackathon da avviare
      */
@@ -69,17 +72,18 @@ public interface RepositoryHackathon extends JpaRepository<Hackathon, String> {
 
     /**
      * Query che trova tutti gli hackathon di cui si devono chiudere le iscrizioni
+     *
      * @param statoEnum lo stato dell'hackathon
-     * @param scadenza la data di scadenza
+     * @param scadenza  la data di scadenza
      * @return la lista degli hackathon di cui si devono chiudere le iscrizioni
      */
     @Query("""
-        SELECT h
-        FROM Hackathon h
-        WHERE h.statoEnum = :stato
-        AND h.scadenzaIscrizioni <= :scadenza
-        ORDER BY h.periodo.dataInizio ASC, h.periodo.oraInizio ASC
-                       \s""")
+            SELECT h
+            FROM Hackathon h
+            WHERE h.statoEnum = :stato
+            AND h.scadenzaIscrizioni <= :scadenza
+            ORDER BY h.periodo.dataInizio ASC, h.periodo.oraInizio ASC
+                           \s""")
     List<Hackathon> findHackathonDaChiudere(
             @Param("stato") StatoEnum statoEnum,
             @Param("today") LocalDateTime scadenza
@@ -87,17 +91,18 @@ public interface RepositoryHackathon extends JpaRepository<Hackathon, String> {
 
     /**
      * Query che trova tutti gli hackathon da valutare
+     *
      * @param statoEnum lo stato dell'hackathon
-     * @param scadenza la scadenza della consegna delle sottomissioni
+     * @param scadenza  la scadenza della consegna delle sottomissioni
      * @return la lista degli hackathon da valutare
      */
     @Query("""
-        SELECT h
-        FROM Hackathon h
-        WHERE h.statoEnum = :stato
-        AND h.periodo.dataFine <= :scadenza
-        ORDER BY h.periodo.dataInizio ASC, h.periodo.oraInizio ASC
-                       \s""")
+            SELECT h
+            FROM Hackathon h
+            WHERE h.statoEnum = :stato
+            AND h.periodo.dataFine <= :scadenza
+            ORDER BY h.periodo.dataInizio ASC, h.periodo.oraInizio ASC
+                           \s""")
     List<Hackathon> findHackathonDaValutare(
             @Param("stato") StatoEnum statoEnum,
             @Param("today") LocalDateTime scadenza

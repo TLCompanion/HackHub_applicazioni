@@ -4,7 +4,9 @@ import com.example.hackhub.domain.implementazione.Hackathon;
 
 public class InCorso implements StatoHackathon {
     public static final InCorso INSTANCE = new InCorso();
-    private InCorso(){}
+
+    private InCorso() {
+    }
 
     @Override
     public void avviaValutazione(Hackathon hackathon) {
@@ -13,6 +15,5 @@ public class InCorso implements StatoHackathon {
 
     @Override
     public void verificaInvioSottomissioneConsentito(Hackathon hackathon) {
-        // consentito
     }
 }

@@ -18,6 +18,7 @@ public class RispondeRichiesteSupportoHandler {
 
     /**
      * Metodo che inizializza questo handler
+     *
      * @param servizioNotifiche singleton del ServizioNotifiche
      */
     public RispondeRichiesteSupportoHandler(RepositoryNotifica repositoryNotifica, RepositoryStaff repositoryStaff, ServizioNotifiche servizioNotifiche) {
@@ -29,6 +30,7 @@ public class RispondeRichiesteSupportoHandler {
     /**
      * Metodo che permette a un mentore di un hackathon di rispondere a una notifica che richiede supporto,
      * e con cui il mentore risponde con una proposta di call oppure con una notifica in risposta
+     *
      * @param nomeUtente il nome utente del mentore che risponde alla richiesta di supporto
      * @param idNotifica l'id della notifica considerata
      */

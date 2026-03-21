@@ -20,12 +20,13 @@ public class InvitoStaff extends Richiesta {
 
     /**
      * Costruttore che instanzia un invito a unirsi allo Staff di un Hackathon
+     *
      * @param nomeMittente il nome del mittente
-     * @param payload il messaggio
+     * @param payload      il messaggio
      * @param destinatario il destinatario
-     * @param scadenza la scadenza dell'invito
-     * @param hackathon l'hackathon associato
-     * @param ruolo il ruolo che l'utente dovrebbe ricoprire
+     * @param scadenza     la scadenza dell'invito
+     * @param hackathon    l'hackathon associato
+     * @param ruolo        il ruolo che l'utente dovrebbe ricoprire
      */
     public InvitoStaff(String nomeMittente, String payload, Utente destinatario, LocalDateTime scadenza, Hackathon hackathon, RuoloStaff ruolo) {
         super(nomeMittente, payload, destinatario, scadenza);
@@ -40,10 +41,11 @@ public class InvitoStaff extends Richiesta {
         hackathon.aggiungiStaff(staff);
     }
 
+    public Hackathon getHackathon() {
+        return hackathon;
+    }
 
-    // METODI GETTER
-
-    public Hackathon getHackathon() { return hackathon; }
-
-    public RuoloStaff getRuolo() { return ruolo; }
+    public RuoloStaff getRuolo() {
+        return ruolo;
+    }
 }

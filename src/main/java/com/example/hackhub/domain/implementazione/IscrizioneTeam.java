@@ -14,12 +14,10 @@ public class IscrizioneTeam {
     @Column(nullable = false, updatable = false)
     private String idIscrizione;
 
-    //private String idHackathon
     @ManyToOne(optional = false)
     @JoinColumn(name = "hackathon_id_hackathon", nullable = false)
     private Hackathon hackathon;
 
-    //private String idTeam
     @ManyToOne(optional = false)
     @JoinColumn(name = "team_id_team", nullable = false)
     private Team team;
@@ -32,17 +30,14 @@ public class IscrizioneTeam {
 
     /**
      * Crea un'iscrizione di un team
-     * @param team il team associato all'iscrizione
+     *
+     * @param team      il team associato all'iscrizione
      * @param hackathon l'hackathon a cui è associata l'iscrizione
      */
-    public IscrizioneTeam(Team team, Hackathon hackathon){
+    public IscrizioneTeam(Team team, Hackathon hackathon) {
         this.team = team;
         this.hackathon = hackathon;
     }
-
-    //PrePersist serve per fare operazioni prima di salvare l'entità nel database, in questo caso per assegnare un id
-    // univoco all'iscrizione se non è già stato assegnato, viene automaticamente chiamato da JPA/Hibernate quando si
-    // salva l'entità per la prima volta.
 
     /**
      * Assegna un id univoco ad ogni iscrizione
@@ -56,6 +51,7 @@ public class IscrizioneTeam {
 
     /**
      * Metodo che inserisce una nuova sottomissione, se non è presente
+     *
      * @param sottomissione la sottomissione da allegare a questa iscrizione
      */
     public void aggiungiSottomissione(Sottomissione sottomissione) {
@@ -64,17 +60,25 @@ public class IscrizioneTeam {
         this.sottomissione = sottomissione;
     }
 
-    public void rimuoviSottomissione(){
+    public void rimuoviSottomissione() {
         this.sottomissione = null;
     }
 
-    public String getId() { return idIscrizione; }
+    public String getId() {
+        return idIscrizione;
+    }
 
-    public Team getTeam() { return team; }
+    public Team getTeam() {
+        return team;
+    }
 
-    public Hackathon getHackathon() { return hackathon; }
+    public Hackathon getHackathon() {
+        return hackathon;
+    }
 
-    public Sottomissione getSottomissione() { return sottomissione; }
+    public Sottomissione getSottomissione() {
+        return sottomissione;
+    }
 
     public void setHackathon(Hackathon hackathon) {
         this.hackathon = hackathon;

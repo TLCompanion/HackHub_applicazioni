@@ -12,6 +12,7 @@ public interface RepositoryTeam extends JpaRepository<Team, String> {
 
     /**
      * Cotrolla se esiste un team con il nome specificato
+     *
      * @param nomeTeam il nome del team
      * @return vero se il team esiste, falso altrimenti
      */
@@ -19,6 +20,7 @@ public interface RepositoryTeam extends JpaRepository<Team, String> {
 
     /**
      * Ritorna il team con il nome specificato
+     *
      * @param nomeTeam il nome del team
      * @return il team se esiste, altrimenti un Optional vuoto
      */
@@ -28,6 +30,7 @@ public interface RepositoryTeam extends JpaRepository<Team, String> {
     /**
      * Recupera un Team insieme alla sua collezione di membri usando JOIN FETCH per evitare problemi di lazy loading
      * quando l'entità viene consultata fuori dal contesto transazionale (es. nei test).
+     *
      * @param idTeam l'id del team
      * @return il team con i membri inizializzati
      */

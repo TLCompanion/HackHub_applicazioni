@@ -9,6 +9,7 @@ public interface RepositoryUtenti extends JpaRepository<Utente, String> {
 
     /**
      * Trova un utente dal suo nome
+     *
      * @param nomeUtente il nome dell'utente
      * @return l'utente se presente
      */

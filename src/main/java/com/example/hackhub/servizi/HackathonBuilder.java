@@ -71,10 +71,6 @@ public class HackathonBuilder {
         this.maxIscrizioni = 0;
     }
 
-
-    // METODI GETTER
-
-
     public int getMaxIscrizioni() {
         return maxIscrizioni;
     }
