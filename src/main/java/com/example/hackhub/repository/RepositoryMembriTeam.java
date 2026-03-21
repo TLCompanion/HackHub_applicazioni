@@ -25,8 +25,6 @@ public interface RepositoryMembriTeam extends JpaRepository<MembroTeam, String> 
      */
     Optional<MembroTeam> findMembroTeamByRuolo(RuoloTeam ruolo);
 
-    //TODO in uml aggiornare questo metodo
-
     /**
      * Trova un membro del team dal suo nome utente
      *

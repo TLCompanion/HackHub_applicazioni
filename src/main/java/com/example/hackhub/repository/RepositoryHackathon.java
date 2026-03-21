@@ -28,7 +28,6 @@ public interface RepositoryHackathon extends JpaRepository<Hackathon, String> {
      * @param nomeHackathon il nome dell'hackathon
      * @return l'hackathon, un optional vuoto se non esiste
      */
-    //TODO nei sequence cambiare i findByNomeHackathon con questo
     Optional<Hackathon> findByNome(String nomeHackathon);
 
     /**

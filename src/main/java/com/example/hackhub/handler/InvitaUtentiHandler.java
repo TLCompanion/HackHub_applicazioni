@@ -44,12 +44,22 @@ public class InvitaUtentiHandler {
         if (leader.getRuolo() != RuoloTeam.LEADER) {
             throw new ConflictException("Solo il leader può invitare utenti");
         }
+        Utente utente = validazioneUtente(nomeUtenteDaInvitare);
+        Team team = leader.getTeam();
+        servizioNotifiche.creaInvitoTeam(leader.getUtente().getNomeUtente(), utente, team);
+    }
+
+    /**
+     * Controlla che l'utente da invitare sia valido e non appartenga a nessun team
+     * @param nomeUtenteDaInvitare il nome utente
+     * @return l'utente
+     */
+    private Utente validazioneUtente(String nomeUtenteDaInvitare) {
         Utente utente = repositoryUtenti.findByNomeUtente(nomeUtenteDaInvitare)
                 .orElseThrow(() -> new NotFoundException("Utente non trovato"));
         if (repositoryMembriTeam.findByUtente_NomeUtente(utente.getNomeUtente()).isPresent()) {
             throw new ConflictException("L'utente appartiene già a un team");
         }
-        Team team = leader.getTeam();
-        servizioNotifiche.creaInvitoTeam(leader.getUtente().getNomeUtente(), utente, team);
+        return utente;
     }
 }

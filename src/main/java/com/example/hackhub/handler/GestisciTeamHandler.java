@@ -44,10 +44,7 @@ public class GestisciTeamHandler {
      * @param nome       il nuovo nome del team
      */
     public void cambiaNomeTeam(String nomeUtente, String nome) {
-        MembroTeam leader = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("L'utente non è membro di nessun team"));
-        if (leader.getRuolo() != RuoloTeam.LEADER) {
-            throw new ConflictException("L'utente non è il leader del team");
-        }
+        MembroTeam leader = validazioneLeader(nomeUtente);
         Team team = leader.getTeam();
         if (repositoryTeam.existsByNome(nome)) {
             throw new ConflictException("Esiste già un team con questo nome");
@@ -57,6 +54,14 @@ public class GestisciTeamHandler {
         for (MembroTeam membro : team.getMembri()) {
             servizioNotifiche.creaNotifica(membro.getUtente(), CAMBIO_NOME_TEAM, "Il team ha cambiato nome in " + nome + ".");
         }
+    }
+
+    private MembroTeam validazioneLeader(String nomeUtente){
+        MembroTeam leader = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("L'utente non è membro di nessun team"));
+        if (leader.getRuolo() != RuoloTeam.LEADER) {
+            throw new ConflictException("L'utente non è il leader del team");
+        }
+        return leader;
     }
 
     /**
@@ -70,9 +75,7 @@ public class GestisciTeamHandler {
         if (!membroTeam.getTeam().equals(team)) {
             throw new ConflictException("L'utente non è membro di questo team");
         }
-        if (repositoryIscrizioniTeam.findByTeam(team).isPresent()) {
-            throw new ConflictException("Il team è iscritto ad un'hackathon, non puoi uscire dal team");
-        }
+        validaIscrizione(team);
         if (membroTeam.getRuolo() == RuoloTeam.LEADER) {
             if (team.getNumMembri() != 1)
                 throw new ConflictException("Prima di uscire dal team è necessario nominare un nuovo leader");
@@ -91,10 +94,7 @@ public class GestisciTeamHandler {
      * @param nomeUtente il nome dell'utente che vuole sciogliere il team
      */
     public void sciogliTeam(String nomeUtente) {
-        MembroTeam membroTeam = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("L'utente non è membro di nessun team"));
-        if (membroTeam.getRuolo() != RuoloTeam.LEADER) {
-            throw new ConflictException("L'utente non è il leader del team");
-        }
+        MembroTeam membroTeam = validazioneLeader(nomeUtente);
         Team team = membroTeam.getTeam();
         List<IscrizioneTeam> iscrizioni = repositoryIscrizioniTeam.findAllByTeam(team);
         if (!iscrizioni.isEmpty()) {
@@ -113,18 +113,13 @@ public class GestisciTeamHandler {
      * @param nomeMembro il nome del membro da espellere
      */
     public void espelliMembro(String nomeUtente, String nomeMembro) {
-        MembroTeam leader = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("L'utente non è membro di nessun team"));
-        if (leader.getRuolo() != RuoloTeam.LEADER) {
-            throw new ConflictException("L'utente non è il leader del team");
-        }
+        MembroTeam leader = validazioneLeader(nomeUtente);
         MembroTeam membroDaEspellere = repositoryMembriTeam.findByUtente_NomeUtente(nomeMembro).orElseThrow(() -> new NotFoundException("Il membro da espellere non esiste"));
         if (!membroDaEspellere.getTeam().equals(leader.getTeam())) {
             throw new ConflictException("Il membro da espellere non è nel team del leader");
         }
         Team team = leader.getTeam();
-        if (repositoryIscrizioniTeam.findByTeam(team).isPresent()) {
-            throw new NotFoundException("Il team è iscritto ad un'hackathon, non puoi espellere un membro");
-        }
+        validaIscrizione(team);
         if (membroDaEspellere.getIdMembroTeam().equals(leader.getIdMembroTeam())) {
             throw new ConflictException("Il leader non può espellere se stesso");
         }
@@ -136,17 +131,25 @@ public class GestisciTeamHandler {
         }
     }
 
+    private void validaIscrizione(Team team){
+        if (repositoryIscrizioniTeam.findByTeam(team).isPresent()) {
+            throw new NotFoundException("Il team è iscritto ad un'hackathon, non puoi espellere un membro");
+        }
+    }
+
+    /**
+     * Metodo per trasferire il ruolo di leader ad un altro membro del team
+     * @param nomeUtente il nome del leader
+     * @param nomeMembro il nome membro a cui trasferire il ruolo
+     */
     public void trasferisceRuoloLeader(String nomeUtente, String nomeMembro) {
-        MembroTeam leader = repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).orElseThrow(() -> new NotFoundException("L'utente non è membro di nessun team"));
-        if (leader.getRuolo() != RuoloTeam.LEADER) {
-            throw new ConflictException("L'utente non è il leader del team");
-        }
+        MembroTeam leader = validazioneLeader(nomeUtente);
         MembroTeam membroTeam = repositoryMembriTeam.findByUtente_NomeUtente(nomeMembro).orElseThrow(() -> new NotFoundException("Il membro da nominare non esiste"));
-        if (!membroTeam.getTeam().equals(leader.getTeam())) {
-            throw new ConflictException("Il membro da nominare non è nel team del leader");
-        }
         if (membroTeam.getRuolo() == RuoloTeam.LEADER) {
             throw new ConflictException("Il membro da nominare è già il leader del team");
+        }
+        if (!membroTeam.getTeam().equals(leader.getTeam())) {
+            throw new ConflictException("Il membro da nominare non è nel team del leader");
         }
         servizioNotifiche.creaPropostaLeader(nomeUtente, membroTeam.getUtente(), leader.getTeam());
     }

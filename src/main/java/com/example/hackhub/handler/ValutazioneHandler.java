@@ -104,7 +104,6 @@ public class ValutazioneHandler {
 
     /**
      * Conclude l'hackathon se tutte le sottomissioni sono state valutate
-     *
      * @param hackathon l'hackathon
      */
     private void concludiHackathonSeTutteValutate(Hackathon hackathon) {
@@ -116,15 +115,19 @@ public class ValutazioneHandler {
             hackathon.setStatoEnum(Concluso.INSTANCE);
             repositoryHackathon.save(hackathon);
             String messaggio = "L'hackathon è stato concluso, valutazioni terminate";
-            List<Utente> utentiDestinatari = hackathon.getIscrizioni().stream()
-                    .filter(i -> i.getHackathon().equals(hackathon))
-                    .map(IscrizioneTeam::getTeam)
-                    .flatMap(team -> team.getMembri().stream())
-                    .map(MembroTeam::getUtente)
-                    .toList();
+            List<Utente> utentiDestinatari = getUtentiDestinatari(hackathon);
             for (Utente u : utentiDestinatari)
                 servizioNotifiche.creaNotifica(u, TipoNotifica.VALUTAZIONE_CONCLUSA, messaggio);
         }
+    }
+
+    private List<Utente> getUtentiDestinatari(Hackathon hackathon){
+        return hackathon.getIscrizioni().stream()
+                .filter(i -> i.getHackathon().equals(hackathon))
+                .map(IscrizioneTeam::getTeam)
+                .flatMap(team -> team.getMembri().stream())
+                .map(MembroTeam::getUtente)
+                .toList();
     }
 
 }
