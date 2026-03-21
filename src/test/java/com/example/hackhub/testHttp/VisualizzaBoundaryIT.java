@@ -21,11 +21,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 
+
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+
+
 
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -35,46 +39,68 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
+
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
 class VisualizzaBoundaryIT {
 
 
-    private static final String BASE_URL = "/api/visualizzaListe";
+
+
+    private static final String BASE_URL = "/api";
     private static final String NOME_UTENTE = "francesca";
+
+
 
 
     @Autowired
     private MockMvc mockMvc;
 
 
+
+
     @Autowired
     private RepositoryHackathon repositoryHackathon;
+
+
 
 
     @Autowired
     private RepositoryRichiesta repositoryRichiesta;
 
 
+
+
     @Autowired
     private RepositoryNotifica repositoryNotifica;
+
+
 
 
     @Autowired
     private RepositoryUtenti repositoryUtenti;
 
 
+
+
     @Autowired
     private RepositoryStaff repositoryStaff;
+
+
 
 
     @Autowired
     private EntityManager entityManager;
 
 
+
+
     private Utente utente;
     private Hackathon hackathon;
+
+
 
 
     @BeforeEach
@@ -86,8 +112,12 @@ class VisualizzaBoundaryIT {
         repositoryUtenti.deleteAll();
 
 
+
+
         utente = new Utente(NOME_UTENTE, "francesca@example.it", "hash123");
         repositoryUtenti.saveAndFlush(utente);
+
+
 
 
         Periodo periodoHackathon = new Periodo(
@@ -96,6 +126,8 @@ class VisualizzaBoundaryIT {
                 LocalDate.now().plusDays(7),
                 LocalTime.of(18, 0)
         );
+
+
 
 
         hackathon = new Hackathon(
@@ -112,10 +144,14 @@ class VisualizzaBoundaryIT {
         repositoryHackathon.saveAndFlush(hackathon);
 
 
+
+
         Staff staff = new Staff(utente, RuoloStaff.GIUDICE);
         hackathon.aggiungiStaff(staff);
         repositoryHackathon.saveAndFlush(hackathon);
     }
+
+
 
 
     @Test
@@ -126,26 +162,38 @@ class VisualizzaBoundaryIT {
         entityManager.persist(team2);
 
 
+
+
         Valutazione valutazione1 = new Valutazione(8, "Buono");
         Valutazione valutazione2 = new Valutazione(9, "Ottimo");
         entityManager.persist(valutazione1);
         entityManager.persist(valutazione2);
 
 
+
+
         Sottomissione sottomissione1 = new Sottomissione("link-sub-1");
         sottomissione1.impostaValutazione(valutazione1);
+
+
 
 
         Sottomissione sottomissione2 = new Sottomissione("link-sub-2");
         sottomissione2.impostaValutazione(valutazione2);
 
 
+
+
         IscrizioneTeam iscrizione1 = new IscrizioneTeam(team1, hackathon);
         iscrizione1.aggiungiSottomissione(sottomissione1);
 
 
+
+
         IscrizioneTeam iscrizione2 = new IscrizioneTeam(team2, hackathon);
         iscrizione2.aggiungiSottomissione(sottomissione2);
+
+
 
 
         hackathon.aggiungiIscrizione(iscrizione1);
@@ -153,8 +201,9 @@ class VisualizzaBoundaryIT {
         repositoryHackathon.saveAndFlush(hackathon);
 
 
-        mockMvc.perform(get(BASE_URL + "/valutazioni")
-                        .param("idHackathon", hackathon.getIdHackathon())
+
+
+        mockMvc.perform(get(BASE_URL + "/hackathon/{nomeHackathon}/valutazioni", hackathon.getNome())
                         .with(authentication(auth())))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -162,6 +211,8 @@ class VisualizzaBoundaryIT {
                 .andExpect(jsonPath("$[*].giudizio", containsInAnyOrder("Buono", "Ottimo")))
                 .andExpect(jsonPath("$[*].punteggio", containsInAnyOrder(8, 9)));
     }
+
+
 
 
     @Test
@@ -172,26 +223,38 @@ class VisualizzaBoundaryIT {
         entityManager.persist(team2);
 
 
+
+
         Valutazione valutazione1 = new Valutazione(8, "Buono");
         Valutazione valutazione2 = new Valutazione(9, "Ottimo");
         entityManager.persist(valutazione1);
         entityManager.persist(valutazione2);
 
 
+
+
         Sottomissione sottomissione1 = new Sottomissione("link-sub-1");
         sottomissione1.impostaValutazione(valutazione1);
+
+
 
 
         Sottomissione sottomissione2 = new Sottomissione("link-sub-2");
         sottomissione2.impostaValutazione(valutazione2);
 
 
+
+
         IscrizioneTeam iscrizione1 = new IscrizioneTeam(team1, hackathon);
         iscrizione1.aggiungiSottomissione(sottomissione1);
 
 
+
+
         IscrizioneTeam iscrizione2 = new IscrizioneTeam(team2, hackathon);
         iscrizione2.aggiungiSottomissione(sottomissione2);
+
+
 
 
         hackathon.aggiungiIscrizione(iscrizione1);
@@ -199,8 +262,9 @@ class VisualizzaBoundaryIT {
         repositoryHackathon.saveAndFlush(hackathon);
 
 
-        mockMvc.perform(get(BASE_URL + "/sottomissioni")
-                        .param("idHackathon", hackathon.getIdHackathon())
+
+
+        mockMvc.perform(get(BASE_URL + "/hackathon/{nomeHackathon}/sottomissioni", hackathon.getNome())
                         .with(authentication(auth())))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -211,6 +275,8 @@ class VisualizzaBoundaryIT {
     }
 
 
+
+
     @Test
     void viewIscrizioni_ok() throws Exception {
         Team team1 = new Team("teamx");
@@ -219,16 +285,24 @@ class VisualizzaBoundaryIT {
         entityManager.persist(team2);
 
 
+
+
         Sottomissione sottomissione1 = new Sottomissione("link-sub-1");
         Sottomissione sottomissione2 = new Sottomissione("link-sub-2");
+
+
 
 
         IscrizioneTeam iscrizione1 = new IscrizioneTeam(team1, hackathon);
         iscrizione1.aggiungiSottomissione(sottomissione1);
 
 
+
+
         IscrizioneTeam iscrizione2 = new IscrizioneTeam(team2, hackathon);
         iscrizione2.aggiungiSottomissione(sottomissione2);
+
+
 
 
         hackathon.aggiungiIscrizione(iscrizione1);
@@ -236,8 +310,9 @@ class VisualizzaBoundaryIT {
         repositoryHackathon.saveAndFlush(hackathon);
 
 
-        mockMvc.perform(get(BASE_URL + "/iscrizioni")
-                        .param("idHackathon", hackathon.getIdHackathon())
+
+
+        mockMvc.perform(get(BASE_URL + "/hackathon/{nomeHackathon}/iscrizioni", hackathon.getNome())
                         .with(authentication(auth())))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -246,6 +321,8 @@ class VisualizzaBoundaryIT {
                 .andExpect(jsonPath("$[*].nomeTeam", containsInAnyOrder("teamx", "teamy")))
                 .andExpect(jsonPath("$[*].linkSottomissione", containsInAnyOrder("link-sub-1", "link-sub-2")));
     }
+
+
 
 
     @Test
@@ -264,6 +341,8 @@ class VisualizzaBoundaryIT {
         );
 
 
+
+
         PropostaCall richiesta2 = new PropostaCall(
                 "mentor2",
                 "payload-2",
@@ -278,8 +357,12 @@ class VisualizzaBoundaryIT {
         );
 
 
+
+
         repositoryRichiesta.saveAll(List.of(richiesta1, richiesta2));
         repositoryRichiesta.flush();
+
+
 
 
         mockMvc.perform(get(BASE_URL + "/richieste")
@@ -291,14 +374,20 @@ class VisualizzaBoundaryIT {
     }
 
 
+
+
     @Test
     void viewNotifiche_ok() throws Exception {
         Notifica notifica1 = new Notifica("notifica-1", utente, TipoNotifica.AVVIO_HACKATHON);
         Notifica notifica2 = new Notifica("notifica-2", utente, TipoNotifica.VALUTAZIONE_CONCLUSA);
 
 
+
+
         repositoryNotifica.saveAll(List.of(notifica1, notifica2));
         repositoryNotifica.flush();
+
+
 
 
         mockMvc.perform(get(BASE_URL + "/notifiche")
@@ -310,6 +399,8 @@ class VisualizzaBoundaryIT {
     }
 
 
+
+
     private UsernamePasswordAuthenticationToken auth() {
         return new UsernamePasswordAuthenticationToken(
                 VisualizzaBoundaryIT.NOME_UTENTE,
@@ -318,4 +409,5 @@ class VisualizzaBoundaryIT {
         );
     }
 }
+
 

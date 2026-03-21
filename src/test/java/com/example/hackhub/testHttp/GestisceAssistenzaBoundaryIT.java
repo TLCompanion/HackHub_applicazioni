@@ -29,11 +29,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 
+
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+
+
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,46 +47,72 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
+
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
 class GestisceAssistenzaBoundaryIT {
 
 
-    private static final String BASE_URL = "/api/assistenza/richiediAssistenza";
+
+
+    private static final String BASE_URL = "/api/assistenza/richiesta";
     private static final String NOME_UTENTE = "leaderTeam";
+
+
 
 
     @Autowired
     private MockMvc mockMvc;
 
 
+
+
     @Autowired
     private RepositoryUtenti repositoryUtenti;
+
+
 
 
     @Autowired
     private RepositoryMembriTeam repositoryMembriTeam;
 
 
+
+
     @Autowired
     private RepositoryIscrizioniTeam repositoryIscrizioniTeam;
+
+
 
 
     @Autowired
     private RepositoryHackathon repositoryHackathon;
 
 
+
+
     @Autowired
     private RepositoryStaff repositoryStaff;
+
+
 
 
     @Autowired
     private RepositoryNotifica repositoryNotifica;
 
 
+
+
     @Autowired
     private EntityManager entityManager;
+
+
+    @Autowired
+    private com.example.hackhub.repository.RepositoryTeam repositoryTeam;
+
+
 
 
     @BeforeEach
@@ -93,9 +123,13 @@ class GestisceAssistenzaBoundaryIT {
         repositoryMembriTeam.deleteAll();
         repositoryHackathon.deleteAll();
         repositoryUtenti.deleteAll();
-        entityManager.createQuery("DELETE FROM Team").executeUpdate();
-        entityManager.flush();
+        // use repository delete to keep persistence context consistent instead of executing a bulk JPQL delete
+        // which can leave managed entities in an inconsistent state and cause OptimisticLockException on flush
+        repositoryTeam.deleteAll();
+        repositoryTeam.flush();
     }
+
+
 
 
     @Test
@@ -104,25 +138,37 @@ class GestisceAssistenzaBoundaryIT {
         Utente mentoreUtente = repositoryUtenti.saveAndFlush(new Utente("mentore1", "mentore@test.com", "password"));
 
 
+
+
         Team team = new Team("TeamAlpha");
         entityManager.persist(team);
         entityManager.flush();
+
+
 
 
         MembroTeam leader = new MembroTeam(leaderUtente, team, RuoloTeam.LEADER);
         repositoryMembriTeam.saveAndFlush(leader);
 
 
+
+
         Hackathon hackathonRichiesto = creaHackathon("HackathonUno");
         Hackathon hackathonMentore = creaHackathon("HackathonDue");
+
+
 
 
         repositoryHackathon.saveAll(List.of(hackathonRichiesto, hackathonMentore));
         repositoryHackathon.flush();
 
 
+
+
         IscrizioneTeam iscrizioneTeam = new IscrizioneTeam(team, hackathonRichiesto);
         repositoryIscrizioniTeam.saveAndFlush(iscrizioneTeam);
+
+
 
 
         Staff mentore = new Staff(mentoreUtente, RuoloStaff.MENTORE);
@@ -130,19 +176,25 @@ class GestisceAssistenzaBoundaryIT {
         mentore = repositoryStaff.saveAndFlush(mentore);
 
 
+
+
         mockMvc.perform(post(BASE_URL)
                         .with(authentication(auth()))
-                        .param("idMentore", mentore.getIdStaff())
-                        .param("idHackathon", hackathonRichiesto.getIdHackathon()))
+                        .param("nomeMentore", mentoreUtente.getNomeUtente())
+                        .param("nomeHackathon", hackathonRichiesto.getNome()))
                 .andExpect(status().isOk());
+
+
 
 
         List<Notifica> notifiche = repositoryNotifica.findAll();
         assertEquals(1, notifiche.size());
         assertEquals("Richiesta di assistenza", notifiche.getFirst().getPayload());
-        assertEquals(TipoNotifica.ASSISTENZA, notifiche.getFirst().getTipo());
+        assertEquals(TipoNotifica.ASSISTENZA, notifiche.getFirst().getTipoNotifica());
         assertEquals(mentoreUtente.getNomeUtente(), notifiche.getFirst().getDestinatario().getNomeUtente());
     }
+
+
 
 
     @Test
@@ -151,21 +203,31 @@ class GestisceAssistenzaBoundaryIT {
         Utente mentoreUtente = repositoryUtenti.saveAndFlush(new Utente("mentore1", "mentore@test.com", "password"));
 
 
+
+
         Team team = new Team("TeamAlpha");
         entityManager.persist(team);
         entityManager.flush();
+
+
 
 
         MembroTeam leader = new MembroTeam(leaderUtente, team, RuoloTeam.LEADER);
         repositoryMembriTeam.saveAndFlush(leader);
 
 
+
+
         Hackathon hackathon = creaHackathon("HackathonUno");
         repositoryHackathon.saveAndFlush(hackathon);
 
 
+
+
         IscrizioneTeam iscrizioneTeam = new IscrizioneTeam(team, hackathon);
         repositoryIscrizioniTeam.saveAndFlush(iscrizioneTeam);
+
+
 
 
         Staff mentore = new Staff(mentoreUtente, RuoloStaff.MENTORE);
@@ -173,11 +235,16 @@ class GestisceAssistenzaBoundaryIT {
         repositoryStaff.saveAndFlush(mentore);
 
 
+
+
+        // pass a username that exists but is not a mentor (should result in NotFound)
         mockMvc.perform(post(BASE_URL)
                         .with(authentication(auth()))
-                        .param("idMentore", mentore.getIdUtente())
-                        .param("idHackathon", hackathon.getIdHackathon()))
+                        .param("nomeMentore", leaderUtente.getNomeUtente())
+                        .param("nomeHackathon", hackathon.getNome()))
                 .andExpect(status().isNotFound());
+
+
 
 
         assertFalse(repositoryNotifica.findAll().stream()
@@ -185,9 +252,13 @@ class GestisceAssistenzaBoundaryIT {
     }
 
 
+
+
     @Test
     void richiediAssistenza_notFound() throws Exception {
         Utente leaderUtente = repositoryUtenti.saveAndFlush(new Utente(NOME_UTENTE, "leader@test.com", "password"));
+
+
 
 
         Team team = new Team("TeamAlpha");
@@ -195,27 +266,39 @@ class GestisceAssistenzaBoundaryIT {
         entityManager.flush();
 
 
+
+
         MembroTeam leader = new MembroTeam(leaderUtente, team, RuoloTeam.LEADER);
         repositoryMembriTeam.saveAndFlush(leader);
+
+
 
 
         Hackathon hackathon = creaHackathon("HackathonUno");
         repositoryHackathon.saveAndFlush(hackathon);
 
 
+
+
         IscrizioneTeam iscrizioneTeam = new IscrizioneTeam(team, hackathon);
         repositoryIscrizioniTeam.saveAndFlush(iscrizioneTeam);
 
 
+
+
         mockMvc.perform(post(BASE_URL)
                         .with(authentication(auth()))
-                        .param("idMentore", "MS-inesistente")
-                        .param("idHackathon", hackathon.getIdHackathon()))
+                        .param("nomeMentore", "mentore_inesistente")
+                        .param("nomeHackathon", hackathon.getNome()))
                 .andExpect(status().isNotFound());
+
+
 
 
         assertEquals(0, repositoryNotifica.findAll().size());
     }
+
+
 
 
     private UsernamePasswordAuthenticationToken auth() {
@@ -225,6 +308,8 @@ class GestisceAssistenzaBoundaryIT {
                 AuthorityUtils.createAuthorityList("ROLE_USER")
         );
     }
+
+
 
 
     private Hackathon creaHackathon(String nome) {
@@ -246,4 +331,5 @@ class GestisceAssistenzaBoundaryIT {
         );
     }
 }
+
 

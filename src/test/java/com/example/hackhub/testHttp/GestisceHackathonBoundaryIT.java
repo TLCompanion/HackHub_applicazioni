@@ -1,16 +1,23 @@
 package com.example.hackhub.testHttp;
 
 import com.example.hackhub.domain.RuoloStaff;
-import com.example.hackhub.domain.TipoNotifica;
+import com.example.hackhub.domain.RuoloTeam;
 import com.example.hackhub.domain.implementazione.Hackathon;
 import com.example.hackhub.domain.implementazione.InvitoStaff;
+import com.example.hackhub.domain.implementazione.IscrizioneTeam;
+import com.example.hackhub.domain.implementazione.MembroTeam;
 import com.example.hackhub.domain.implementazione.Notifica;
 import com.example.hackhub.domain.implementazione.Periodo;
+import com.example.hackhub.domain.implementazione.Richiesta;
 import com.example.hackhub.domain.implementazione.Staff;
 import com.example.hackhub.domain.implementazione.Team;
 import com.example.hackhub.domain.implementazione.Utente;
+import com.example.hackhub.domain.implementazione.statePattern.Concluso;
 import com.example.hackhub.domain.implementazione.statePattern.InCorso;
+import com.example.hackhub.domain.implementazione.statePattern.IscrizioniAperte;
+import com.example.hackhub.domain.implementazione.statePattern.StatoHackathon;
 import com.example.hackhub.repository.RepositoryHackathon;
+import com.example.hackhub.repository.RepositoryIscrizioniTeam;
 import com.example.hackhub.repository.RepositoryNotifica;
 import com.example.hackhub.repository.RepositoryRichiesta;
 import com.example.hackhub.repository.RepositoryStaff;
@@ -24,7 +31,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -35,13 +44,9 @@ import java.time.LocalTime;
 import java.util.List;
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -51,8 +56,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class GestisceHackathonBoundaryIT {
 
 
-    private static final String BASE_URL = "/api/gestisciHackathon";
+    private static final String BASE_URL = "/api/hackathon";
     private static final String NOME_UTENTE = "organizzatore";
+    private static final String NOME_MENTORE = "mentore";
 
 
     @Autowired
@@ -60,7 +66,7 @@ class GestisceHackathonBoundaryIT {
 
 
     @Autowired
-    private RepositoryUtenti repositoryUtenti;
+    private RepositoryHackathon repositoryHackathon;
 
 
     @Autowired
@@ -72,7 +78,11 @@ class GestisceHackathonBoundaryIT {
 
 
     @Autowired
-    private RepositoryHackathon repositoryHackathon;
+    private RepositoryUtenti repositoryUtenti;
+
+
+    @Autowired
+    private RepositoryIscrizioniTeam repositoryIscrizioniTeam;
 
 
     @Autowired
@@ -87,183 +97,388 @@ class GestisceHackathonBoundaryIT {
     private EntityManager entityManager;
 
 
-    private Utente organizzatore;
-    private Hackathon hackathon;
-
-
     @BeforeEach
     void setUp() {
-        repositoryRichiesta.deleteAll();
-        repositoryRichiesta.flush();
-
-
         repositoryNotifica.deleteAll();
-        repositoryNotifica.flush();
-
-
+        repositoryRichiesta.deleteAll();
         repositoryStaff.deleteAll();
-        repositoryStaff.flush();
-
-
+        repositoryIscrizioniTeam.deleteAll();
         repositoryTeam.deleteAll();
-        repositoryTeam.flush();
-
-
         repositoryHackathon.deleteAll();
-        repositoryHackathon.flush();
-
-
         repositoryUtenti.deleteAll();
-        repositoryUtenti.flush();
-
-
-        organizzatore = new Utente(NOME_UTENTE, "organizzatore@mail.com", "Password123!");
-        repositoryUtenti.saveAndFlush(organizzatore);
-
-
-        Periodo periodo = new Periodo(
-                LocalDate.now().plusDays(10),
-                LocalTime.of(9, 0),
-                LocalDate.now().plusDays(12),
-                LocalTime.of(18, 0)
-        );
-
-
-        hackathon = new Hackathon(
-                "HackHub Challenge",
-                periodo,
-                BigDecimal.valueOf(1000),
-                "Camerino",
-                6,
-                3,
-                LocalDateTime.now().plusDays(5),
-                "Regolamento test",
-                10
-        );
-        repositoryHackathon.saveAndFlush(hackathon);
-
-
-        Staff staffOrganizzatore = new Staff(organizzatore, RuoloStaff.ORGANIZZATORE);
-        hackathon.aggiungiStaff(staffOrganizzatore);
-        repositoryHackathon.saveAndFlush(hackathon);
         entityManager.flush();
-    }
-
-
-    private UsernamePasswordAuthenticationToken auth() {
-        return new UsernamePasswordAuthenticationToken(
-                NOME_UTENTE,
-                null,
-                List.of(new SimpleGrantedAuthority("ROLE_USER"))
-        );
     }
 
 
     @Test
     void segnalaViolazione_ok() throws Exception {
-        Team team = new Team("TeamAlpha");
-        repositoryTeam.saveAndFlush(team);
+        Utente organizzatore = salvaUtente(NOME_UTENTE);
+        Utente mentore = salvaUtente(NOME_MENTORE);
+        Utente membro = salvaUtente("membro1");
 
 
-        mockMvc.perform(post(BASE_URL + "/segnalaViolazione")
-                        .with(authentication(auth()))
+        Team team = salvaTeam("team-violazione", membro);
+
+
+        Hackathon hackathon = creaHackathon("hackathon-violazione");
+        hackathon.aggiungiStaff(new Staff(organizzatore, RuoloStaff.ORGANIZZATORE));
+        hackathon.aggiungiStaff(new Staff(mentore, RuoloStaff.MENTORE));
+        hackathon.aggiungiIscrizione(new IscrizioneTeam(team, hackathon));
+        impostaStato(hackathon, InCorso.INSTANCE);
+        repositoryHackathon.saveAndFlush(hackathon);
+
+
+        mockMvc.perform(post(BASE_URL + "/{nomeHackathon}/violazione", hackathon.getNome())
+                        .with(auth(NOME_MENTORE))
                         .param("nomeTeam", team.getNome()))
-                .andExpect(status().isOk())
-                .andExpect(content().string(""));
+                .andExpect(status().isOk());
 
 
         List<Notifica> notifiche = repositoryNotifica.findAll();
         assertEquals(1, notifiche.size());
-        assertEquals(organizzatore.getIdUtente(), notifiche.getFirst().getDestinatario().getIdUtente());
-        assertEquals(TipoNotifica.VIOLAZIONE_REGOLAMENTO, notifiche.getFirst().getTipo());
-        assertEquals(
-                "Il team " + team.getNome() + " ha violato il regolamento dell'hackathon",
-                notifiche.getFirst().getPayload()
-        );
+        assertEquals(NOME_UTENTE, notifiche.get(0).getDestinatario().getNomeUtente());
+        assertTrue(notifiche.get(0).getPayload().contains(team.getNome()));
     }
 
 
     @Test
     void segnalaViolazione_notFound() throws Exception {
-        mockMvc.perform(post(BASE_URL + "/segnalaViolazione")
-                        .with(authentication(auth()))
-                        .param("nomeTeam", "T-inesistente"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Team non trovato"));
+        Utente organizzatore = salvaUtente(NOME_UTENTE);
+        Utente mentore = salvaUtente(NOME_MENTORE);
+
+
+        Hackathon hackathon = creaHackathon("hackathon-violazione-notfound");
+        hackathon.aggiungiStaff(new Staff(organizzatore, RuoloStaff.ORGANIZZATORE));
+        hackathon.aggiungiStaff(new Staff(mentore, RuoloStaff.MENTORE));
+        impostaStato(hackathon, InCorso.INSTANCE);
+        repositoryHackathon.saveAndFlush(hackathon);
+
+
+        mockMvc.perform(post(BASE_URL + "/{nomeHackathon}/violazione", hackathon.getNome())
+                        .with(auth(NOME_MENTORE))
+                        .param("nomeTeam", "team-inesistente"))
+                .andExpect(status().isNotFound());
     }
 
 
     @Test
     void nominaMentori_ok() throws Exception {
-        Utente utenteDaInvitare = new Utente("mentorino", "mentorino@mail.com", "Password123!");
-        repositoryUtenti.saveAndFlush(utenteDaInvitare);
+        Utente organizzatore = salvaUtente(NOME_UTENTE);
+        Utente invitato = salvaUtente("utenteDaInvitare");
 
 
-        mockMvc.perform(put(BASE_URL + "/nominaMentori")
-                        .with(authentication(auth()))
-                        .param("nomeUtenteDaInvitare", "mentorino"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(""));
+        Hackathon hackathon = creaHackathon("hackathon-nomina");
+        hackathon.aggiungiStaff(new Staff(organizzatore, RuoloStaff.ORGANIZZATORE));
+        impostaStato(hackathon, IscrizioniAperte.INSTANCE);
+        repositoryHackathon.saveAndFlush(hackathon);
 
 
-        List<?> richieste = repositoryRichiesta.findAll();
+        mockMvc.perform(post(BASE_URL + "/{nomeHackathon}/nomine-mentori", hackathon.getNome())
+                        .with(auth())
+                        .param("nomeUtenteDaInvitare", invitato.getNomeUtente()))
+                .andExpect(status().isOk());
+
+
+        List<Richiesta> richieste = repositoryRichiesta.findAll();
         assertEquals(1, richieste.size());
-        assertInstanceOf(InvitoStaff.class, richieste.getFirst());
+        assertInstanceOf(InvitoStaff.class, richieste.get(0));
 
 
-        InvitoStaff invitoStaff = (InvitoStaff) richieste.getFirst();
-        assertEquals(NOME_UTENTE, invitoStaff.getMittente());
-        assertEquals(utenteDaInvitare.getIdUtente(), invitoStaff.getDestinatario().getIdUtente());
+        InvitoStaff invitoStaff = (InvitoStaff) richieste.get(0);
+        assertEquals(invitato.getNomeUtente(), invitoStaff.getDestinatario().getNomeUtente());
         assertEquals(RuoloStaff.MENTORE, invitoStaff.getRuolo());
-        assertEquals(hackathon.getIdHackathon(), invitoStaff.getHackathon().getIdHackathon());
+        assertEquals(hackathon.getNome(), invitoStaff.getHackathon().getNome());
     }
 
 
     @Test
     void nominaMentori_errore() throws Exception {
-        Utente utenteDaInvitare = new Utente("mentorino", "mentorino@mail.com", "Password123!");
-        repositoryUtenti.saveAndFlush(utenteDaInvitare);
+        Utente organizzatore = salvaUtente(NOME_UTENTE);
+        Utente invitato = salvaUtente("utenteDaInvitare");
 
 
-        Staff staffGiaPresente = new Staff(utenteDaInvitare, RuoloStaff.MENTORE);
-        hackathon.aggiungiStaff(staffGiaPresente);
+        Hackathon hackathon = creaHackathon("hackathon-nomina-errore");
+        hackathon.aggiungiStaff(new Staff(organizzatore, RuoloStaff.ORGANIZZATORE));
+        impostaStato(hackathon, InCorso.INSTANCE);
         repositoryHackathon.saveAndFlush(hackathon);
 
 
-        mockMvc.perform(put(BASE_URL + "/nominaMentori")
-                        .with(authentication(auth()))
-                        .param("nomeUtenteDaInvitare", "mentorino"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("L'utente da invitare è già nello staff"));
+        mockMvc.perform(post(BASE_URL + "/{nomeHackathon}/nomine-mentori", hackathon.getNome())
+                        .with(auth())
+                        .param("nomeUtenteDaInvitare", invitato.getNomeUtente()))
+                .andExpect(status().isConflict());
     }
 
 
     @Test
-    void nominaMentori_notFound() throws Exception {
-        mockMvc.perform(put(BASE_URL + "/nominaMentori")
-                        .with(authentication(auth()))
-                        .param("nomeUtenteDaInvitare", "utenteAssente"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Utente da invitare non trovato"));
+    void eliminaHackathon_ok() throws Exception {
+        Utente organizzatore = salvaUtente(NOME_UTENTE);
+        Utente membro = salvaUtente("membro-cancellazione");
+
+
+        Team team = salvaTeam("team-cancellazione", membro);
+
+
+        Hackathon hackathon = creaHackathon("hackathon-cancellazione");
+        hackathon.aggiungiStaff(new Staff(organizzatore, RuoloStaff.ORGANIZZATORE));
+        hackathon.aggiungiIscrizione(new IscrizioneTeam(team, hackathon));
+        impostaStato(hackathon, IscrizioniAperte.INSTANCE);
+        repositoryHackathon.saveAndFlush(hackathon);
+
+
+        mockMvc.perform(delete(BASE_URL + "/{nomeHackathon}", hackathon.getNome())
+                        .with(auth()))
+                .andExpect(status().isOk());
+
+
+        assertTrue(repositoryHackathon.findByNome(hackathon.getNome()).isEmpty());
+
+
+        List<Notifica> notifiche = repositoryNotifica.findAll();
+        assertEquals(1, notifiche.size());
+        assertEquals("membro-cancellazione", notifiche.get(0).getDestinatario().getNomeUtente());
+        assertTrue(notifiche.get(0).getPayload().contains("cancellato"));
     }
 
 
     @Test
-    void nominaMentori_errore_statoHackathonNonValido() throws Exception {
-        Utente utenteDaInvitare = new Utente("mentorino", "mentorino@mail.com", "Password123!");
-        repositoryUtenti.saveAndFlush(utenteDaInvitare);
+    void eliminaHackathon_errore() throws Exception {
+        Utente organizzatore = salvaUtente(NOME_UTENTE);
 
 
-        hackathon.setStato(InCorso.INSTANCE);
-        hackathon.setStatoEnum(InCorso.INSTANCE);
+        Hackathon hackathon = creaHackathon("hackathon-cancellazione-errore");
+        hackathon.aggiungiStaff(new Staff(organizzatore, RuoloStaff.ORGANIZZATORE));
+        impostaStato(hackathon, Concluso.INSTANCE);
         repositoryHackathon.saveAndFlush(hackathon);
 
 
-        mockMvc.perform(put(BASE_URL + "/nominaMentori")
-                        .with(authentication(auth()))
-                        .param("nomeUtenteDaInvitare", "mentorino"))
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").value("Non è possibile nominare mentori se le iscrizioni non sono aperte"));
+        mockMvc.perform(delete(BASE_URL + "/{nomeHackathon}", hackathon.getNome())
+                        .with(auth()))
+                .andExpect(status().isConflict());
+    }
+
+
+    @Test
+    void espelliTeam_ok() throws Exception {
+        Utente organizzatore = salvaUtente(NOME_UTENTE);
+        Utente membro1 = salvaUtente("membro-espulsione-1");
+        Utente membro2 = salvaUtente("membro-espulsione-2");
+
+
+        Team team = salvaTeam("team-espulsione", membro1, membro2);
+
+
+        Hackathon hackathon = creaHackathon("hackathon-espulsione");
+        hackathon.aggiungiStaff(new Staff(organizzatore, RuoloStaff.ORGANIZZATORE));
+        hackathon.aggiungiIscrizione(new IscrizioneTeam(team, hackathon));
+        impostaStato(hackathon, InCorso.INSTANCE);
+        repositoryHackathon.saveAndFlush(hackathon);
+
+
+        mockMvc.perform(post(BASE_URL + "/{nomeHackathon}/team/{nomeTeam}/espulsione",
+                        hackathon.getNome(), team.getNome())
+                        .with(auth()))
+                .andExpect(status().isOk());
+
+
+        assertTrue(repositoryIscrizioniTeam.findByTeamAndHackathon(team, hackathon).isEmpty());
+
+
+        List<Notifica> notifiche = repositoryNotifica.findAll();
+        assertEquals(2, notifiche.size());
+        assertTrue(notifiche.stream().allMatch(n -> n.getPayload().contains("espulso")));
+    }
+
+
+    @Test
+    void espelliTeam_notFound() throws Exception {
+        Utente organizzatore = salvaUtente(NOME_UTENTE);
+        Utente membro = salvaUtente("membro-team-non-iscritto");
+
+
+        Team team = salvaTeam("team-non-iscritto", membro);
+
+
+        Hackathon hackathon = creaHackathon("hackathon-espulsione-notfound");
+        hackathon.aggiungiStaff(new Staff(organizzatore, RuoloStaff.ORGANIZZATORE));
+        impostaStato(hackathon, InCorso.INSTANCE);
+        repositoryHackathon.saveAndFlush(hackathon);
+
+
+        mockMvc.perform(post(BASE_URL + "/{nomeHackathon}/team/{nomeTeam}/espulsione",
+                        hackathon.getNome(), team.getNome())
+                        .with(auth()))
+                .andExpect(status().isNotFound());
+    }
+
+
+    @Test
+    void proclamaVincitore_ok() throws Exception {
+        Utente organizzatore = salvaUtente(NOME_UTENTE);
+        Utente vincitoreMembro = salvaUtente("membro-vincitore");
+        Utente sconfittoMembro = salvaUtente("membro-sconfitto");
+
+
+        Team teamVincitore = salvaTeam("team-vincitore", vincitoreMembro);
+        Team teamSconfitto = salvaTeam("team-sconfitto", sconfittoMembro);
+
+
+        Hackathon hackathon = creaHackathon("hackathon-vincitore");
+        hackathon.aggiungiStaff(new Staff(organizzatore, RuoloStaff.ORGANIZZATORE));
+        hackathon.aggiungiIscrizione(new IscrizioneTeam(teamVincitore, hackathon));
+        hackathon.aggiungiIscrizione(new IscrizioneTeam(teamSconfitto, hackathon));
+        impostaStato(hackathon, Concluso.INSTANCE);
+        repositoryHackathon.saveAndFlush(hackathon);
+
+
+        mockMvc.perform(post(BASE_URL + "/{nomeHackathon}/vincitore", hackathon.getNome())
+                        .with(auth())
+                        .param("nomeTeam", teamVincitore.getNome()))
+                .andExpect(status().isOk());
+
+
+        List<Notifica> notifiche = repositoryNotifica.findAll();
+        assertEquals(2, notifiche.size());
+        assertTrue(notifiche.stream().anyMatch(n ->
+                n.getDestinatario().getNomeUtente().equals("membro-vincitore")
+                        && n.getPayload().contains("ha vinto")));
+        assertTrue(notifiche.stream().anyMatch(n ->
+                n.getDestinatario().getNomeUtente().equals("membro-sconfitto")
+                        && n.getPayload().contains("non ha vinto")));
+    }
+
+
+    @Test
+    void proclamaVincitore_errore() throws Exception {
+        Utente organizzatore = salvaUtente(NOME_UTENTE);
+        Utente membro = salvaUtente("membro-team");
+
+
+        Team team = salvaTeam("team-non-concluso", membro);
+
+
+        Hackathon hackathon = creaHackathon("hackathon-non-concluso");
+        hackathon.aggiungiStaff(new Staff(organizzatore, RuoloStaff.ORGANIZZATORE));
+        hackathon.aggiungiIscrizione(new IscrizioneTeam(team, hackathon));
+        impostaStato(hackathon, InCorso.INSTANCE);
+        repositoryHackathon.saveAndFlush(hackathon);
+
+
+        mockMvc.perform(post(BASE_URL + "/{nomeHackathon}/vincitore", hackathon.getNome())
+                        .with(auth())
+                        .param("nomeTeam", team.getNome()))
+                .andExpect(status().isConflict());
+    }
+
+
+    @Test
+    void attivaLiquidazionePremio_ok() throws Exception {
+        Utente organizzatore = salvaUtenteConIban(NOME_UTENTE, "IT00A0000000000000000000001");
+        Utente membro1 = salvaUtenteConIban("membro-premio-1", "IT00A0000000000000000000002");
+        Utente membro2 = salvaUtenteConIban("membro-premio-2", "IT00A0000000000000000000003");
+
+
+        Team team = salvaTeam("team-premio", membro1, membro2);
+
+
+        Hackathon hackathon = creaHackathon("hackathon-premio");
+        hackathon.aggiungiStaff(new Staff(organizzatore, RuoloStaff.ORGANIZZATORE));
+        hackathon.aggiungiIscrizione(new IscrizioneTeam(team, hackathon));
+        impostaStato(hackathon, Concluso.INSTANCE);
+        repositoryHackathon.saveAndFlush(hackathon);
+
+
+        mockMvc.perform(post(BASE_URL + "/{nomeHackathon}/liquidazione-premio", hackathon.getNome())
+                        .with(auth())
+                        .param("nomeTeam", team.getNome()))
+                .andExpect(status().isOk());
+    }
+
+
+    @Test
+    void attivaLiquidazionePremio_notFound() throws Exception {
+        Utente organizzatore = salvaUtenteConIban(NOME_UTENTE, "IT00A0000000000000000000010");
+        Utente membro = salvaUtenteConIban("membro-senza-iscrizione", "IT00A0000000000000000000011");
+
+
+        Team team = salvaTeam("team-senza-iscrizione", membro);
+
+
+        Hackathon hackathon = creaHackathon("hackathon-premio-notfound");
+        hackathon.aggiungiStaff(new Staff(organizzatore, RuoloStaff.ORGANIZZATORE));
+        impostaStato(hackathon, Concluso.INSTANCE);
+        repositoryHackathon.saveAndFlush(hackathon);
+
+
+        mockMvc.perform(post(BASE_URL + "/{nomeHackathon}/liquidazione-premio", hackathon.getNome())
+                        .with(auth())
+                        .param("nomeTeam", team.getNome()))
+                .andExpect(status().isNotFound());
+    }
+
+
+    private RequestPostProcessor auth() {
+        return auth(NOME_UTENTE);
+    }
+
+
+    private RequestPostProcessor auth(String nomeUtente) {
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(
+                        nomeUtente,
+                        null,
+                        List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                );
+        return SecurityMockMvcRequestPostProcessors.authentication(authentication);
+    }
+
+
+    private Utente salvaUtente(String nomeUtente) {
+        Utente utente = new Utente(nomeUtente, nomeUtente + "@mail.it", "password");
+        return repositoryUtenti.saveAndFlush(utente);
+    }
+
+
+    private Utente salvaUtenteConIban(String nomeUtente, String iban) {
+        Utente utente = new Utente(nomeUtente, nomeUtente + "@mail.it", "password");
+        utente.setRecapitoBancario(iban);
+        return repositoryUtenti.saveAndFlush(utente);
+    }
+
+
+    private Team salvaTeam(String nomeTeam, Utente... membri) {
+        Team team = new Team(nomeTeam);
+        for (Utente utente : membri) {
+            team.getMembri().add(new MembroTeam(utente, team, RuoloTeam.MEMBRO));
+        }
+        return repositoryTeam.saveAndFlush(team);
+    }
+
+
+    private Hackathon creaHackathon(String nomeHackathon) {
+        return new Hackathon(
+                nomeHackathon,
+                new Periodo(
+                        LocalDate.now().plusDays(10),
+                        LocalTime.of(9, 0),
+                        LocalDate.now().plusDays(12),
+                        LocalTime.of(18, 0)
+                ),
+                new BigDecimal("1000.00"),
+                "Camerino",
+                6,
+                3,
+                LocalDateTime.now().plusDays(5),
+                "Regolamento di test",
+                10
+        );
+    }
+
+
+    private void impostaStato(Hackathon hackathon, StatoHackathon stato) {
+        hackathon.setStato(stato);
+        hackathon.setStatoEnum(stato);
     }
 }
+
 
