@@ -2,10 +2,10 @@ package com.example.hackhub.handler;
 
 import com.example.hackhub.domain.RuoloTeam;
 import com.example.hackhub.domain.implementazione.*;
-import com.example.hackhub.domain.implementazione.statePattern.InCorso;
 import com.example.hackhub.eccezioni.ConflictException;
 import com.example.hackhub.eccezioni.ForbiddenException;
 import com.example.hackhub.eccezioni.NotFoundException;
+import com.example.hackhub.eccezioni.TransizioneNonConsentitaException;
 import com.example.hackhub.repository.RepositoryHackathon;
 import com.example.hackhub.repository.RepositoryIscrizioniTeam;
 import com.example.hackhub.repository.RepositoryMembriTeam;
@@ -88,7 +88,9 @@ public class IscriviTeamHandler {
     public void annullaIscrizioneHackathon(String nomeUtente, String nomeHackathon) {
         Hackathon hackathon = repositoryHackathon.findByNome(nomeHackathon).orElseThrow(() ->
                 new NotFoundException("Hackathon non trovato"));
-        if (hackathon.getStato() instanceof InCorso) {
+        try {
+            hackathon.getStato().verificaAnnullamentoIscrizioneConsentito(hackathon);
+        } catch (TransizioneNonConsentitaException ex) {
             throw new ConflictException("Non è possibile annullare l'iscrizione ad un hackathon in corso");
         }
         MembroTeam leader = validazioneLeader(nomeUtente);

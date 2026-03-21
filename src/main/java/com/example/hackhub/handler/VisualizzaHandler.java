@@ -60,10 +60,10 @@ public class VisualizzaHandler {
     public List<ValutazioneRequest> viewValutazioni(String nomeUtente, String idHackathon) {
         Hackathon hackathon = validaAutorizzazioni(nomeUtente, idHackathon);
         List<Valutazione> valutazioni = new ArrayList<>();
-        for (IscrizioneTeam i : hackathon.getIscrizioni())
+        for (IscrizioneTeam i : hackathon.getIscrizioni()) {
             valutazioni.add(i.getSottomissione().getValutazione());
-        return valutazioni.stream().map(v -> new ValutazioneRequest(v.getDescrizione(),
-                v.getVoto())).collect(Collectors.toList());
+        }
+        return valutazioni.stream().map(v -> new ValutazioneRequest(v.getDescrizione(), v.getVoto())).collect(Collectors.toList());
     }
 
     /**
@@ -75,7 +75,9 @@ public class VisualizzaHandler {
     public List<SottomissioneDTO> viewSottomissioni(String nomeUtente, String idHackathon) {
         Hackathon hackathon = validaAutorizzazioni(nomeUtente, idHackathon);
         List<Sottomissione> sottomissioni = new ArrayList<>();
-        for (IscrizioneTeam i : hackathon.getIscrizioni()) sottomissioni.add(i.getSottomissione());
+        for (IscrizioneTeam i : hackathon.getIscrizioni()) {
+            sottomissioni.add(i.getSottomissione());
+        }
 
         return sottomissioni.stream().map(s -> new SottomissioneDTO
                 (s.getLink(), s.getValutazione().getDescrizione(), s.getValutazione().getVoto())).collect(Collectors.toList());
@@ -122,11 +124,9 @@ public class VisualizzaHandler {
     /**
      * Metodo che ritorna la lista di informazioni pubbliche destinate all'utente di riferimento
      *
-     * @param nomeUtente il nome dell'utente destinatario delle info
      * @return la lista di hackathon dto
      */
-    public List<InfoHackathonDTO> viewInfoHackathon(String nomeUtente) {
-        verificaUtenteOrFail(nomeUtente);
+    public List<InfoHackathonDTO> viewInfoHackathon() {
         List<Hackathon> listHackathon = repositoryHackathon.findAll();
         List<InfoHackathonDTO> listInfoHackathonDTO = new ArrayList<>();
         for (Hackathon h : listHackathon) {

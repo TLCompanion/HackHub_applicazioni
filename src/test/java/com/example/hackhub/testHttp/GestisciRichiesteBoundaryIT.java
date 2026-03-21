@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -36,6 +37,7 @@ class GestisciRichiesteBoundaryIT {
 
     private static final String ENDPOINT = "/api/richieste";
     private static final String DESTinatARIO = "dest";
+    private static final String ALTRO = "altro";
     private static final String MITTENTE = "mittente";
     private static final String ORGANIZZATORE = "org";
 
@@ -104,6 +106,7 @@ class GestisciRichiesteBoundaryIT {
 
 
         repositoryUtenti.saveAndFlush(creaUtente(DESTinatARIO));
+        repositoryUtenti.saveAndFlush(creaUtente(ALTRO));
         repositoryUtenti.saveAndFlush(creaUtente(MITTENTE));
         repositoryUtenti.saveAndFlush(creaUtente(ORGANIZZATORE));
 
@@ -269,7 +272,54 @@ class GestisciRichiesteBoundaryIT {
 
         mockMvc.perform(post(ENDPOINT + "/%s/accetta".formatted(inv.getIdRichiesta()))
                         .with(authentication(new UsernamePasswordAuthenticationToken("utenteInesistente", null, List.of(new SimpleGrantedAuthority("ROLE_USER"))))))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Utente non trovato"));
+    }
+
+
+    @Test
+    void accettaRichiesta_destinatarioDiverso_forbidden() throws Exception {
+        Team t = new Team("T3");
+        repositoryTeam.saveAndFlush(t);
+        InvitoTeam inv = new InvitoTeam(MITTENTE, "msg", destinatario, LocalDateTime.now().plusDays(1), t);
+        repositoryRichiesta.saveAndFlush(inv);
+
+
+        mockMvc.perform(post(ENDPOINT + "/%s/accetta".formatted(inv.getIdRichiesta()))
+                        .with(authentication(new UsernamePasswordAuthenticationToken(ALTRO, null, List.of(new SimpleGrantedAuthority("ROLE_USER"))))))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value("L'utente autenticato non è il destinatario della richiesta"));
+    }
+
+
+    @Test
+    void rifiutaRichiesta_giaElaborata_conflict() throws Exception {
+        Team t = new Team("T4");
+        repositoryTeam.saveAndFlush(t);
+        InvitoTeam inv = new InvitoTeam(MITTENTE, "msg", destinatario, LocalDateTime.now().plusDays(1), t);
+        inv.accetta();
+        repositoryRichiesta.saveAndFlush(inv);
+
+
+        mockMvc.perform(post(ENDPOINT + "/%s/rifiuta".formatted(inv.getIdRichiesta()))
+                        .with(authentication(auth())))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("La richiesta è già stata elaborata"));
+    }
+
+
+    @Test
+    void accettaRichiesta_scaduta_conflict() throws Exception {
+        Team t = new Team("T5");
+        repositoryTeam.saveAndFlush(t);
+        InvitoTeam inv = new InvitoTeam(MITTENTE, "msg", destinatario, LocalDateTime.now().minusMinutes(1), t);
+        repositoryRichiesta.saveAndFlush(inv);
+
+
+        mockMvc.perform(post(ENDPOINT + "/%s/accetta".formatted(inv.getIdRichiesta()))
+                        .with(authentication(auth())))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("La richiesta è scaduta"));
     }
 
 

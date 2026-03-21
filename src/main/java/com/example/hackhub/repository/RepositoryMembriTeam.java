@@ -40,4 +40,6 @@ public interface RepositoryMembriTeam extends JpaRepository<MembroTeam, String> 
      * @return il membro del team, un optional vuoto se non esiste
      */
     Optional<MembroTeam> findByUtente_idUtente(String utenteIdUtente);
+
+    Optional<MembroTeam> findByTeam_IdTeamAndRuolo(String idTeam, RuoloTeam ruolo);
 }

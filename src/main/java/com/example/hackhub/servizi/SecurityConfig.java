@@ -2,6 +2,7 @@ package com.example.hackhub.servizi;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,6 +21,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/autenticazione/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/hackathon").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(filtro, UsernamePasswordAuthenticationFilter.class)

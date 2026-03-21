@@ -6,6 +6,7 @@ import com.example.hackhub.domain.implementazione.statePattern.*;
 import com.example.hackhub.eccezioni.BadRequestException;
 import com.example.hackhub.eccezioni.ConflictException;
 import com.example.hackhub.eccezioni.NotFoundException;
+import com.example.hackhub.eccezioni.TransizioneNonConsentitaException;
 import com.example.hackhub.repository.*;
 import com.example.hackhub.servizi.ServizioNotifiche;
 import com.example.hackhub.servizi.esterni.SistemaDiPagamentoMock;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import static com.example.hackhub.domain.TipoNotifica.*;
 
+//TODO nell'uml usare i metodi dello stato per verificare che le operazioni siano consentite
 @Service
 public class GestisceHackathonHandler {
 
@@ -56,7 +58,9 @@ public class GestisceHackathonHandler {
         if (!iscrizioneTeam.getHackathon().equals(mentore.getHackathon())) {
             throw new ConflictException("Il team non fa parte dello stesso hackathon del mentore");
         }
-        if (!(hackathon.getStato() instanceof InCorso)) {
+        try {
+            hackathon.getStato().verificaEspulsioneTeamConsentita(hackathon);
+        } catch (TransizioneNonConsentitaException ex) {
             throw new ConflictException("Non è possibile segnalare una violazione se l'hackathon non è in corso");
         }
         if (!mentore.getHackathon().equals(organizzatore.getHackathon())) {
@@ -80,7 +84,9 @@ public class GestisceHackathonHandler {
                 .orElseThrow(() -> new NotFoundException("Utente da invitare non trovato"));
         Hackathon hackathon = repositoryHackathon.findByNome(nomeHackathon).orElseThrow(() -> new NotFoundException("Hackathon non trovato"));
         checkStessoHackathon(hackathon, organizzatore);
-        if (!(hackathon.getStato() instanceof IscrizioniAperte)) {
+        try {
+            hackathon.getStato().verificaNominaMentoriConsentita(hackathon);
+        } catch (TransizioneNonConsentitaException ex) {
             throw new ConflictException("Non è possibile nominare mentori al di fuori della fase 'iscrizioni aperte'");
         }
         if (hackathon.getStaff().stream().anyMatch(s -> s.getUtente().equals(staffDaInvitare))) {
@@ -100,7 +106,9 @@ public class GestisceHackathonHandler {
         Staff organizzatore = validaAutorizzazione(nomeUtente, RuoloStaff.ORGANIZZATORE);
         Hackathon hackathon = repositoryHackathon.findByNome(nomeHackathon).orElseThrow(() -> new NotFoundException("Hackathon non trovato"));
         checkStessoHackathon(hackathon, organizzatore);
-        if (!(hackathon.getStato() instanceof IscrizioniAperte || hackathon.getStato() instanceof IscrizioniChiuse)) {
+        try {
+            hackathon.getStato().verificaEliminazioneConsentita(hackathon);
+        } catch (TransizioneNonConsentitaException ex) {
             throw new ConflictException("Non è possibile eliminare un hackathon in corso o concluso");
         }
         List<Team> teams = repositoryIscrizioniTeam.findAllByHackathon(hackathon).stream().map(IscrizioneTeam::getTeam).toList();
@@ -129,7 +137,9 @@ public class GestisceHackathonHandler {
         if (repositoryIscrizioniTeam.findByTeamAndHackathon(team, hackathon).isEmpty()) {
             throw new NotFoundException("Iscrizione del team all'hackathon non trovata");
         }
-        if (!(hackathon.getStato() instanceof InCorso)) {
+        try {
+            hackathon.getStato().verificaEspulsioneTeamConsentita(hackathon);
+        } catch (TransizioneNonConsentitaException ex) {
             throw new ConflictException("Non è possibile espellere un team da un hackathon non ancora in corso");
         }
         hackathon.rimuoviIscrizione(team);
@@ -151,7 +161,9 @@ public class GestisceHackathonHandler {
         Staff organizzatore = validaAutorizzazione(nomeUtente, RuoloStaff.ORGANIZZATORE);
         Hackathon hackathon = repositoryHackathon.findByNome(nomeHackathon).orElseThrow(() -> new NotFoundException("Hackathon non trovato"));
         checkStessoHackathon(hackathon, organizzatore);
-        if (!(hackathon.getStato() instanceof Concluso)) {
+        try {
+            hackathon.getStato().verificaProclamazioneConsentita(hackathon);
+        } catch (TransizioneNonConsentitaException ex) {
             throw new ConflictException("Hackathon non concluso, impossibile proclamare il vincitore");
         }
         Team team = repositoryTeam.findByNome(nomeTeam).orElseThrow(() -> new NotFoundException("Team non trovato"));
@@ -182,7 +194,9 @@ public class GestisceHackathonHandler {
         checkStessoHackathon(hackathon, organizzatore);
         Team team = repositoryTeam.findByNome(nomeTeam).orElseThrow(() -> new NotFoundException("Team non trovato"));
         IscrizioneTeam iscrizione = repositoryIscrizioniTeam.findByTeamAndHackathon(team, hackathon).orElseThrow(() -> new NotFoundException("Iscrizione del team all'hackathon non trovata"));
-        if (!(hackathon.getStato() instanceof Concluso)) {
+        try {
+            hackathon.getStato().verificaLiquidazionePremioConsentita(hackathon);
+        } catch (TransizioneNonConsentitaException ex) {
             throw new ConflictException("Hackathon non concluso, impossibile liquidare il premio");
         }
         if (!organizzatore.getHackathon().equals(iscrizione.getHackathon())) {

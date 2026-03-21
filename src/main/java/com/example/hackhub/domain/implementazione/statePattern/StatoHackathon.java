@@ -6,6 +6,7 @@ import com.example.hackhub.eccezioni.TransizioneNonConsentitaException;
 /**
  * interfaccia che gestisce lo stato dell'hackathon avviando o concludendo iscrizioni ed eventi
  */
+//TODO in uml aggiungere i controlli mancanti sotto
 public interface StatoHackathon {
 
     /**
@@ -59,5 +60,29 @@ public interface StatoHackathon {
 
     default void verificaValutazioneConsentita(Hackathon h) {
         throw new TransizioneNonConsentitaException("Non è possibile valutare le sottomissioni in questa fase dell'hackathon");
+    }
+
+    default void verificaNominaMentoriConsentita(Hackathon h) {
+        throw new TransizioneNonConsentitaException("Non è possibile nominare mentori in questa fase dell'hackathon");
+    }
+
+    default void verificaEliminazioneConsentita(Hackathon h) {
+        throw new TransizioneNonConsentitaException("Non è possibile eliminare l'hackathon in questa fase");
+    }
+
+    default void verificaEspulsioneTeamConsentita(Hackathon h) {
+        throw new TransizioneNonConsentitaException("Non è possibile espellere team in questa fase dell'hackathon");
+    }
+
+    default void verificaProclamazioneConsentita(Hackathon h) {
+        throw new TransizioneNonConsentitaException("Non è possibile proclamare il vincitore in questa fase dell'hackathon");
+    }
+
+    default void verificaLiquidazionePremioConsentita(Hackathon h) {
+        throw new TransizioneNonConsentitaException("Non è possibile liquidare il premio in questa fase dell'hackathon");
+    }
+
+    default void verificaAnnullamentoIscrizioneConsentito(Hackathon h) {
+        throw new TransizioneNonConsentitaException("Non è possibile annullare l'iscrizione in questa fase dell'hackathon");
     }
 }

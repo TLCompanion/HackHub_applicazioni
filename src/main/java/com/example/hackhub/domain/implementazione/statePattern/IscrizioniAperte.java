@@ -13,6 +13,18 @@ public class IscrizioniAperte implements StatoHackathon {
     }
 
     @Override
+    public void verificaNominaMentoriConsentita(Hackathon hackathon) {
+    }
+
+    @Override
+    public void verificaEliminazioneConsentita(Hackathon hackathon) {
+    }
+
+    @Override
+    public void verificaAnnullamentoIscrizioneConsentito(Hackathon hackathon) {
+    }
+
+    @Override
     public void chiudiIscrizioni(Hackathon hackathon) {
         hackathon.setStato(IscrizioniChiuse.INSTANCE);
     }

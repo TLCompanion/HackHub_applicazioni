@@ -344,6 +344,48 @@ class ValutazioneBoundaryIT {
 
 
     @Test
+    void inserisciValutazione_sottomissioneDiAltroHackathon_forbidden() throws Exception {
+        Hackathon hackathonGiudice = creaHackathon("HackValutazione-9");
+        Team teamGiudice = creaTeamConLeader("TeamN", LEADER_1);
+        IscrizioneTeam iscrizioneGiudice = new IscrizioneTeam(teamGiudice, hackathonGiudice);
+        iscrizioneGiudice.aggiungiSottomissione(new Sottomissione("https://repo/n"));
+        hackathonGiudice.aggiungiIscrizione(iscrizioneGiudice);
+        impostaStatoValutazione(hackathonGiudice);
+        repositoryHackathon.saveAndFlush(hackathonGiudice);
+
+
+        // Sottomissione su hackathon diverso, senza staff del giudice
+        Hackathon altroHackathon = new Hackathon(
+                "HackAltro-" + System.nanoTime(),
+                new Periodo(LocalDate.now().plusDays(10), LocalDate.now().plusDays(12)),
+                new BigDecimal("1000"),
+                "Camerino",
+                5,
+                3,
+                LocalDateTime.now().plusDays(5),
+                "Regolamento",
+                20
+        );
+        Team altroTeam = creaTeamConLeader("TeamO", LEADER_2);
+        IscrizioneTeam altraIscrizione = new IscrizioneTeam(altroTeam, altroHackathon);
+        altraIscrizione.aggiungiSottomissione(new Sottomissione("https://repo/o"));
+        altroHackathon.aggiungiIscrizione(altraIscrizione);
+        impostaStatoValutazione(altroHackathon);
+        repositoryHackathon.saveAndFlush(altroHackathon);
+
+
+        mockMvc.perform(post(ENDPOINT + "/{id}/valutazione", altraIscrizione.getSottomissione().getIdSottomissione())
+                        .with(authentication(auth(GIUDICE)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                               {"giudizio":"Test","punteggio":6}
+                               """))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value("Sottomissione non appartenente all'hackathon del giudice"));
+    }
+
+
+    @Test
     void inserisciValutazione_giudizioVuoto_badRequest() throws Exception {
         Hackathon hackathon = creaHackathon("HackValutazione-7");
         Team team = creaTeamConLeader("TeamL", LEADER_1);

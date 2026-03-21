@@ -197,6 +197,7 @@ public class Hackathon {
 
     public void setStato(StatoHackathon stato) {
         this.stato = stato;
+        setStatoEnum(stato);
     }
 
     public void concludi() {

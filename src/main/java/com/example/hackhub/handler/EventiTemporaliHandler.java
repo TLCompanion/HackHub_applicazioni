@@ -47,7 +47,6 @@ public class EventiTemporaliHandler {
         for (Hackathon h : hackathonDaAvviare) {
             try {
                 h.avviaHackathon();
-                h.setStatoEnum(InCorso.INSTANCE);
                 repositoryHackathon.save(h);
                 notificaUtenti(h);
             } catch (ConflictException e) {
@@ -61,7 +60,6 @@ public class EventiTemporaliHandler {
      * Metodo che chiude le iscrizioni di tutti gli hackathon il cui termine è passato
      */
     private void chiudiIscrizioni() {
-        StatoHackathon stato = IscrizioniAperte.INSTANCE;
         List<Hackathon> hackathonDaChiudere = repositoryHackathon.findHackathonDaChiudere(StatoEnum.ISCRIZIONI_APERTE, LocalDateTime.now());
         for (Hackathon h : hackathonDaChiudere) {
             try {
@@ -69,7 +67,6 @@ public class EventiTemporaliHandler {
             } catch (TransizioneNonConsentitaException e) {
                 throw new ConflictException("Impossibile chiudere le iscrizioni dell'hackathon " + h.getNome());
             }
-            h.setStatoEnum(IscrizioniChiuse.INSTANCE);
             repositoryHackathon.save(h);
         }
     }
@@ -79,7 +76,6 @@ public class EventiTemporaliHandler {
      * sottomissioni dei vari hackathon
      */
     private void iniziaValutazione() {
-        StatoHackathon stato = InCorso.INSTANCE;
         List<Hackathon> hackathonDaValutare = repositoryHackathon.findHackathonDaValutare(StatoEnum.IN_CORSO, LocalDateTime.now());
         for (Hackathon h : hackathonDaValutare) {
             try {
@@ -87,7 +83,6 @@ public class EventiTemporaliHandler {
             } catch (TransizioneNonConsentitaException e) {
                 throw new ConflictException("Impossibile avviare la valutazione dell'hackathon " + h.getNome());
             }
-            h.setStatoEnum(ValutazioneInCorso.INSTANCE);
             repositoryHackathon.save(h);
         }
     }

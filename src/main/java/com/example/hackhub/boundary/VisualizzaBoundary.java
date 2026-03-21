@@ -81,13 +81,12 @@ public class VisualizzaBoundary {
 
     /**
      * Metodo del boundary che ritorna le informazioni di un hackathon pubbliche
-     * @param nomeUtente il nome utente che richiede le informazioni
      * @return la lista di dto
      */
+    //TODO togliere il nome utente, questa è una cosa che possono fare tutti
     @GetMapping("/hackathon")
-    public ResponseEntity<List<InfoHackathonDTO>> viewInfoHackathon(
-            @AuthenticationPrincipal String nomeUtente) {
-        List<InfoHackathonDTO> infoHackathon = handler.viewInfoHackathon(nomeUtente);
+    public ResponseEntity<List<InfoHackathonDTO>> viewInfoHackathon() {
+        List<InfoHackathonDTO> infoHackathon = handler.viewInfoHackathon();
         return ResponseEntity.status(HttpStatus.OK).body(infoHackathon);
     }
 }

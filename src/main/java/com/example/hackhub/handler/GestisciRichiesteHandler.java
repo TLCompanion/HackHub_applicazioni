@@ -2,15 +2,19 @@ package com.example.hackhub.handler;
 
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.RuoloTeam;
+import com.example.hackhub.domain.StatoRichiesta;
 import com.example.hackhub.domain.TipoNotifica;
 import com.example.hackhub.domain.implementazione.*;
 import com.example.hackhub.eccezioni.ConflictException;
+import com.example.hackhub.eccezioni.ForbiddenException;
 import com.example.hackhub.eccezioni.NotFoundException;
 import com.example.hackhub.repository.*;
 import com.example.hackhub.servizi.ServizioNotifiche;
 import com.example.hackhub.servizi.esterni.CalendarioMock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 public class GestisciRichiesteHandler {
@@ -51,6 +55,8 @@ public class GestisciRichiesteHandler {
     public void accettaRichiesta(String nomeUtente, String idRichiesta) {
         Utente utente = validazioneUtente(nomeUtente);
         Richiesta r = validazioneRichiesta(idRichiesta);
+        validaDestinatarioRichiesta(utente, r);
+        validaRichiestaElaborabile(r);
         Utente destinatario;
 
         switch (r) {
@@ -72,7 +78,7 @@ public class GestisciRichiesteHandler {
             }
             default -> throw new ConflictException("La richiesta non appartiene a nessun tipo di invito esistente");
         }
-        servizioNotifiche.creaNotifica(destinatario, TipoNotifica.ACCETTA_RICHIESTA, utente.getNomeUtente() + "ha accettato la tua richiesta");
+        servizioNotifiche.creaNotifica(destinatario, TipoNotifica.ACCETTA_RICHIESTA, utente.getNomeUtente() + " ha accettato la tua richiesta");
     }
 
     /**
@@ -83,10 +89,13 @@ public class GestisciRichiesteHandler {
      */
     @Transactional
     public void rifiutaRichiesta(String nomeUtente, String idRichiesta) {
-        validazioneUtente(nomeUtente);
+        Utente utente = validazioneUtente(nomeUtente);
         Richiesta r = validazioneRichiesta(idRichiesta);
+        validaDestinatarioRichiesta(utente, r);
+        validaRichiestaElaborabile(r);
         r.rifiuta();
-        servizioNotifiche.creaNotifica(r.getDestinatario(), TipoNotifica.RIFIUTO_RICHIESTA, "La richiesta è stata rifiutata");
+        Utente mittente = trovaMittenteRichiesta(r);
+        servizioNotifiche.creaNotifica(mittente, TipoNotifica.RIFIUTO_RICHIESTA, utente.getNomeUtente() + " ha rifiutato la tua richiesta");
     }
 
     /**
@@ -185,6 +194,26 @@ public class GestisciRichiesteHandler {
     private Richiesta validazioneRichiesta(String idRichiesta) {
         return repositoryRichiesta.findById(idRichiesta)
                 .orElseThrow(() -> new NotFoundException("Invito scaduto"));
+    }
+
+    private void validaDestinatarioRichiesta(Utente utente, Richiesta richiesta) {
+        if (!richiesta.getDestinatario().getNomeUtente().equals(utente.getNomeUtente())) {
+            throw new ForbiddenException("L'utente autenticato non è il destinatario della richiesta");
+        }
+    }
+
+    private void validaRichiestaElaborabile(Richiesta richiesta) {
+        if (richiesta.getScadenza().isBefore(LocalDateTime.now())) {
+            throw new ConflictException("La richiesta è scaduta");
+        }
+        if (richiesta.getStato() != StatoRichiesta.INVIATO) {
+            throw new ConflictException("La richiesta è già stata elaborata");
+        }
+    }
+
+    private Utente trovaMittenteRichiesta(Richiesta richiesta) {
+        return repositoryUtenti.findByNomeUtente(richiesta.getMittente())
+                .orElseThrow(() -> new NotFoundException("Mittente non trovato"));
     }
 
     /**

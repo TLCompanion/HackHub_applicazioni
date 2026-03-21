@@ -31,6 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -202,6 +203,29 @@ class GestioneCallBoundaryIT {
 
         eseguiProposta(body, MENTORE)
                 .andExpect(status().isConflict());
+
+
+        verify(servizioNotifiche, never()).creaPropostaCall(any(), any(), any());
+    }
+
+
+    @Test
+    void avviaPropostaCall_teamSenzaLeader_notFound() throws Exception {
+        hackathon.aggiungiStaff(new Staff(utente(MENTORE), RuoloStaff.MENTORE));
+        hackathon.aggiungiIscrizione(new IscrizioneTeam(team, hackathon));
+        repositoryHackathon.saveAndFlush(hackathon);
+
+
+        // aggiungo solo un membro non leader
+        repositoryMembriTeam.saveAndFlush(new MembroTeam(utente(MEMBRO), team, RuoloTeam.MEMBRO));
+
+
+        String body = jsonPropostaCall(hackathon.getIdHackathon(), team.getIdTeam(), "2026-06-21", "15:30:00");
+
+
+        eseguiProposta(body, MENTORE)
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Leader del team non trovato"));
 
 
         verify(servizioNotifiche, never()).creaPropostaCall(any(), any(), any());

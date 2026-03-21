@@ -399,6 +399,16 @@ class VisualizzaBoundaryIT {
     }
 
 
+    @Test
+    void viewInfoHackathon_pubblica_ok() throws Exception {
+        mockMvc.perform(get(BASE_URL + "/hackathon"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].nome").value("HackathonTest"));
+    }
+
+
 
 
     private UsernamePasswordAuthenticationToken auth() {

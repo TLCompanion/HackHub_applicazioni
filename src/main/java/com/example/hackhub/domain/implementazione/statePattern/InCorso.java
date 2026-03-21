@@ -16,4 +16,8 @@ public class InCorso implements StatoHackathon {
     @Override
     public void verificaInvioSottomissioneConsentito(Hackathon hackathon) {
     }
+
+    @Override
+    public void verificaEspulsioneTeamConsentita(Hackathon hackathon) {
+    }
 }

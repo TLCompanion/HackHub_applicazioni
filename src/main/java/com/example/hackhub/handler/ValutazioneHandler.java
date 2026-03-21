@@ -56,9 +56,17 @@ public class ValutazioneHandler {
         Hackathon hackathon = repositoryStaff.findByUtente_NomeUtente(nomeUtente).orElseThrow(() ->
                 new NotFoundException("Giudice non trovato")).getHackathon();
 
+        boolean appartieneHackathon = repositoryIscrizioniTeam.findAllByHackathon(hackathon).stream()
+                .map(IscrizioneTeam::getSottomissione)
+                .filter(Objects::nonNull)
+                .anyMatch(s -> s.getIdSottomissione().equals(idSottomissione));
+        if (!appartieneHackathon) {
+            throw new ForbiddenException("Sottomissione non appartenente all'hackathon del giudice");
+        }
+
         try {
             hackathon.getStato().verificaValutazioneConsentita(hackathon);
-        } catch (RuntimeException ex) {
+        } catch (TransizioneNonConsentitaException ex) {
             throw new ConflictException("Valutazione non consentita in questo stato dell'hackathon");
         }
         verificaGiudiceAutorizzato(hackathon, nomeUtente);
@@ -112,7 +120,6 @@ public class ValutazioneHandler {
         boolean tutteValutate = sottomissioni.stream().allMatch(Sottomissione::haValutazione);
         if (tutteValutate) {
             hackathon.concludi();
-            hackathon.setStatoEnum(Concluso.INSTANCE);
             repositoryHackathon.save(hackathon);
             String messaggio = "L'hackathon è stato concluso, valutazioni terminate";
             List<Utente> utentiDestinatari = getUtentiDestinatari(hackathon);

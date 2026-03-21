@@ -50,8 +50,14 @@ public class GestioneCallHandler {
         verificaMentoreAutorizzato(hackathon, nomeUtente);
         Periodo periodo = new Periodo(request.data(), request.ora(), request.data(), request.ora().plusMinutes(30));
         validazione(periodo, hackathon, request.idTeam());
-        Utente leader = repositoryMembriTeam.findMembroTeamByRuolo(RuoloTeam.LEADER).orElseThrow(() ->
-                new NotFoundException("Leader del team non trovato")).getUtente();
+        Team team = hackathon.getIscrizioni().stream()
+                .map(IscrizioneTeam::getTeam)
+                .filter(t -> t.getIdTeam().equals(request.idTeam()))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Team non trovato nell'hackathon"));
+        Utente leader = repositoryMembriTeam.findByTeam_IdTeamAndRuolo(team.getIdTeam(), RuoloTeam.LEADER)
+                .map(MembroTeam::getUtente)
+                .orElseThrow(() -> new NotFoundException("Leader del team non trovato"));
         servizioNotifiche.creaPropostaCall(nomeUtente, leader, periodo);
     }
 
