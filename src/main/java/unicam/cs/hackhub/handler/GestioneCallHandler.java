@@ -1,17 +1,15 @@
-package com.example.hackhub.handler;
+package unicam.cs.hackhub.handler;
 
-import com.example.hackhub.boundary.dto.PropostaCallRequest;
-import com.example.hackhub.domain.RuoloStaff;
-import com.example.hackhub.domain.RuoloTeam;
-import com.example.hackhub.domain.implementazione.*;
-import com.example.hackhub.domain.implementazione.statePattern.Concluso;
-import com.example.hackhub.eccezioni.TransizioneNonConsentitaException;
-import com.example.hackhub.servizi.ServizioNotifiche;
-import com.example.hackhub.eccezioni.ConflictException;
-import com.example.hackhub.eccezioni.ForbiddenException;
-import com.example.hackhub.eccezioni.NotFoundException;
-import com.example.hackhub.repository.RepositoryHackathon;
-import com.example.hackhub.repository.RepositoryMembriTeam;
+import unicam.cs.hackhub.boundary.dto.PropostaCallRequest;
+import unicam.cs.hackhub.domain.RuoloStaff;
+import unicam.cs.hackhub.domain.RuoloTeam;
+import unicam.cs.hackhub.domain.implementazione.*;
+import unicam.cs.hackhub.servizi.ServizioNotifiche;
+import unicam.cs.hackhub.eccezioni.ConflictException;
+import unicam.cs.hackhub.eccezioni.ForbiddenException;
+import unicam.cs.hackhub.eccezioni.NotFoundException;
+import unicam.cs.hackhub.repository.RepositoryHackathon;
+import unicam.cs.hackhub.repository.RepositoryMembriTeam;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

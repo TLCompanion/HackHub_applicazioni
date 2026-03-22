@@ -1,4 +1,4 @@
-package com.example.hackhub.testHttp;
+package unicam.cs.hackhub.testHttp;
 
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.Sql.ExecutionPhase;

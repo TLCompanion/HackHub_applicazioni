@@ -1,14 +1,14 @@
-package com.example.hackhub.testHttp;
+package unicam.cs.hackhub.testHttp;
 
-import com.example.hackhub.domain.RuoloStaff;
-import com.example.hackhub.domain.RuoloTeam;
-import com.example.hackhub.domain.implementazione.*;
-import com.example.hackhub.domain.implementazione.statePattern.ValutazioneInCorso;
-import com.example.hackhub.repository.RepositoryHackathon;
-import com.example.hackhub.repository.RepositoryMembriTeam;
-import com.example.hackhub.repository.RepositoryTeam;
-import com.example.hackhub.repository.RepositoryUtenti;
-import com.example.hackhub.servizi.ServizioNotifiche;
+import unicam.cs.hackhub.domain.RuoloStaff;
+import unicam.cs.hackhub.domain.RuoloTeam;
+import unicam.cs.hackhub.domain.implementazione.*;
+import unicam.cs.hackhub.domain.implementazione.statePattern.ValutazioneInCorso;
+import unicam.cs.hackhub.repository.RepositoryHackathon;
+import unicam.cs.hackhub.repository.RepositoryMembriTeam;
+import unicam.cs.hackhub.repository.RepositoryTeam;
+import unicam.cs.hackhub.repository.RepositoryUtente;
+import unicam.cs.hackhub.servizi.ServizioNotifiche;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +63,7 @@ class GestioneCallBoundaryIT extends BaseHttpIT {
 
 
     @Autowired
-    private RepositoryUtenti repositoryUtenti;
+    private RepositoryUtente repositoryUtente;
 
 
     @Autowired
@@ -83,18 +83,18 @@ class GestioneCallBoundaryIT extends BaseHttpIT {
         repositoryMembriTeam.deleteAllInBatch();
         repositoryTeam.deleteAllInBatch();
         repositoryHackathon.deleteAllInBatch();
-        repositoryUtenti.deleteAllInBatch();
+        repositoryUtente.deleteAllInBatch();
 
 
         repositoryMembriTeam.flush();
         repositoryTeam.flush();
         repositoryHackathon.flush();
-        repositoryUtenti.flush();
+        repositoryUtente.flush();
 
 
-        repositoryUtenti.saveAndFlush(creaUtente(MENTORE));
-        repositoryUtenti.saveAndFlush(creaUtente(LEADER));
-        repositoryUtenti.saveAndFlush(creaUtente(MEMBRO));
+        repositoryUtente.saveAndFlush(creaUtente(MENTORE));
+        repositoryUtente.saveAndFlush(creaUtente(LEADER));
+        repositoryUtente.saveAndFlush(creaUtente(MEMBRO));
 
 
         clearInvocations(servizioNotifiche);
@@ -287,7 +287,7 @@ class GestioneCallBoundaryIT extends BaseHttpIT {
 
 
     private Utente utente(String nomeUtente) {
-        return repositoryUtenti.findByNomeUtente(nomeUtente)
+        return repositoryUtente.findByNomeUtente(nomeUtente)
                 .orElseThrow(() -> new AssertionError("Utente non trovato: " + nomeUtente));
     }
 

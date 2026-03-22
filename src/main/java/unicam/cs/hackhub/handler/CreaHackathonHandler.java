@@ -1,16 +1,19 @@
-package com.example.hackhub.handler;
+package unicam.cs.hackhub.handler;
 
-import com.example.hackhub.boundary.dto.HackathonRequest;
-import com.example.hackhub.domain.RuoloStaff;
-import com.example.hackhub.domain.implementazione.*;
-import com.example.hackhub.servizi.HackathonBuilder;
-import com.example.hackhub.servizi.ServizioNotifiche;
-import com.example.hackhub.eccezioni.ForbiddenException;
-import com.example.hackhub.eccezioni.NotFoundException;
-import com.example.hackhub.repository.RepositoryHackathon;
-import com.example.hackhub.repository.RepositoryUtenti;
+import unicam.cs.hackhub.boundary.dto.HackathonRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import unicam.cs.hackhub.domain.RuoloStaff;
+import unicam.cs.hackhub.domain.implementazione.Hackathon;
+import unicam.cs.hackhub.domain.implementazione.Periodo;
+import unicam.cs.hackhub.domain.implementazione.Staff;
+import unicam.cs.hackhub.domain.implementazione.Utente;
+import unicam.cs.hackhub.eccezioni.ForbiddenException;
+import unicam.cs.hackhub.eccezioni.NotFoundException;
+import unicam.cs.hackhub.repository.RepositoryHackathon;
+import unicam.cs.hackhub.repository.RepositoryUtente;
+import unicam.cs.hackhub.servizi.HackathonBuilder;
+import unicam.cs.hackhub.servizi.ServizioNotifiche;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +22,7 @@ import java.util.Map;
 @Service
 public class CreaHackathonHandler {
 
-    private final RepositoryUtenti repositoryUtenti;
+    private final RepositoryUtente repositoryUtenti;
     private final RepositoryHackathon repositoryHackathon;
     private final ServizioNotifiche servizioNotifiche;
 
@@ -30,7 +33,7 @@ public class CreaHackathonHandler {
      * @param repositoryHackathon la repository per salvare l'hackathon creato
      * @param servizioNotifiche   il servizio per inviare le notifiche agli utenti invitati come giudici e mentori
      */
-    public CreaHackathonHandler(RepositoryUtenti repositoryUtenti, RepositoryHackathon
+    public CreaHackathonHandler(RepositoryUtente repositoryUtenti, RepositoryHackathon
             repositoryHackathon, ServizioNotifiche servizioNotifiche) {
         this.repositoryUtenti = repositoryUtenti;
         this.repositoryHackathon = repositoryHackathon;

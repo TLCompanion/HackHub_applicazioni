@@ -1,7 +1,6 @@
 package unicam.cs.hackhub.boundary;
 
 import unicam.cs.hackhub.boundary.dto.HackathonRequest;
-import unicam.cs.hackhub.handler.CreaHackathonHandler;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import unicam.cs.hackhub.handler.CreaHackathonHandler;
 
 
 @RestController
