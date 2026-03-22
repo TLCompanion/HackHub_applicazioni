@@ -276,7 +276,7 @@ curl -X POST http://localhost:8080/api/sottomissioni/S-123/valutazione \
 ```text
 src/
   main/
-    java/com/example/hackhub/
+    java/unicam/cs/hackhub/
       boundary/
       handler/
       domain/
@@ -286,7 +286,7 @@ src/
       application.properties
       application.yml
   test/
-    java/com/example/hackhub/
+    java/unicam/cs/hackhub/
       testHttp/
 ```
 
