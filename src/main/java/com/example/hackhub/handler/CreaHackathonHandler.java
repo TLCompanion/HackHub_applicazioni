@@ -52,9 +52,8 @@ public class CreaHackathonHandler {
         builder.reset();
         buildSteps(builder, request);
         Hackathon hackathon = builder.getRisultato();
-        gestisciOrganizzatore(nomeUtente, hackathon);
-        gestisciInvitiStaff(hackathon, request.nomeMentori(), request.nomeGiudice());
-        repositoryHackathon.save(hackathon);
+        Staff organizzatore = gestisciOrganizzatore(nomeUtente, hackathon);
+        gestisciInvitiStaff(organizzatore, request.nomeMentori(), request.nomeGiudice());
     }
 
     /**
@@ -80,6 +79,9 @@ public class CreaHackathonHandler {
         if (request.nomeMentori().size() != request.nomeMentori().stream().distinct().count()) {
             throw new ForbiddenException("Non possono esserci nomi duplicati tra i mentori");
         }
+        if (!request.scadenzaIscrizioni().isBefore(request.dataInizio().atStartOfDay())) {
+            throw new ForbiddenException("La scadenza delle iscrizioni deve essere prima dell'inizio dell'hackathon");
+        }
     }
 
     /**
@@ -104,18 +106,16 @@ public class CreaHackathonHandler {
     /**
      * Gestione degli inviti allo staff per un hackathon
      *
-     * @param hackathon   l'hackathon
+     * @param organizzatore l'utente che ha creato l'hackathon
      * @param nomiMentori i nomi degli utenti che si vogliono invitare come mentori
      * @param nomeGiudice il nome dell'utente che si vuole invitare come giudice
      */
-    private void gestisciInvitiStaff(Hackathon hackathon, List<String> nomiMentori, String nomeGiudice) {
+    private void gestisciInvitiStaff(Staff organizzatore, List<String> nomiMentori, String nomeGiudice) {
         Map<Utente, RuoloStaff> destinatari = gestisciStaff(nomiMentori, nomeGiudice);
         List<Utente> utentiDestinatari = destinatari.keySet().stream().toList();
-        String nomeOrganizzatore = hackathon.getStaff().stream().filter(s -> s.getRuolo().equals(
-                RuoloStaff.ORGANIZZATORE)).findFirst().orElseThrow(() ->
-                new NotFoundException("L'organizzatore non è stato trovato")).getUtente().getNomeUtente();
+        String nomeOrganizzatore = organizzatore.getUtente().getNomeUtente();
         for (Utente d : utentiDestinatari)
-            servizioNotifiche.creaInvitoStaff(nomeOrganizzatore, d, hackathon, destinatari.get(d));
+            servizioNotifiche.creaInvitoStaff(nomeOrganizzatore, d, organizzatore.getHackathon(), destinatari.get(d));
     }
 
     /**
@@ -142,11 +142,12 @@ public class CreaHackathonHandler {
      * @param nomeUtente il nome utente dell'organizzatore
      * @param hackathon  l'hackathon
      */
-    private void gestisciOrganizzatore(String nomeUtente, Hackathon hackathon) {
+    private Staff gestisciOrganizzatore(String nomeUtente, Hackathon hackathon) {
         Utente organizzatore = repositoryUtenti.findByNomeUtente(nomeUtente).orElseThrow(() ->
                 new NotFoundException("L' utente non esiste: " + nomeUtente));
         Staff staffOrganizzatore = new Staff(organizzatore, RuoloStaff.ORGANIZZATORE);
         hackathon.aggiungiStaff(staffOrganizzatore);
         repositoryHackathon.save(hackathon);
+        return staffOrganizzatore;
     }
 }

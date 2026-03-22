@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class EffettuaAutenticazioneBoundaryIT {
+class EffettuaAutenticazioneBoundaryIT extends BaseHttpIT {
 
     private static final String ENDPOINT_REGISTRAZIONE = "/api/autenticazione/registrazione";
     private static final String ENDPOINT_ACCESSO = "/api/autenticazione/accesso";

@@ -3,6 +3,7 @@ package com.example.hackhub.testHttp;
 import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.RuoloTeam;
 import com.example.hackhub.domain.implementazione.*;
+import com.example.hackhub.domain.implementazione.statePattern.ValutazioneInCorso;
 import com.example.hackhub.repository.RepositoryHackathon;
 import com.example.hackhub.repository.RepositoryMembriTeam;
 import com.example.hackhub.repository.RepositoryTeam;
@@ -38,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class GestioneCallBoundaryIT {
+class GestioneCallBoundaryIT extends BaseHttpIT {
 
 
     private static final String ENDPOINT = "/api/call/proposta";
@@ -110,6 +111,7 @@ class GestioneCallBoundaryIT {
 
         hackathon.aggiungiStaff(new Staff(utenteMentore, RuoloStaff.MENTORE));
         hackathon.aggiungiIscrizione(new IscrizioneTeam(team, hackathon));
+        hackathon.setStato(ValutazioneInCorso.INSTANCE);
 
 
         repositoryHackathon.saveAndFlush(hackathon);
@@ -192,6 +194,7 @@ class GestioneCallBoundaryIT {
     void avviaPropostaCall_dopoFineHackathon_conflict() throws Exception {
         hackathon.aggiungiStaff(new Staff(utente(MENTORE), RuoloStaff.MENTORE));
         hackathon.aggiungiIscrizione(new IscrizioneTeam(team, hackathon));
+        hackathon.setStato(ValutazioneInCorso.INSTANCE);
         repositoryHackathon.saveAndFlush(hackathon);
 
 
@@ -213,6 +216,7 @@ class GestioneCallBoundaryIT {
     void avviaPropostaCall_teamSenzaLeader_notFound() throws Exception {
         hackathon.aggiungiStaff(new Staff(utente(MENTORE), RuoloStaff.MENTORE));
         hackathon.aggiungiIscrizione(new IscrizioneTeam(team, hackathon));
+        hackathon.setStato(ValutazioneInCorso.INSTANCE);
         repositoryHackathon.saveAndFlush(hackathon);
 
 

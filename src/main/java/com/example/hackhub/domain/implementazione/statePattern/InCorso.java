@@ -18,6 +18,10 @@ public class InCorso implements StatoHackathon {
     }
 
     @Override
+    public void verificaPropostaDiCallConsentita(Hackathon hackathon) {
+    }
+
+    @Override
     public void verificaEspulsioneTeamConsentita(Hackathon hackathon) {
     }
 }

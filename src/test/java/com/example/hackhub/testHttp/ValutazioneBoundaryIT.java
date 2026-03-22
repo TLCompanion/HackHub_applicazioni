@@ -43,7 +43,7 @@ import static org.hamcrest.Matchers.containsString;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class ValutazioneBoundaryIT {
+class ValutazioneBoundaryIT extends BaseHttpIT {
 
 
     private static final String ENDPOINT = "/api/sottomissioni";

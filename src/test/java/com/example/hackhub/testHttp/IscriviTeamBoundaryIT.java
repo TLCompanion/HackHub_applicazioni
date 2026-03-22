@@ -42,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class IscriviTeamBoundaryIT {
+class IscriviTeamBoundaryIT extends BaseHttpIT {
 
 
     private static final String ENDPOINT = "/api/hackathon";

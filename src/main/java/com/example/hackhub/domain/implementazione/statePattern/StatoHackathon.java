@@ -85,4 +85,8 @@ public interface StatoHackathon {
     default void verificaAnnullamentoIscrizioneConsentito(Hackathon h) {
         throw new TransizioneNonConsentitaException("Non è possibile annullare l'iscrizione in questa fase dell'hackathon");
     }
+
+    default void verificaPropostaDiCallConsentita(Hackathon h) {
+        throw new TransizioneNonConsentitaException("Non è possibile proporre una call in questa fase dell'hackathon");
+    }
 }

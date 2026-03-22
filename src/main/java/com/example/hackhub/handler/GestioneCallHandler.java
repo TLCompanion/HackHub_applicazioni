@@ -5,6 +5,7 @@ import com.example.hackhub.domain.RuoloStaff;
 import com.example.hackhub.domain.RuoloTeam;
 import com.example.hackhub.domain.implementazione.*;
 import com.example.hackhub.domain.implementazione.statePattern.Concluso;
+import com.example.hackhub.eccezioni.TransizioneNonConsentitaException;
 import com.example.hackhub.servizi.ServizioNotifiche;
 import com.example.hackhub.eccezioni.ConflictException;
 import com.example.hackhub.eccezioni.ForbiddenException;
@@ -69,9 +70,7 @@ public class GestioneCallHandler {
      * @param idTeam    l'id del Team
      */
     private void validazione(Periodo periodo, Hackathon hackathon, String idTeam) {
-        if (hackathon.getStato().equals(Concluso.INSTANCE)) {
-            throw new ConflictException("Hackathon concluso, non è possibile proporre una call");
-        }
+        hackathon.getStato().verificaPropostaDiCallConsentita(hackathon);
         if (hackathon.getIscrizioni().stream().noneMatch(i -> i.getTeam().getIdTeam().equals(idTeam))) {
             throw new ConflictException("Il team non è iscritto all'hackathon");
         }

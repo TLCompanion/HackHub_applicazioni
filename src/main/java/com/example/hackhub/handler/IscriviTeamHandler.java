@@ -69,10 +69,8 @@ public class IscriviTeamHandler {
         if (team.getNumMembri() < hackathon.getTeamMin() || team.getNumMembri() > hackathon.getTeamMax())
             throw new ConflictException("Il numero di membri del team non è compatibile con i requisiti dell'hackathon");
 
-        IscrizioneTeam iscrizioneEsistente = repositoryIscrizioniTeam.findByTeamAndHackathon(team, hackathon).orElse(null);
-        if (iscrizioneEsistente != null) {
-            if (iscrizioneEsistente.getHackathon().equals(hackathon))
-                throw new ConflictException("Il team è già iscritto a questo hackathon");
+        if (repositoryIscrizioniTeam.findByTeamAndHackathon(team, hackathon).isPresent()) {
+                throw new ConflictException("Il team è già iscritto a un hackathon");
         }
         if (hackathon.getIscrizioni().size() >= hackathon.getMaxIscrizioni())
             throw new ConflictException("Il numero massimo di iscrizioni è già stato raggiunto");

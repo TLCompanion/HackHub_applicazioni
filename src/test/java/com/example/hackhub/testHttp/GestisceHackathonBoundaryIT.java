@@ -53,7 +53,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class GestisceHackathonBoundaryIT {
+class GestisceHackathonBoundaryIT extends BaseHttpIT {
 
 
     private static final String BASE_URL = "/api/hackathon";

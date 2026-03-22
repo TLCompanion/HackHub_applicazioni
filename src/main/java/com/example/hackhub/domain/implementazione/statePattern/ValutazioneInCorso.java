@@ -10,7 +10,10 @@ public class ValutazioneInCorso implements StatoHackathon {
 
     @Override
     public void verificaValutazioneConsentita(Hackathon hackathon) {
-        // Consentita
+    }
+
+    @Override
+    public void verificaPropostaDiCallConsentita(Hackathon hackathon) {
     }
 
     @Override

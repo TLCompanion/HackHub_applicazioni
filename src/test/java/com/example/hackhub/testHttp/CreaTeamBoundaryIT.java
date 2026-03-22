@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class CreaTeamBoundaryIT {
+class CreaTeamBoundaryIT extends BaseHttpIT {
 
 
     private static final String ENDPOINT = "/api/team";
