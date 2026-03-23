@@ -1,11 +1,13 @@
 package unicam.cs.hackhub.handler;
 
 import unicam.cs.hackhub.domain.RuoloTeam;
+import unicam.cs.hackhub.domain.implementazione.Hackathon;
 import unicam.cs.hackhub.domain.implementazione.IscrizioneTeam;
 import unicam.cs.hackhub.domain.implementazione.MembroTeam;
 import unicam.cs.hackhub.domain.implementazione.Team;
 import unicam.cs.hackhub.eccezioni.ConflictException;
 import unicam.cs.hackhub.eccezioni.NotFoundException;
+import unicam.cs.hackhub.eccezioni.TransizioneNonConsentitaException;
 import unicam.cs.hackhub.repository.*;
 import unicam.cs.hackhub.repository.RepositoryIscrizioniTeam;
 import unicam.cs.hackhub.repository.RepositoryMembriTeam;
@@ -24,6 +26,7 @@ public class GestisciTeamHandler {
     private final RepositoryMembriTeam repositoryMembriTeam;
     private final ServizioNotifiche servizioNotifiche;
     private final RepositoryIscrizioniTeam repositoryIscrizioniTeam;
+    private final RepositoryHackathon repositoryHackathon;
 
     /**
      * Crea una nuova istanza dell'handler per gestire il team
@@ -33,11 +36,12 @@ public class GestisciTeamHandler {
      * @param servizioNotifiche        il servizio per le notifiche
      * @param repositoryIscrizioniTeam la repository per le iscrizioni dei team
      */
-    public GestisciTeamHandler(RepositoryTeam repositoryTeam, RepositoryMembriTeam repositoryMembriTeam, ServizioNotifiche servizioNotifiche, RepositoryIscrizioniTeam repositoryIscrizioniTeam) {
+    public GestisciTeamHandler(RepositoryTeam repositoryTeam, RepositoryMembriTeam repositoryMembriTeam, ServizioNotifiche servizioNotifiche, RepositoryIscrizioniTeam repositoryIscrizioniTeam, RepositoryHackathon repositoryHackathon) {
         this.repositoryTeam = repositoryTeam;
         this.repositoryMembriTeam = repositoryMembriTeam;
         this.servizioNotifiche = servizioNotifiche;
         this.repositoryIscrizioniTeam = repositoryIscrizioniTeam;
+        this.repositoryHackathon = repositoryHackathon;
     }
 
     /**
@@ -101,6 +105,14 @@ public class GestisciTeamHandler {
         Team team = membroTeam.getTeam();
         List<IscrizioneTeam> iscrizioni = repositoryIscrizioniTeam.findAllByTeam(team);
         if (!iscrizioni.isEmpty()) {
+            for (IscrizioneTeam iscrizione : iscrizioni) {
+                Hackathon hackathon = iscrizione.getHackathon();
+                try {
+                    hackathon.getStato().verificaAnnullamentoIscrizioneConsentito(hackathon);
+                } catch (TransizioneNonConsentitaException e) {
+                    throw new ConflictException("Il team è iscritto ad un hackathon con le iscrizioni chiuse, non puoi sciogliere il team");
+                }
+            }
             repositoryIscrizioniTeam.deleteAll(iscrizioni);
         }
         for (MembroTeam m : team.getMembri()) {
@@ -154,6 +166,11 @@ public class GestisciTeamHandler {
         if (!membroTeam.getTeam().equals(leader.getTeam())) {
             throw new ConflictException("Il membro da nominare non è nel team del leader");
         }
-        servizioNotifiche.creaPropostaLeader(nomeUtente, membroTeam.getUtente(), leader.getTeam());
+        membroTeam.setRuolo(RuoloTeam.LEADER);
+        leader.setRuolo(RuoloTeam.MEMBRO);
+        repositoryTeam.save(leader.getTeam());
+         for (MembroTeam m : leader.getTeam().getMembri()) {
+            servizioNotifiche.creaNotifica(m.getUtente(), TRASFERIMENTO_LEADER, "Il membro " + membroTeam.getUtente().getNomeUtente() + " è stato nominato come nuovo leader del team.");
+        }
     }
 }

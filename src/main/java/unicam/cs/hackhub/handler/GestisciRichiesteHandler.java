@@ -67,16 +67,12 @@ public class GestisciRichiesteHandler {
                 destinatario = accettaInvitoStaff(nomeUtente, invitoStaff);
             }
             case InvitoTeam invitoTeam -> {
-                r.accetta();
                 destinatario = accettaInvitoTeam(nomeUtente, invitoTeam);
+                r.accetta();
             }
             case PropostaCall propostaCall -> {
                 r.accetta();
                 destinatario = accettaCall(nomeUtente, propostaCall);
-            }
-            case PropostaLeader propostaLeader -> {
-                r.accetta();
-                destinatario = accettaPropostaLeader(nomeUtente, propostaLeader);
             }
             default -> throw new ConflictException("La richiesta non appartiene a nessun tipo di invito esistente");
         }
@@ -115,19 +111,6 @@ public class GestisciRichiesteHandler {
     }
 
     /**
-     * Metodo che gestisce l'accettazione di una proposta per un leader
-     *
-     * @param nomeUtente     il nome dell'utente
-     * @param propostaLeader la proposta
-     * @return il leader del team da notificare
-     */
-    private Utente accettaPropostaLeader(String nomeUtente, PropostaLeader propostaLeader) {
-        validazioneUtente(nomeUtente);
-        Team team = propostaLeader.getTeam();
-        return trovaLeader(team);
-    }
-
-    /**
      * Metodo che gestisce l'accettazione di un invito per i team
      *
      * @param nomeUtente il nome dell'utente
@@ -135,6 +118,9 @@ public class GestisciRichiesteHandler {
      * @return il leader del team da notificare
      */
     private Utente accettaInvitoTeam(String nomeUtente, InvitoTeam invitoTeam) {
+        repositoryMembriTeam.findByUtente_NomeUtente(nomeUtente).ifPresent(m -> {
+            throw new ForbiddenException("L'utente è già membro di un team");
+        });
         validazioneUtente(nomeUtente);
         Team team = invitoTeam.getTeam();
         return trovaLeader(team);

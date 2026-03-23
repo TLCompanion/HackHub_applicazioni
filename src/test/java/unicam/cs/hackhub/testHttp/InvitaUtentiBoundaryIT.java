@@ -100,7 +100,6 @@ class InvitaUtentiBoundaryIT extends BaseHttpIT {
                 .andExpect(status().isNoContent());
 
 
-        // verify notification created
         verify(servizioNotifiche, times(1)).creaInvitoTeam(eq(LEADER), any(), eq(team));
     }
 

@@ -6,7 +6,7 @@ import unicam.cs.hackhub.domain.implementazione.Periodo;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class HackathonBuilder {
+public class HackathonBuilder implements Builder{
 
     String nome;
     Periodo periodo;

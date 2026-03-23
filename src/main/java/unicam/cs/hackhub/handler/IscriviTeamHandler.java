@@ -73,9 +73,6 @@ public class IscriviTeamHandler {
         if (team.getNumMembri() < hackathon.getTeamMin() || team.getNumMembri() > hackathon.getTeamMax())
             throw new ConflictException("Il numero di membri del team non è compatibile con i requisiti dell'hackathon");
 
-        if (repositoryIscrizioniTeam.findByTeamAndHackathon(team, hackathon).isPresent()) {
-                throw new ConflictException("Il team è già iscritto a un hackathon");
-        }
         if (hackathon.getIscrizioni().size() >= hackathon.getMaxIscrizioni())
             throw new ConflictException("Il numero massimo di iscrizioni è già stato raggiunto");
     }
@@ -93,7 +90,7 @@ public class IscriviTeamHandler {
         try {
             hackathon.getStato().verificaAnnullamentoIscrizioneConsentito(hackathon);
         } catch (TransizioneNonConsentitaException ex) {
-            throw new ConflictException("Non è possibile annullare l'iscrizione ad un hackathon in corso");
+            throw new ConflictException("Non è possibile annullare l'iscrizione se le iscrizioni sono chiuse");
         }
         MembroTeam leader = validazioneLeader(nomeUtente);
         Team team = leader.getTeam();

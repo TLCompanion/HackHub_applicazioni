@@ -44,14 +44,14 @@ public class GestioneCallHandler {
      */
     @Transactional
     public void avviaPropostaCall(String nomeUtente, PropostaCallRequest request) {
-        Hackathon hackathon = repositoryHackathon.findById(request.idHackathon()).orElseThrow(() ->
+        Hackathon hackathon = repositoryHackathon.findByNome(request.nomeHackathon()).orElseThrow(() ->
                 new NotFoundException("Hackathon non esistente"));
         verificaMentoreAutorizzato(hackathon, nomeUtente);
         Periodo periodo = new Periodo(request.data(), request.ora(), request.data(), request.ora().plusMinutes(30));
-        validazione(periodo, hackathon, request.idTeam());
+        validazione(periodo, hackathon, request.nomeTeam());
         Team team = hackathon.getIscrizioni().stream()
                 .map(IscrizioneTeam::getTeam)
-                .filter(t -> t.getIdTeam().equals(request.idTeam()))
+                .filter(t -> t.getNome().equals(request.nomeTeam()))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("Team non trovato nell'hackathon"));
         Utente leader = repositoryMembriTeam.findByTeam_IdTeamAndRuolo(team.getIdTeam(), RuoloTeam.LEADER)
@@ -65,11 +65,11 @@ public class GestioneCallHandler {
      *
      * @param periodo   il periodo dell'hackathon
      * @param hackathon l'hackathon
-     * @param idTeam    l'id del Team
+     * @param nomeTeam  il nome del Team
      */
-    private void validazione(Periodo periodo, Hackathon hackathon, String idTeam) {
+    private void validazione(Periodo periodo, Hackathon hackathon, String nomeTeam) {
         hackathon.getStato().verificaPropostaDiCallConsentita(hackathon);
-        if (hackathon.getIscrizioni().stream().noneMatch(i -> i.getTeam().getIdTeam().equals(idTeam))) {
+        if (hackathon.getIscrizioni().stream().noneMatch(i -> i.getTeam().getNome().equals(nomeTeam))) {
             throw new ConflictException("Il team non è iscritto all'hackathon");
         }
         if (periodo.getDataFine().isAfter(hackathon.getPeriodo().getDataFine())) {

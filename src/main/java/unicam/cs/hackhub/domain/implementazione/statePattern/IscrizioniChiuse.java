@@ -16,7 +16,4 @@ public class IscrizioniChiuse implements StatoHackathon {
     public void verificaEliminazioneConsentita(Hackathon hackathon) {
     }
 
-    @Override
-    public void verificaAnnullamentoIscrizioneConsentito(Hackathon hackathon) {
-    }
 }

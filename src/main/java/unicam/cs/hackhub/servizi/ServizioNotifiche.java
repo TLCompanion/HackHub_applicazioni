@@ -99,9 +99,4 @@ public class ServizioNotifiche {
         repositoryRichiesta.save(invitoTeam);
     }
 
-    public void creaPropostaLeader(String nomeMittente, Utente destinatario, Team team) {
-        PropostaLeader propostaLeader = new PropostaLeader(nomeMittente, "Invito a diventare il leader del team " + team.getNome(),
-                destinatario, LocalDateTime.now().plusDays(3), team);
-        repositoryRichiesta.save(propostaLeader);
-    }
 }

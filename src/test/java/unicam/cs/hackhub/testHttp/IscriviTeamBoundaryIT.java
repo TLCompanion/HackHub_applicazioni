@@ -99,10 +99,8 @@ class IscriviTeamBoundaryIT extends BaseHttpIT {
     @Test
     void avviaIscrizioneHackathon_ok() throws Exception {
         Team team = new Team("TeamA");
-        // create a team with minimum required members (leader + 2 membri)
         MembroTeam leader = new MembroTeam(utente(LEADER), team, RuoloTeam.LEADER);
         team.setLeader(leader);
-        // create two extra users and add them as members to satisfy teamMin (3)
         repositoryUtente.saveAndFlush(creaUtente("m2"));
         repositoryUtente.saveAndFlush(creaUtente("m3"));
         MembroTeam membro2 = new MembroTeam(utente("m2"), team, RuoloTeam.MEMBRO);
@@ -211,7 +209,6 @@ class IscriviTeamBoundaryIT extends BaseHttpIT {
 
 
         Hackathon hackathon = creaHackathonValido();
-        // manually create existing iscrizione
         repositoryHackathon.saveAndFlush(hackathon);
         IscrizioneTeam iscr = new IscrizioneTeam(team, hackathon);
         hackathon.aggiungiIscrizione(iscr);
@@ -283,7 +280,6 @@ class IscriviTeamBoundaryIT extends BaseHttpIT {
 
 
         Hackathon hackathon = creaHackathonValido();
-        // set hackathon state to InCorso by setting both transient stato and persisted statoEnum
         hackathon.setStato(InCorso.INSTANCE);
         hackathon.setStatoEnum(InCorso.INSTANCE);
         repositoryHackathon.saveAndFlush(hackathon);

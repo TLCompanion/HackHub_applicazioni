@@ -157,18 +157,15 @@ class GestisciRichiesteBoundaryIT extends BaseHttpIT {
         repositoryTeam.saveAndFlush(team);
 
 
-        // Ensure the team has a leader (domain invariant: teams should have a leader)
         Utente leaderUser = utente(ORGANIZZATORE);
         MembroTeam leader = new MembroTeam(leaderUser, team, RuoloTeam.LEADER);
         repositoryMembriTeam.saveAndFlush(leader);
 
 
-        // ensure the team is persisted before creating the request
         InvitoTeam inv = new InvitoTeam(MITTENTE, "msg", destinatario, LocalDateTime.now().plusDays(1), repositoryTeam.findById(team.getIdTeam()).orElseThrow());
         repositoryRichiesta.saveAndFlush(inv);
 
 
-        // sanity check: destinatario should exist in DB and be retrievable
         assertTrue(repositoryUtente.findByNomeUtente(DESTinatARIO).isPresent(), "destinatario must exist before request");
 
 
@@ -177,7 +174,6 @@ class GestisciRichiesteBoundaryIT extends BaseHttpIT {
                 .andExpect(status().isAccepted());
 
 
-        // verify the request was accepted and a notification was created
         Richiesta saved = repositoryRichiesta.findById(inv.getIdRichiesta()).orElseThrow();
         assertEquals(StatoRichiesta.ACCETTATO, saved.getStato());
         verify(servizioNotifiche, times(1)).creaNotifica(any(), eq(TipoNotifica.ACCETTA_RICHIESTA), any());
@@ -185,45 +181,21 @@ class GestisciRichiesteBoundaryIT extends BaseHttpIT {
 
 
     @Test
-    void accettaPropostaLeader_ok() throws Exception {
-        Team team = new Team("TeamLeader");
-        repositoryTeam.saveAndFlush(team);
-        // No pre-existing leader to avoid state merge issues; handler should set destinatario as leader
-        PropostaLeader prop = new PropostaLeader(MITTENTE, "msg", destinatario, LocalDateTime.now().plusDays(1), team);
-        repositoryRichiesta.saveAndFlush(prop);
-
-
-        mockMvc.perform(post(ENDPOINT + "/%s/accetta".formatted(prop.getIdRichiesta()))
-                        .with(authentication(auth())))
-                .andExpect(status().isAccepted());
-
-
-        Team t = repositoryTeam.findByIdFetchMembri(team.getIdTeam()).orElseGet(() -> repositoryTeam.findById(team.getIdTeam()).orElseThrow());
-        assertTrue(t.getMembri().stream().anyMatch(m -> m.getRuolo() == RuoloTeam.LEADER && m.getUtente().getNomeUtente().equals(DESTinatARIO)));
-    }
-
-
-    @Test
     void accettaPropostaCall_ok() throws Exception {
-        // Set up team and members
         Team team = new Team("CallTeam");
         repositoryTeam.saveAndFlush(team);
-        // destinatario is member of team
         MembroTeam membro = new MembroTeam(destinatario, team, RuoloTeam.MEMBRO);
         repositoryMembriTeam.saveAndFlush(membro);
 
 
-        // create mentor staff: fetch existing user created in setUp and attach as staff
         assertTrue(repositoryUtente.findByNomeUtente(MITTENTE).isPresent(), "mentore (mittente) must exist");
         Utente mentore = repositoryUtente.findByNomeUtente(MITTENTE).orElseThrow();
         Staff s = new Staff(mentore, RuoloStaff.MENTORE);
-        // staff must be attached to some hackathon; create hackathon and add staff
         Hackathon h = creaHackathonValido();
         h.aggiungiStaff(s);
         repositoryHackathon.saveAndFlush(h);
 
 
-        // re-fetch managed references to avoid transient association issues
         Utente destinatarioManaged = repositoryUtente.findByNomeUtente(DESTinatARIO).orElseThrow();
 
 
@@ -239,7 +211,6 @@ class GestisciRichiesteBoundaryIT extends BaseHttpIT {
                 .andExpect(status().isAccepted());
 
 
-        // calendario should have been invoked
         verify(calendario, times(1)).salvaCall(any());
         verify(servizioNotifiche, times(1)).creaNotifica(any(), eq(TipoNotifica.ACCETTA_RICHIESTA), any());
     }

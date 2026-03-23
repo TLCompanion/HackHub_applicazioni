@@ -103,7 +103,6 @@ class RispondeRichiesteSupportoBoundaryIT extends BaseHttpIT {
         repositoryNotifica.saveAndFlush(not);
 
 
-        // create staff record for mentore
         Staff staff = new Staff(repositoryUtente.findByNomeUtente(MENTORE).orElseThrow(), RuoloStaff.MENTORE);
         Hackathon hackathon = new Hackathon("HackathonTest", new Periodo(
                 LocalDate.of(2026, 6, 20),
@@ -128,7 +127,6 @@ class RispondeRichiesteSupportoBoundaryIT extends BaseHttpIT {
                 .andExpect(status().isOk());
 
 
-        // verifica che il servizio notifiche sia stato chiamato con il destinatario corretto
         verify(servizioNotifiche, times(1)).creaNotifica(eq(destinatario), eq(TipoNotifica.RICHIESTA_SUPPORTO), any());
     }
 
@@ -168,7 +166,6 @@ class RispondeRichiesteSupportoBoundaryIT extends BaseHttpIT {
         repositoryNotifica.saveAndFlush(not);
 
 
-        // no staff record for MENTORE
         mockMvc.perform(post(ENDPOINT)
                         .with(authentication(new UsernamePasswordAuthenticationToken(MENTORE, null, List.of(new SimpleGrantedAuthority("ROLE_USER")))))
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)

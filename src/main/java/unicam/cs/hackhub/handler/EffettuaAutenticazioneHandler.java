@@ -39,6 +39,9 @@ public class EffettuaAutenticazioneHandler {
      */
     @Transactional
     public void attivaRegistrazione(RegisterRequest request) {
+        repositoryUtente.findByNomeUtente(request.nomeUtente()).ifPresent(u -> {
+            throw new BadRequestException("Esiste già un utente con questo nome");
+        });
         Utente utente = new Utente(
                 request.nomeUtente(),
                 request.email(),

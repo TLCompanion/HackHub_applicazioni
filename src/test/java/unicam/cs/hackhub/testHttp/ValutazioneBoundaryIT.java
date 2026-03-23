@@ -356,7 +356,6 @@ class ValutazioneBoundaryIT extends BaseHttpIT {
         repositoryHackathon.saveAndFlush(hackathonGiudice);
 
 
-        // Sottomissione su hackathon diverso, senza staff del giudice
         Hackathon altroHackathon = new Hackathon(
                 "HackAltro-" + System.nanoTime(),
                 new Periodo(LocalDate.now().plusDays(10), LocalDate.now().plusDays(12)),

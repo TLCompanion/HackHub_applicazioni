@@ -113,7 +113,6 @@ class GestisciTeamBoundaryIT extends BaseHttpIT {
 
         Team persisted = repositoryTeam.findByNome(nuovoNome).orElseThrow(() -> new AssertionError("Team non aggiornato"));
         assertEquals(nuovoNome, persisted.getNome());
-        // notifiche inviate ai membri (leader non escluso)
         verify(servizioNotifiche, atLeastOnce()).creaNotifica(any(), eq(TipoNotifica.CAMBIO_NOME_TEAM), any());
     }
 
@@ -166,7 +165,6 @@ class GestisciTeamBoundaryIT extends BaseHttpIT {
         repositoryTeam.saveAndFlush(team);
 
 
-        // leader tries to exit but team has more than 1 member -> conflict
         mockMvc.perform(delete(ENDPOINT + "/membri/me")
                         .with(authentication(autenticazione(LEADER))))
                 .andExpect(status().isConflict());
@@ -258,9 +256,14 @@ class GestisciTeamBoundaryIT extends BaseHttpIT {
                         .param("nomeMembro", MEMBER))
                 .andExpect(status().isOk());
 
+        MembroTeam vecchioLeader = repositoryMembriTeam.findByUtente_NomeUtente(LEADER)
+                .orElseThrow(() -> new AssertionError("Vecchio leader non trovato"));
+        MembroTeam nuovoLeader = repositoryMembriTeam.findByUtente_NomeUtente(MEMBER)
+                .orElseThrow(() -> new AssertionError("Nuovo leader non trovato"));
 
-        // creaPropostaLeader should be invoked
-        verify(servizioNotifiche, atLeastOnce()).creaPropostaLeader(eq(LEADER), any(), any());
+        assertEquals(RuoloTeam.MEMBRO, vecchioLeader.getRuolo());
+        assertEquals(RuoloTeam.LEADER, nuovoLeader.getRuolo());
+        verify(servizioNotifiche, atLeastOnce()).creaNotifica(any(), eq(TipoNotifica.TRASFERIMENTO_LEADER), any());
     }
 
 

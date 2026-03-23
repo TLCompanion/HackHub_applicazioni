@@ -19,7 +19,6 @@ import java.util.List;
 
 import static unicam.cs.hackhub.domain.TipoNotifica.*;
 
-//TODO nell'uml usare i metodi dello stato per verificare che le operazioni siano consentite
 @Service
 public class GestisceHackathonHandler {
 
@@ -169,6 +168,9 @@ public class GestisceHackathonHandler {
             throw new ConflictException("Hackathon non concluso, impossibile proclamare il vincitore");
         }
         Team team = repositoryTeam.findByNome(nomeTeam).orElseThrow(() -> new NotFoundException("Team non trovato"));
+        if (hackathon.getIscrizioni().stream().noneMatch(i -> i.getTeam().equals(team))) {
+            throw new NotFoundException("Il team non è iscritto all'hackathon");
+        }
         for (MembroTeam m : team.getMembri()) {
             servizioNotifiche.creaNotifica(m.getUtente(), VITTORIA, "Il tuo team ha vinto l'hackathon");
         }
@@ -195,6 +197,9 @@ public class GestisceHackathonHandler {
         Hackathon hackathon = repositoryHackathon.findByNome(nomeHackathon).orElseThrow(() -> new NotFoundException("Hackathon non trovato"));
         checkStessoHackathon(hackathon, organizzatore);
         Team team = repositoryTeam.findByNome(nomeTeam).orElseThrow(() -> new NotFoundException("Team non trovato"));
+        if (hackathon.getIscrizioni().stream().noneMatch(i -> i.getTeam().equals(team))) {
+            throw new NotFoundException("Il team non è iscritto all'hackathon");
+        }
         IscrizioneTeam iscrizione = repositoryIscrizioniTeam.findByTeamAndHackathon(team, hackathon).orElseThrow(() -> new NotFoundException("Iscrizione del team all'hackathon non trovata"));
         try {
             hackathon.getStato().verificaLiquidazionePremioConsentita(hackathon);

@@ -8,14 +8,14 @@ import java.time.LocalTime;
 
 /**
  * DTO per la richiesta di proposta di call per un hackathon.
- * @param idHackathon l'id dell'hackathon per cui si vuole proporre la call, che deve essere una stringa non vuota
- * @param idTeam l'id del team che propone la call, che deve essere una stringa non vuota
+ * @param nomeHackathon l'hackathon per cui si vuole proporre la call, che deve essere un nome valido e non nullo
+ * @param nomeTeam il team a cui viene proposta la call, che deve essere un nome valido e non nullo
  * @param data la data in cui si vuole tenere la call, che deve essere una data valida e non nulla
  * @param ora  l'ora in cui si vuole tenere la call, che deve essere un'ora valida e non nulla
  */
 public record PropostaCallRequest(
-        @NotBlank String idHackathon,
-        @NotBlank String idTeam,
+        @NotBlank String nomeHackathon,
+        @NotBlank String nomeTeam,
         @NotNull LocalDate data,
         @NotNull LocalTime ora
 ) { }

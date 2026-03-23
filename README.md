@@ -200,7 +200,7 @@ Nota: dove indicato `TEXT`, il body e plain text (`Content-Type: text/plain`).
 - `DELETE /api/team/membri/me` - esci dal team
 - `DELETE /api/team/mio` - sciogli team
 - `DELETE /api/team/membri/{nomeMembro}` - espelli membro
-- `POST /api/team/leader?nomeMembro=...` - trasferimento ruolo leader (proposta)
+- `POST /api/team/leader?nomeMembro=...` - trasferimento ruolo leader immediato (senza richiesta)
 - `POST /api/team/mio/invito?nomeUtenteDaInvitare=...` - invita utente nel team
 
 ### 4) Sottomissioni e valutazioni
@@ -226,6 +226,9 @@ Nota: dove indicato `TEXT`, il body e plain text (`Content-Type: text/plain`).
 ### 6) Richieste
 - `POST /api/richieste/{idRichiesta}/accetta` - accetta richiesta
 - `POST /api/richieste/{idRichiesta}/rifiuta` - rifiuta richiesta
+
+Le richieste gestite in questo blocco sono inviti team/staff e proposte call.
+Il cambio leader del team avviene direttamente tramite `POST /api/team/leader`.
 
 ### 7) Visualizzazione
 - `GET /api/hackathon/{nomeHackathon}/valutazioni`
