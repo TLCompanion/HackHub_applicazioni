@@ -55,11 +55,11 @@ public class VisualizzaHandler {
     /**
      * Metodo che ritorna la lista di valutazioni delle sottomissioni consegnate a un hackathon
      *
-     * @param idHackathon l'id dell'hackathon di riferimento
+     * @param nomeHackathon il nome dell'hackathon di riferimento
      * @return la lista delle valutazioni
      */
-    public List<ValutazioneRequest> viewValutazioni(String nomeUtente, String idHackathon) {
-        Hackathon hackathon = validaAutorizzazioni(nomeUtente, idHackathon);
+    public List<ValutazioneRequest> viewValutazioni(String nomeUtente, String nomeHackathon) {
+        Hackathon hackathon = validaAutorizzazioni(nomeUtente, nomeHackathon);
         List<Valutazione> valutazioni = new ArrayList<>();
         for (IscrizioneTeam i : hackathon.getIscrizioni()) {
             valutazioni.add(i.getSottomissione().getValutazione());
@@ -70,11 +70,11 @@ public class VisualizzaHandler {
     /**
      * Metodo che ritorna la lista di sottomissioni consegnate in un hackathon
      *
-     * @param idHackathon l'id dell'hackathon di riferimento
+     * @param nomeHackathon il nome dell'hackathon di riferimento
      * @return la lista di sottomissioni
      */
-    public List<SottomissioneDTO> viewSottomissioni(String nomeUtente, String idHackathon) {
-        Hackathon hackathon = validaAutorizzazioni(nomeUtente, idHackathon);
+    public List<SottomissioneDTO> viewSottomissioni(String nomeUtente, String nomeHackathon) {
+        Hackathon hackathon = validaAutorizzazioni(nomeUtente, nomeHackathon);
         List<Sottomissione> sottomissioni = new ArrayList<>();
         for (IscrizioneTeam i : hackathon.getIscrizioni()) {
             sottomissioni.add(i.getSottomissione());
@@ -87,11 +87,11 @@ public class VisualizzaHandler {
     /**
      * Metodo che ritorna la lista di iscrizioni effettuate a un hackathon
      *
-     * @param idHackathon l'id dell'hackathon di riferimento
+     * @param nomeHackathon il nome dell'hackathon di riferimento
      * @return la lista delle iscrizioni
      */
-    public List<IscrizioneTeamDTO> viewIscrizioni(String nomeUtente, String idHackathon) {
-        Hackathon hackathon = validaAutorizzazioni(nomeUtente, idHackathon);
+    public List<IscrizioneTeamDTO> viewIscrizioni(String nomeUtente, String nomeHackathon) {
+        Hackathon hackathon = validaAutorizzazioni(nomeUtente, nomeHackathon);
         return hackathon.getIscrizioni().stream().map(i -> new IscrizioneTeamDTO
                 (i.getHackathon().getNome(), i.getTeam().getNome(), i.getSottomissione().getLink())).collect(Collectors.toList());
     }

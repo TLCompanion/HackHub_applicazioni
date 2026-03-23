@@ -30,13 +30,6 @@ public interface RepositoryHackathon extends JpaRepository<Hackathon, String> {
      */
     Optional<Hackathon> findByNome(String nomeHackathon);
 
-    /**
-     * Trova l'hackathon dal suo id
-     *
-     * @param idHackathon l'id dell'hackathon
-     * @return l'hackathon, un optional vuoto se non esiste
-     */
-    Optional<Hackathon> findByIdHackathon(String idHackathon);
 
     /**
      * Recupera un Hackathon insieme alla sua collezione di staff usando JOIN FETCH per evitare problemi di lazy loading

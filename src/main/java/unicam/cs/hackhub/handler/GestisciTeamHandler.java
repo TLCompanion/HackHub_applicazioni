@@ -26,7 +26,6 @@ public class GestisciTeamHandler {
     private final RepositoryMembriTeam repositoryMembriTeam;
     private final ServizioNotifiche servizioNotifiche;
     private final RepositoryIscrizioniTeam repositoryIscrizioniTeam;
-    private final RepositoryHackathon repositoryHackathon;
 
     /**
      * Crea una nuova istanza dell'handler per gestire il team
@@ -36,12 +35,11 @@ public class GestisciTeamHandler {
      * @param servizioNotifiche        il servizio per le notifiche
      * @param repositoryIscrizioniTeam la repository per le iscrizioni dei team
      */
-    public GestisciTeamHandler(RepositoryTeam repositoryTeam, RepositoryMembriTeam repositoryMembriTeam, ServizioNotifiche servizioNotifiche, RepositoryIscrizioniTeam repositoryIscrizioniTeam, RepositoryHackathon repositoryHackathon) {
+    public GestisciTeamHandler(RepositoryTeam repositoryTeam, RepositoryMembriTeam repositoryMembriTeam, ServizioNotifiche servizioNotifiche, RepositoryIscrizioniTeam repositoryIscrizioniTeam) {
         this.repositoryTeam = repositoryTeam;
         this.repositoryMembriTeam = repositoryMembriTeam;
         this.servizioNotifiche = servizioNotifiche;
         this.repositoryIscrizioniTeam = repositoryIscrizioniTeam;
-        this.repositoryHackathon = repositoryHackathon;
     }
 
     /**

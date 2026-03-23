@@ -41,7 +41,7 @@ public class EventiTemporaliHandler {
      * Metodo che avvia tutti gli hackathon che devono essere avviati se i requisiti sono rispettati, e notifica gli
      * utenti dell'inizio dell'hackathon, in caso di errori notifica l'organizzatore dell'impossibilità di avviare l'hackathon
      */
-    public void avviaHackathon() {
+    private void avviaHackathon() {
         LocalDateTime now = LocalDateTime.now();
         List<Hackathon> hackathonDaAvviare = repositoryHackathon.findHackathonDaAvviare(StatoEnum.ISCRIZIONI_CHIUSE,
                 now.toLocalDate(), now.toLocalTime());

@@ -6,17 +6,7 @@ import unicam.cs.hackhub.eccezioni.TransizioneNonConsentitaException;
 /**
  * interfaccia che gestisce lo stato dell'hackathon avviando o concludendo iscrizioni ed eventi
  */
-//TODO in uml aggiungere i controlli mancanti sotto
 public interface StatoHackathon {
-
-    /**
-     * Apre le iscrizioni per un certo Hackathon
-     *
-     * @param hackathon l'evento considerato
-     */
-    default void apriIscrizioni(Hackathon hackathon) {
-        throw new TransizioneNonConsentitaException("Non è possibile aprire le iscrizioni nella fase attuale");
-    }
 
     /**
      * Chiude le iscrizioni per un certo Hackathon
@@ -49,7 +39,6 @@ public interface StatoHackathon {
         throw new TransizioneNonConsentitaException("Non è possibile avviare la valutazione dell'hackathon nella fase attuale");
     }
 
-    //TODO: aggiungere altre azioni consentite o non consentite a seconda dello stato e aggiornare diagramma UML
     default void verificaIscrizioneConsentita(Hackathon h) {
         throw new TransizioneNonConsentitaException("Non è possibile iscriversi in questa fase dell'hackathon");
     }

@@ -7,10 +7,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-//TODO ricordarsi di usare swagger o cose simili per documentare le API, in modo da rendere chiaro quali sono i campi
-// richiesti e il formato atteso per ogni campo. Inoltre, è importante gestire correttamente le validazioni dei dati in
-// ingresso, ad esempio assicurandosi che le date siano valide e che i numeri siano positivi quando necessario.
-
 /**
  * Rappresenta il body JSON per la richiesta di creazione di un hackathon, con tutti i campi necessari per creare un
  * hackathon.

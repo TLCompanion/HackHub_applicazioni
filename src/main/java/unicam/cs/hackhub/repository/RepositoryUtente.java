@@ -15,5 +15,4 @@ public interface RepositoryUtente extends JpaRepository<Utente, String> {
      */
     Optional<Utente> findByNomeUtente(String nomeUtente);
 
-    Optional<Utente> findByIdUtente(String idUtente);
 }

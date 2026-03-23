@@ -18,28 +18,12 @@ public interface RepositoryMembriTeam extends JpaRepository<MembroTeam, String> 
     boolean existsByUtente(Utente utente);
 
     /**
-     * Trova un membro del team dal suo ruolo
-     *
-     * @param ruolo il ruolo
-     * @return il membro del team, un optional vuoto se non esiste
-     */
-    Optional<MembroTeam> findMembroTeamByRuolo(RuoloTeam ruolo);
-
-    /**
      * Trova un membro del team dal suo nome utente
      *
      * @param nomeUtente il nome dell'utente
      * @return il membro del team, un optional vuoto se non esiste
      */
     Optional<MembroTeam> findByUtente_NomeUtente(String nomeUtente);
-
-    /**
-     * Trova un membro del team dal suo id
-     *
-     * @param utenteIdUtente id dell'utente
-     * @return il membro del team, un optional vuoto se non esiste
-     */
-    Optional<MembroTeam> findByUtente_idUtente(String utenteIdUtente);
 
     Optional<MembroTeam> findByTeam_IdTeamAndRuolo(String idTeam, RuoloTeam ruolo);
 }

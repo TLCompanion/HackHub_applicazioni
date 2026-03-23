@@ -2,7 +2,10 @@ package unicam.cs.hackhub.domain.implementazione;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Transient;
+
+import java.util.UUID;
 
 @Entity
 @DiscriminatorValue("CALL_SLOT")
@@ -31,7 +34,6 @@ public class CallSlot extends Richiesta{
         this.mentore = mentore;
         this.link = link;
     }
-
     public Team getTeam() {
         return team;
     }
