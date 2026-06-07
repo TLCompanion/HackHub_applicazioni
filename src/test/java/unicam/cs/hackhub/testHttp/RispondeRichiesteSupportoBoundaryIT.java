@@ -1,15 +1,14 @@
 package unicam.cs.hackhub.testHttp;
 
 
-import unicam.cs.hackhub.domain.TipoNotifica;
-import unicam.cs.hackhub.domain.implementazione.*;
-import unicam.cs.hackhub.domain.RuoloStaff;
-import unicam.cs.hackhub.domain.implementazione.*;
-import unicam.cs.hackhub.repository.RepositoryHackathon;
-import unicam.cs.hackhub.repository.RepositoryNotifica;
-import unicam.cs.hackhub.repository.RepositoryStaff;
-import unicam.cs.hackhub.repository.RepositoryUtente;
-import unicam.cs.hackhub.servizi.ServizioNotifiche;
+import unicam.cs.hackhub.backend.domain.TipoNotifica;
+import unicam.cs.hackhub.backend.domain.implementazione.*;
+import unicam.cs.hackhub.backend.domain.RuoloStaff;
+import unicam.cs.hackhub.backend.repository.RepositoryHackathon;
+import unicam.cs.hackhub.backend.repository.RepositoryNotifica;
+import unicam.cs.hackhub.backend.repository.RepositoryStaff;
+import unicam.cs.hackhub.backend.repository.RepositoryUtente;
+import unicam.cs.hackhub.backend.servizi.ServizioNotifiche;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

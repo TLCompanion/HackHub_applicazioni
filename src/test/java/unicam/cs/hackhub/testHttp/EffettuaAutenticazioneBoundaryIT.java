@@ -1,7 +1,7 @@
 package unicam.cs.hackhub.testHttp;
 
-import unicam.cs.hackhub.domain.implementazione.Utente;
-import unicam.cs.hackhub.repository.RepositoryUtente;
+import unicam.cs.hackhub.backend.domain.implementazione.Utente;
+import unicam.cs.hackhub.backend.repository.RepositoryUtente;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

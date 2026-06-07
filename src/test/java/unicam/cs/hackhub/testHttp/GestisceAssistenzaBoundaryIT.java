@@ -1,22 +1,22 @@
 package unicam.cs.hackhub.testHttp;
 
-import unicam.cs.hackhub.domain.RuoloStaff;
-import unicam.cs.hackhub.domain.RuoloTeam;
-import unicam.cs.hackhub.domain.TipoNotifica;
-import unicam.cs.hackhub.domain.implementazione.Hackathon;
-import unicam.cs.hackhub.domain.implementazione.IscrizioneTeam;
-import unicam.cs.hackhub.domain.implementazione.MembroTeam;
-import unicam.cs.hackhub.domain.implementazione.Notifica;
-import unicam.cs.hackhub.domain.implementazione.Periodo;
-import unicam.cs.hackhub.domain.implementazione.Staff;
-import unicam.cs.hackhub.domain.implementazione.Team;
-import unicam.cs.hackhub.domain.implementazione.Utente;
-import unicam.cs.hackhub.repository.RepositoryHackathon;
-import unicam.cs.hackhub.repository.RepositoryIscrizioniTeam;
-import unicam.cs.hackhub.repository.RepositoryMembriTeam;
-import unicam.cs.hackhub.repository.RepositoryNotifica;
-import unicam.cs.hackhub.repository.RepositoryStaff;
-import unicam.cs.hackhub.repository.RepositoryUtente;
+import unicam.cs.hackhub.backend.domain.RuoloStaff;
+import unicam.cs.hackhub.backend.domain.RuoloTeam;
+import unicam.cs.hackhub.backend.domain.TipoNotifica;
+import unicam.cs.hackhub.backend.domain.implementazione.Hackathon;
+import unicam.cs.hackhub.backend.domain.implementazione.IscrizioneTeam;
+import unicam.cs.hackhub.backend.domain.implementazione.MembroTeam;
+import unicam.cs.hackhub.backend.domain.implementazione.Notifica;
+import unicam.cs.hackhub.backend.domain.implementazione.Periodo;
+import unicam.cs.hackhub.backend.domain.implementazione.Staff;
+import unicam.cs.hackhub.backend.domain.implementazione.Team;
+import unicam.cs.hackhub.backend.domain.implementazione.Utente;
+import unicam.cs.hackhub.backend.repository.RepositoryHackathon;
+import unicam.cs.hackhub.backend.repository.RepositoryIscrizioniTeam;
+import unicam.cs.hackhub.backend.repository.RepositoryMembriTeam;
+import unicam.cs.hackhub.backend.repository.RepositoryNotifica;
+import unicam.cs.hackhub.backend.repository.RepositoryStaff;
+import unicam.cs.hackhub.backend.repository.RepositoryUtente;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-import unicam.cs.hackhub.repository.RepositoryTeam;
+import unicam.cs.hackhub.backend.repository.RepositoryTeam;
 
 
 import java.math.BigDecimal;
