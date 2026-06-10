@@ -9,7 +9,7 @@ export default function Login(){
   const[password, setPassword] = useState("");
   const[email, setEmail] = useState("");
   const[errore, setErrore] = useState("");
-  const[isLogin, setIsLogin] = useState("");
+  const[isLogin, setIsLogin] = useState(false);
   
   {/* funzione che torna alla dashboard quando clicco esci*/} 
   const handleLogin = async (e) => {
@@ -96,6 +96,7 @@ export default function Login(){
 
         <button
           className="other-button"
+          type="button"
           onClick={() => setIsLogin(!isLogin)}>
           {isLogin ? "Registrati" : "Accedi"}
         </button>

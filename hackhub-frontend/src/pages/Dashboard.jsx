@@ -1,9 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 
 export default function Dashboard(){
 
     const navigate = useNavigate();
+    const[hackathon, setHackathon] = useState([]);
+    
+    useEffect(() => {
+    fetch("http://localhost:8081/api/hackathon", {
+        method: "GET"
+    })
+    .then(res => res.json())
+    .then(data => setHackathon(data))
+    .catch(err => console.error(err));
+    }, []);
 
     /*Funzione che mi ritorna alla pagina del login quando clicco esci*/ 
     const handleLogout = () => {
@@ -57,14 +68,16 @@ export default function Dashboard(){
             <div className='center-box'>
                 <h3 className='row-name'>Hackathon</h3>
                 <div className='hackathon-list'>
-                <div className='hackathon-card'>
+                {hackathon.map((h, index) => (
+                    <div className='hackathon-card' key={index}>
                     <div className='card-header'></div>
                     <div className='card-body'>
-                    <h4 className='nome-hackathon'>nome</h4>
-                    <p className='data'> data </p>
-                    <p className='luogo'>luogo</p>
-                    </div>
-                </div>
+                    <h4 className='nome-hackathon'>{h.nome}</h4>
+                    <p className='data'> {h.dataInizio} - {h.dataFine} </p>
+                    <p className='luogo'>{h.luogo}</p>
+                            </div>
+                        </div>
+                ))}
                 </div>
             </div>
 
