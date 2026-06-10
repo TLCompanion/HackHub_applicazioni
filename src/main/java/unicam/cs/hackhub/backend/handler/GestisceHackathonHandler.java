@@ -1,13 +1,14 @@
 package unicam.cs.hackhub.backend.handler;
 
 import unicam.cs.hackhub.backend.domain.RuoloStaff;
+import unicam.cs.hackhub.backend.domain.TipoNotifica;
 import unicam.cs.hackhub.backend.domain.implementazione.*;
 import unicam.cs.hackhub.backend.eccezioni.BadRequestException;
 import unicam.cs.hackhub.backend.eccezioni.ConflictException;
 import unicam.cs.hackhub.backend.eccezioni.NotFoundException;
 import unicam.cs.hackhub.backend.eccezioni.TransizioneNonConsentitaException;
 import unicam.cs.hackhub.backend.repository.*;
-import unicam.cs.hackhub.repository.*;
+import unicam.cs.hackhub.backend.domain.TipoNotifica.*;
 import unicam.cs.hackhub.backend.servizi.ServizioNotifiche;
 import unicam.cs.hackhub.backend.servizi.esterni.SistemaDiPagamentoMock;
 import jakarta.transaction.Transactional;
@@ -63,7 +64,7 @@ public class GestisceHackathonHandler {
         if (!mentore.getHackathon().equals(organizzatore.getHackathon())) {
             throw new ConflictException("Il mentore non fa parte dello stesso hackathon dell'organizzatore");
         }
-        servizioNotifiche.creaNotifica(organizzatore.getUtente(), VIOLAZIONE_REGOLAMENTO,
+        servizioNotifiche.creaNotifica(organizzatore.getUtente(), TipoNotifica.VIOLAZIONE_REGOLAMENTO,
                 "Il team " + team.getNome() + " ha violato il regolamento dell'hackathon");
     }
 
@@ -111,7 +112,7 @@ public class GestisceHackathonHandler {
         List<Team> teams = repositoryIscrizioniTeam.findAllByHackathon(hackathon).stream().map(IscrizioneTeam::getTeam).toList();
         for (Team t : teams) {
             for (MembroTeam m1 : t.getMembri()) {
-                servizioNotifiche.creaNotifica(m1.getUtente(), HACKATHON_CANCELLATO, "L'hackathon a cui eri iscritto è stato cancellato");
+                servizioNotifiche.creaNotifica(m1.getUtente(),  TipoNotifica.HACKATHON_CANCELLATO, "L'hackathon a cui eri iscritto è stato cancellato");
             }
         }
         repositoryHackathon.delete(hackathon);
@@ -142,7 +143,7 @@ public class GestisceHackathonHandler {
         hackathon.rimuoviIscrizione(team);
         repositoryHackathon.save(hackathon);
         for (MembroTeam m : team.getMembri()) {
-            servizioNotifiche.creaNotifica(m.getUtente(), ESPULSIONE_TEAM, "Il tuo team è stato espulso dall'hackathon " + hackathon.getNome());
+            servizioNotifiche.creaNotifica(m.getUtente(),  TipoNotifica.ESPULSIONE_TEAM, "Il tuo team è stato espulso dall'hackathon " + hackathon.getNome());
         }
     }
 
@@ -168,13 +169,13 @@ public class GestisceHackathonHandler {
             throw new NotFoundException("Il team non è iscritto all'hackathon");
         }
         for (MembroTeam m : team.getMembri()) {
-            servizioNotifiche.creaNotifica(m.getUtente(), VITTORIA, "Il tuo team ha vinto l'hackathon");
+            servizioNotifiche.creaNotifica(m.getUtente(), TipoNotifica.VITTORIA, "Il tuo team ha vinto l'hackathon");
         }
         List<Team> teams = repositoryIscrizioniTeam.findAllByHackathon(hackathon).stream().map(IscrizioneTeam::getTeam).toList();
         for (Team t : teams) {
             if (!t.equals(team)) {
                 for (MembroTeam m1 : t.getMembri()) {
-                    servizioNotifiche.creaNotifica(m1.getUtente(), SCONFITTA, "Il tuo team non ha vinto l'hackathon");
+                    servizioNotifiche.creaNotifica(m1.getUtente(),  TipoNotifica.SCONFITTA, "Il tuo team non ha vinto l'hackathon");
                 }
             }
         }

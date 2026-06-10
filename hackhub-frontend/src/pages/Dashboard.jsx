@@ -7,6 +7,7 @@ export default function Dashboard(){
 
     /*Funzione che mi ritorna alla pagina del login quando clicco esci*/ 
     const handleLogout = () => {
+        localStorage.removeItem("token");
         navigate("/"); 
     };
 

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 @RestController
 @RequestMapping("/api/richieste")
+@CrossOrigin(origins = "http://localhost:5173")
 public class GestisciRichiesteBoundary {
 
     private final GestisciRichiesteHandler handler;

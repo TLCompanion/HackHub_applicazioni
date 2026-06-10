@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import unicam.cs.hackhub.backend.handler.CreaHackathonHandler;
 @RestController
 @RequestMapping("/api/hackathon")
 @Validated
+@CrossOrigin(origins = "http://localhost:5173")
 public class CreaHackathonBoundary {
 
     private final CreaHackathonHandler handler;

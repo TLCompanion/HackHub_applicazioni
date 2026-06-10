@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Validated
 @RequestMapping("/api/sottomissioni")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ValutazioneBoundary {
     private final ValutazioneHandler handler;
 

@@ -1,7 +1,6 @@
 package unicam.cs.hackhub.backend.boundary;
 
 import unicam.cs.hackhub.backend.boundary.dto.*;
-import unicam.cs.hackhub.boundary.dto.*;
 import unicam.cs.hackhub.backend.handler.VisualizzaHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @Validated
+@CrossOrigin(origins = "http://localhost:5173")
 public class VisualizzaBoundary {
 
     private final VisualizzaHandler handler;

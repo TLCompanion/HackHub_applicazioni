@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/sottomissioni")
+@CrossOrigin(origins = "http://localhost:5173")
 public class GestisceSottomissioneBoundary {
 
     private final GestisceSottomissioneHandler handler;

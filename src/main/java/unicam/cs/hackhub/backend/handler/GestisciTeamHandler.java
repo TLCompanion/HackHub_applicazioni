@@ -1,6 +1,7 @@
 package unicam.cs.hackhub.backend.handler;
 
 import unicam.cs.hackhub.backend.domain.RuoloTeam;
+import unicam.cs.hackhub.backend.domain.TipoNotifica;
 import unicam.cs.hackhub.backend.domain.implementazione.Hackathon;
 import unicam.cs.hackhub.backend.domain.implementazione.IscrizioneTeam;
 import unicam.cs.hackhub.backend.domain.implementazione.MembroTeam;
@@ -54,7 +55,7 @@ public class GestisciTeamHandler {
         team.setNome(nome);
         repositoryTeam.save(team);
         for (MembroTeam membro : team.getMembri()) {
-            servizioNotifiche.creaNotifica(membro.getUtente(), CAMBIO_NOME_TEAM, "Il team ha cambiato nome in " + nome + ".");
+            servizioNotifiche.creaNotifica(membro.getUtente(),  TipoNotifica.CAMBIO_NOME_TEAM, "Il team ha cambiato nome in " + nome + ".");
         }
     }
 
@@ -86,7 +87,7 @@ public class GestisciTeamHandler {
         repositoryMembriTeam.delete(membroTeam);
         repositoryTeam.save(team);
         for (MembroTeam m : team.getMembri()) {
-            servizioNotifiche.creaNotifica(m.getUtente(), USCITA, "Il membro " + membroTeam.getUtente().getNomeUtente() + " è uscito dal team.");
+            servizioNotifiche.creaNotifica(m.getUtente(),  TipoNotifica.USCITA, "Il membro " + membroTeam.getUtente().getNomeUtente() + " è uscito dal team.");
         }
     }
 
@@ -111,7 +112,7 @@ public class GestisciTeamHandler {
             repositoryIscrizioniTeam.deleteAll(iscrizioni);
         }
         for (MembroTeam m : team.getMembri()) {
-            servizioNotifiche.creaNotifica(m.getUtente(), SCIOGLIMENTO_TEAM, "Il team " + team.getNome() + " è stato sciolto.");
+            servizioNotifiche.creaNotifica(m.getUtente(),  TipoNotifica.SCIOGLIMENTO_TEAM, "Il team " + team.getNome() + " è stato sciolto.");
         }
         repositoryTeam.delete(team);
     }
@@ -137,7 +138,7 @@ public class GestisciTeamHandler {
         repositoryMembriTeam.delete(membroDaEspellere);
         repositoryTeam.save(team);
         for (MembroTeam m : team.getMembri()) {
-            servizioNotifiche.creaNotifica(m.getUtente(), ESPULSIONE_TEAM, "Il membro " + membroDaEspellere.getUtente().getNomeUtente() + " è stato espulso dal team.");
+            servizioNotifiche.creaNotifica(m.getUtente(),  TipoNotifica.ESPULSIONE_TEAM, "Il membro " + membroDaEspellere.getUtente().getNomeUtente() + " è stato espulso dal team.");
         }
     }
 
@@ -165,7 +166,7 @@ public class GestisciTeamHandler {
         leader.setRuolo(RuoloTeam.MEMBRO);
         repositoryTeam.save(leader.getTeam());
          for (MembroTeam m : leader.getTeam().getMembri()) {
-            servizioNotifiche.creaNotifica(m.getUtente(), TRASFERIMENTO_LEADER, "Il membro " + membroTeam.getUtente().getNomeUtente() + " è stato nominato come nuovo leader del team.");
+            servizioNotifiche.creaNotifica(m.getUtente(),  TipoNotifica.TRASFERIMENTO_LEADER, "Il membro " + membroTeam.getUtente().getNomeUtente() + " è stato nominato come nuovo leader del team.");
         }
     }
 }

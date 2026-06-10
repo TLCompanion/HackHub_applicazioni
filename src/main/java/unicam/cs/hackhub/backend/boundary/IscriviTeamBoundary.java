@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 @RestController
 @RequestMapping("/api/hackathon")
+@CrossOrigin(origins = "http://localhost:5173")
 public class IscriviTeamBoundary {
 
     private final IscriviTeamHandler handler;

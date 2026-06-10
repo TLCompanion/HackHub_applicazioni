@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/hackathon")
+@CrossOrigin(origins = "http://localhost:5173")
 public class GestisceHackathonBoundary {
 
     private final GestisceHackathonHandler handler;
