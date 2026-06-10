@@ -158,12 +158,6 @@ class CreaTeamBoundaryIT extends BaseHttpIT {
         );
     }
 
-
-    private String jsonString(String valore) {
-        return "\"" + valore + "\"";
-    }
-
-
     private Utente creaUtente(String nomeUtente) {
         return new Utente(nomeUtente, nomeUtente + "@example.com", "password123");
     }

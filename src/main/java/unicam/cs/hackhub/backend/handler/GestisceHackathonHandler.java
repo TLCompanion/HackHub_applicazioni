@@ -8,7 +8,6 @@ import unicam.cs.hackhub.backend.eccezioni.ConflictException;
 import unicam.cs.hackhub.backend.eccezioni.NotFoundException;
 import unicam.cs.hackhub.backend.eccezioni.TransizioneNonConsentitaException;
 import unicam.cs.hackhub.backend.repository.*;
-import unicam.cs.hackhub.backend.domain.TipoNotifica.*;
 import unicam.cs.hackhub.backend.servizi.ServizioNotifiche;
 import unicam.cs.hackhub.backend.servizi.esterni.SistemaDiPagamentoMock;
 import jakarta.transaction.Transactional;
