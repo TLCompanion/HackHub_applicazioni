@@ -164,8 +164,8 @@ export default function Dashboard(){
             <section className='center-column'>
 
             <div className='welcome'>
-                <h2 className='welcome-speech'>Benvenuto su Hackhub</h2>
-                <p className='welcome-speech'>Questa piattaforma ti permette di creare team e iscriverti con i tuoi amici a vari hackathon presenti in tutta italia e di gestirli nel modo più veloce e semplice possibile.</p>
+                <h2 className='welcome-speech'>Benvenuto su Hackhub!</h2>
+                <p className='welcome-speech'>Questa piattaforma ti permette di creare team e iscriverti con i tuoi amici a vari hackathon presenti in tutto il mondo e di gestirli nel modo più veloce e semplice possibile.</p>
             </div>
 
             <div className='center-box'>
