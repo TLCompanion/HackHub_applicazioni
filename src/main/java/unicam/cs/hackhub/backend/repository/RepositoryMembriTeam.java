@@ -4,7 +4,9 @@ import unicam.cs.hackhub.backend.domain.RuoloTeam;
 import unicam.cs.hackhub.backend.domain.implementazione.MembroTeam;
 import unicam.cs.hackhub.backend.domain.implementazione.Utente;
 import org.springframework.data.jpa.repository.JpaRepository;
+import unicam.cs.hackhub.backend.domain.implementazione.Team;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface RepositoryMembriTeam extends JpaRepository<MembroTeam, String> {
@@ -26,4 +28,6 @@ public interface RepositoryMembriTeam extends JpaRepository<MembroTeam, String> 
     Optional<MembroTeam> findByUtente_NomeUtente(String nomeUtente);
 
     Optional<MembroTeam> findByTeam_IdTeamAndRuolo(String idTeam, RuoloTeam ruolo);
+
+    List<MembroTeam> findAllByTeam_Nome(String teamNome);
 }

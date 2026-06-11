@@ -237,6 +237,7 @@ Il cambio leader del team avviene direttamente tramite `POST /api/team/leader`.
 - `GET /api/richieste`
 - `GET /api/notifiche`
 - `GET /api/hackathon` (pubblico, non richiede JWT)
+- `GET /api/team`
 
 ## Esempi cURL
 

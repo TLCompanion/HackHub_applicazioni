@@ -1,14 +1,21 @@
 package unicam.cs.hackhub.backend.boundary;
 
 import unicam.cs.hackhub.backend.boundary.dto.*;
+import unicam.cs.hackhub.backend.domain.implementazione.Utente;
 import unicam.cs.hackhub.backend.handler.VisualizzaHandler;
+
+import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 @RestController
 @RequestMapping("/api")
 @Validated
@@ -89,4 +96,11 @@ public class VisualizzaBoundary {
         List<InfoHackathonDTO> infoHackathon = handler.viewInfoHackathon();
         return ResponseEntity.status(HttpStatus.OK).body(infoHackathon);
     }
+
+    @GetMapping("/team")
+    public ResponseEntity<List<TeamDTO>> viewTeamUtenti() {
+        List<TeamDTO> nomeUtenti = handler.viewTeamUtenti();
+        return ResponseEntity.status(HttpStatus.OK).body(nomeUtenti);
+    }
+    
 }

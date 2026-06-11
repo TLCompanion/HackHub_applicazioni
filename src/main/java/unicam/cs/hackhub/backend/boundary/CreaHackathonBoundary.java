@@ -31,7 +31,7 @@ public class CreaHackathonBoundary {
      * @param request la richiesta contenente i dati dell'hackathon da creare
      * @return una nuova chiamata http
      */
-    @PostMapping
+    @PostMapping("/crea")
     public ResponseEntity<Void> avviaCreazioneHackathon(
             @AuthenticationPrincipal String nomeUtente,
             @Valid @RequestBody HackathonRequest request

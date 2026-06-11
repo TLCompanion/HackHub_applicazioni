@@ -11,8 +11,16 @@ export default function Login(){
   const[errore, setErrore] = useState("");
   const[isLogin, setIsLogin] = useState(false);
   
-  {/* funzione che torna alla dashboard quando clicco esci*/} 
-  const handleLogin = async (e) => {
+  {/* funzione che gestisce la registrazione e il login. Se l'utente è in fase di registrazione
+    il campo per l'email è attivo. Una volta completata la registrazione si passa in allo stato login
+    con username e password*/} 
+  const handleSubmit = async (e) => {
+    if(password.length < 6){
+      alert("La password deve essere composta da almeno 6 caratteri");
+      return;
+    }
+
+    /*Per evitare che il browser ogni volta mi resetti il form*/
     e.preventDefault();
     setErrore("");
     
@@ -33,7 +41,7 @@ export default function Login(){
       });
 
       if(!response.ok){
-        throw new Error(isLogin? "Credenziali non valide" : "Registrazione non riuscita");
+        alert(isLogin? "Credenziali non valide" : "Registrazione non riuscita");
       }
 
       if (!isLogin) {
@@ -65,7 +73,7 @@ export default function Login(){
 
   return (
     <div className='login-page'>
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleSubmit}>
         <input 
         className='input-type' 
         type='text' 

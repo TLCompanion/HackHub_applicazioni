@@ -9,7 +9,9 @@ import unicam.cs.hackhub.backend.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,18 +22,22 @@ public class VisualizzaHandler {
     private final RepositoryNotifica repositoryNotifica;
     private final RepositoryUtente repositoryUtente;
     private final RepositoryStaff repositoryStaff;
+    private final RepositoryMembriTeam repositoryMembriTeam;
+    private final RepositoryTeam repositoryTeam;
 
     /**
      * Costruttore che inizializza questo handler per visualizzare liste di oggetti
      *
      * @param repositoryHackathon la repository degli hackathon
      */
-    public VisualizzaHandler(RepositoryHackathon repositoryHackathon, RepositoryRichiesta repositoryRichiesta, RepositoryNotifica repositoryNotifica, RepositoryUtente repositoryUtente, RepositoryStaff repositoryStaff) {
+    public VisualizzaHandler(RepositoryHackathon repositoryHackathon, RepositoryRichiesta repositoryRichiesta, RepositoryNotifica repositoryNotifica, RepositoryUtente repositoryUtente, RepositoryStaff repositoryStaff, RepositoryMembriTeam repositoryMembriTeam, RepositoryTeam repositoryTeam) {
         this.repositoryHackathon = repositoryHackathon;
         this.repositoryRichiesta = repositoryRichiesta;
         this.repositoryNotifica = repositoryNotifica;
         this.repositoryUtente = repositoryUtente;
         this.repositoryStaff = repositoryStaff;
+        this.repositoryMembriTeam = repositoryMembriTeam;
+        this.repositoryTeam = repositoryTeam;
     }
 
     private Hackathon validaAutorizzazioni(String nomeUtente, String nomeHackathon) {
@@ -144,4 +150,30 @@ public class VisualizzaHandler {
         }
         return listInfoHackathonDTO;
     }
+
+    @Transactional
+    public List<TeamDTO> viewTeamUtenti() {
+
+    List<TeamDTO> risultato = new ArrayList<>();
+
+    List<Team> teams = repositoryTeam.findAll();
+
+    for (Team team : teams) {
+
+        List<String> membri = repositoryMembriTeam
+                .findAllByTeam_Nome(team.getNome())
+                .stream()
+                .map(m -> m.getUtente().getNomeUtente())
+                .toList();
+
+        risultato.add(
+                new TeamDTO(
+                        team.getNome(),
+                        membri
+                )
+        );
+    }
+
+    return risultato;
+}
 }
