@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { API_URL } from "../config/api";
 
 export default function Dashboard(){
 
@@ -35,7 +35,7 @@ export default function Dashboard(){
             return;
         }
 
-        if(new Date(dataFine) >= new Date(dataInizio)){
+        if(new Date(dataFine) <= new Date(dataInizio)){
             alert("La data di fine non può essere precedente o uguale alla data di inizio");
             return;
         }
@@ -50,7 +50,7 @@ export default function Dashboard(){
         const token = localStorage.getItem("token");
 
         const response = await fetch(
-            "http://localhost:8081/api/hackathon/crea",
+            `${API_URL}/hackathon/crea`,
             {
                 method: "POST",
                 headers: {
@@ -91,7 +91,7 @@ export default function Dashboard(){
     };
     
     const caricaHackathon = () => {
-    fetch("http://localhost:8081/api/hackathon", {
+    fetch(`${API_URL}/hackathon`, {
         method: "GET"
     })
     .then(res => res.json())
@@ -106,7 +106,7 @@ export default function Dashboard(){
     useEffect(() => {
     const token = localStorage.getItem("token");
 
-    fetch("http://localhost:8081/api/team", {
+    fetch("${API_URL}/team", {
         headers: {
             Authorization: `Bearer ${token}`
         }

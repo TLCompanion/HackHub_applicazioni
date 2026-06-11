@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import { API_URL } from "../config/api";
 import { useNavigate } from "react-router-dom";
 
 export default function Login(){
@@ -24,9 +25,10 @@ export default function Login(){
     e.preventDefault();
     setErrore("");
     
-    const endpoint = isLogin ? "http://localhost:8081/api/autenticazione/accesso" 
-    : "http://localhost:8081/api/autenticazione/registrazione";
+    const endpoint = isLogin ? `${API_URL}/autenticazione/accesso` 
+    : `${API_URL}/autenticazione/registrazione`;
 
+    console.log("Endpoint:", endpoint);
     try {
       const response = await fetch(endpoint, {
         method: "POST",

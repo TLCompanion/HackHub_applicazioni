@@ -1,52 +1,56 @@
 services:
+
   mysql:
     image: mysql:8.0
     container_name: hackhub-mysql
+    restart: unless-stopped
+
     env_file:
       - .env
+
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-    ports:
-      - "${MYSQL_PORT}:3306"
+
     volumes:
       - hackhub_mysql_data:/var/lib/mysql
-    expose:
-      - "3306"
 
   backend:
     build: ./hackhub-backend
-    dockerfile: Dockerfile.prod
     container_name: hackhub-backend
-
-    ports:
-    - 8081:8081
+    restart: unless-stopped
 
     depends_on:
       - mysql
+
     environment:
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
+      DB_HOST: mysql
+      DB_PORT: "3306"
       DB_NAME: ${DB_NAME}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-      SERVER_PORT: ${SERVER_PORT}
+      SERVER_PORT: "8081"
       APP_JWT_SECRET: ${APP_JWT_SECRET}
       APP_JWT_EXPIRATION_MS: ${APP_JWT_EXPIRATION_MS}
 
+    expose:
+      - "8081"
+
   frontend:
-    build: ./hackhub-frontend
-    dockerfile: Dockerfile.prod
+    build:
+      context: ./hackhub-frontend
+      dockerfile: Dockerfile.prod
+
     container_name: hackhub-frontend
-    depends_on: 
+    restart: unless-stopped
+
+    depends_on:
       - backend
-    ports: 
-      - 5174:5173
-    volumes:
-      - ./hackhub-frontend:/app
-      - /app/node_modules
+
+    ports:
+      - "80:80"
 
 volumes:
   hackhub_mysql_data:
