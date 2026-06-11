@@ -106,7 +106,7 @@ export default function Dashboard(){
     useEffect(() => {
     const token = localStorage.getItem("token");
 
-    fetch("${API_URL}/team", {
+    fetch(`${API_URL}/team`, {
         headers: {
             Authorization: `Bearer ${token}`
         }
