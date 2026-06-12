@@ -49,3 +49,7 @@ jobs:
           DB_NAME: hackhub
           DB_USERNAME: hackhub
           DB_PASSWORD: 1234abc
+
+          APP_JWT_SECRET: testsecret
+          APP_JWT_EXPIRATION_MS: "3600000"
+          SERVER_PORT: "8081"
