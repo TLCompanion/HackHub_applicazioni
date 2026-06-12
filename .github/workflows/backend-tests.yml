@@ -45,7 +45,7 @@ jobs:
         run: ./gradlew test
         env:
           DB_HOST: localhost
-          DB_PORT: 3306
+          DB_PORT: "3306"
           DB_NAME: hackhub
           DB_USERNAME: hackhub
           DB_PASSWORD: 1234abc
