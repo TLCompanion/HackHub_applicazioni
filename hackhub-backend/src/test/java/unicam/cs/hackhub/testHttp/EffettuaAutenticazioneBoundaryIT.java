@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -88,6 +88,13 @@ class EffettuaAutenticazioneBoundaryIT extends BaseHttpIT {
                   "password": "Password123!"
                 }
                 """;
+
+                
+        mockMvc.perform(post(ENDPOINT_ACCESSO)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(body))
+        .andDo(print())
+        .andExpect(status().isOk());
 
         mockMvc.perform(post(ENDPOINT_ACCESSO)
                         .contentType(MediaType.APPLICATION_JSON)

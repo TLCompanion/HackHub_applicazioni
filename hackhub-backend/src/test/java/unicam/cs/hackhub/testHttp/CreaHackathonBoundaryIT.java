@@ -11,6 +11,7 @@ import unicam.cs.hackhub.servizi.ServizioNotifiche;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
@@ -20,7 +21,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.core.env.Environment;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -62,6 +63,7 @@ class CreaHackathonBoundaryIT extends BaseHttpIT {
     private RepositoryUtente repositoryUtente;
 
 
+
     @MockitoSpyBean
     private ServizioNotifiche servizioNotifiche;
 
@@ -84,7 +86,6 @@ class CreaHackathonBoundaryIT extends BaseHttpIT {
 
         clearInvocations(servizioNotifiche);
     }
-
 
     @Test
     void creaHackathon_ok() throws Exception {
