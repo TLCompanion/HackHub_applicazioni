@@ -53,7 +53,7 @@ jobs:
           APP_JWT_SECRET: testsecret
           APP_JWT_EXPIRATION_MS: "3600000"
           SERVER_PORT: "8081"
-          
+
       - name: Upload test reports
         if: always()
         uses: actions/upload-artifact@v4
