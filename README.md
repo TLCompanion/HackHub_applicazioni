@@ -25,11 +25,11 @@ Il frontend implementa solo alcune di queste funzionalità, nel particolare:
 - Creazione di hackathon
 
 >  Per creare hackathon con successo devono essere obbligatoriamente creati tutti i campi. Da tenere in considerazione:
-- non possono essere creati due hackathon con lo stesso nome
-- la data di fine non può essere precedente o uguale a quella di inizio
-- la data di scadenza delle iscrizioni deve essere precedente o uguale a quella di inizio
-- il numero minimo e massimo di persone per team deve essere compreso tra 3 e 6
-- Sono già presenti nel database giudice e mentore con tale nome.
+> - non possono essere creati due hackathon con lo stesso nome
+> - la data di fine non può essere precedente o uguale a quella di inizio
+> - la data di scadenza delle iscrizioni deve essere precedente o uguale a quella di inizio
+> - il numero minimo e massimo di persone per team deve essere compreso tra 3 e 6
+> - Sono già presenti nel database giudice e mentore con tale nome.
 
 ## Architettura e tecnologie usate
 Il progetto implementa un'architettura containerizzata basata su servizi indipendenti ed è pensata per facilitare lo sviluppo locale, il deploy e la manutenzione. 
@@ -111,6 +111,14 @@ SERVER_PORT=8081
 APP_JWT_SECRET=hackhub_local_dev_secret_change_me_please_12345
 APP_JWT_EXPIRATION_MS=3600000
 
+## Inizializzazione del Database
+Il progetto include un file `data.sql` contenente dati iniziali utilizzati per la dimostrazione dell'applicazione
+Durante il primo avvio il database viene popolato automaticamente con:
+
+- utenti
+- team
+- hackathon
+
 ## Avvio
 Per avviare tutti i servizi:
 
@@ -130,6 +138,8 @@ L'applicazione è stata deployata su una macchina virtuale Ubuntu lts su Azure.
 Link: http://158.158.10.19 
 
 # Diagrammi
+
+
 
 ##  REST API Reference Backend
  ### 1) Autenticazione
