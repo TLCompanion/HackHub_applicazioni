@@ -41,19 +41,8 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x gradlew
 
-      - name: Wait for MySQL
-        run: |
-          until mysqladmin ping -h 127.0.0.1 -uroot -p1234abc --silent; do
-            echo "Waiting for MySQL..."
-            sleep 2
-          done
-
-      - name: Show MySQL databases
-        run: |
-          mysql -h 127.0.0.1 -uroot -p1234abc -e "SHOW DATABASES;"
-
       - name: Run tests
-        run: ./gradlew test --info --stacktrace
+        run: ./gradlew test
         env:
           DB_HOST: localhost
           DB_PORT: "3306"
@@ -64,7 +53,7 @@ jobs:
           APP_JWT_SECRET: testsecret
           APP_JWT_EXPIRATION_MS: "3600000"
           SERVER_PORT: "8081"
-
+          
       - name: Upload test reports
         if: always()
         uses: actions/upload-artifact@v4
