@@ -50,15 +50,6 @@ jobs:
           DB_USERNAME: hackhub
           DB_PASSWORD: 1234abc
 
-          APP_JWT_SECRET: testsecret
+          APP_JWT_SECRET: hackhub_local_dev_secret_change_me_please_12345
           APP_JWT_EXPIRATION_MS: "3600000"
           SERVER_PORT: "8081"
-
-      - name: Upload test reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-report
-          path: |
-            hackhub-backend/build/reports/tests/test
-            hackhub-backend/build/test-results/test
