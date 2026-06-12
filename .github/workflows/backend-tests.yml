@@ -1,0 +1,38 @@
+name: Backend Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: hackhub
+          MYSQL_USER: hackhub
+          MYSQL_PASSWORD: 1234abc
+          MYSQL_ROOT_PASSWORD: 1234abc
+        ports:
+          - 3306:3306
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - run: chmod +x gradlew
+
+      - run: ./gradlew test
+        env:
+          DB_HOST: localhost
+          DB_PORT: "3306"
+          DB_NAME: hackhub
+          DB_USERNAME: hackhub
+          DB_PASSWORD: 1234abc
