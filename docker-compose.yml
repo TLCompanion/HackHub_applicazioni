@@ -17,9 +17,6 @@ services:
     ports:
       - "3306:3306"
 
-    volumes:
-      - hackhub_mysql_data:/var/lib/mysql
-
   backend:
     build: ./hackhub-backend
     container_name: hackhub-backend
@@ -53,6 +50,3 @@ services:
 
     ports:
       - "80:80"
-
-volumes:
-  hackhub_mysql_data:
