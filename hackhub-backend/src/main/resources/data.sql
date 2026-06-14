@@ -1,6 +1,6 @@
 INSERT INTO utenti (id_utente, email, nome_utente, password_hash, recapito_bancario) VALUES
  ('U-0c6afd00-cc2c-4c36-9d9b-3e6f27ead172','giudice@gmail','utente3','$2a$10$lp5h7/kmkwJPqQurZSpsYeo.rIgbsAG/n.3ffJNymtet2tRPoC8RS',NULL)
- ,('U-3d24f098-58bb-49d6-a183-c7a4f3b4942d','aaaaa@aaa','giada','$2a$10$zZJFa3tzCNHxE9hU/SN9kOIrRIgA4uWNbRHbc3b2Itplc1CFk.wW6',NULL)
+ ,('U-3d24f098-58bb-49d6-a183-c7a4f3b4942d','aaaaa@aaa','demo','$2a$10$zZJFa3tzCNHxE9hU/SN9kOIrRIgA4uWNbRHbc3b2Itplc1CFk.wW6',NULL)
  ,('U-3d4be420-bf62-4b1a-8847-03a77f436e81','giudice@gmail','utente5','$2a$10$ONZ7n.pQ6TNmp25W.7KyVOn3DO6Sxh2FWjJ0R/qzITk5/eATq4vOK',NULL)
  ,('U-4fa11644-a640-4617-aebe-68e9fe78110f','giudice@gmail','mentore','$2a$10$XtuCwW.X3GWb6u9oC4/WbuZI1rHUwYGsbhbIG1R2s3coBub76iWqi',NULL)
  ,('U-6c6cfd72-6292-4b12-a378-2a88e97f89bc','giudice@gmail','utente1','$2a$10$YOFcKfzuHDjKcSC1eD8JrO2YL1urwgmOzpCS1OEmhF4KR/MjxLWkG',NULL)

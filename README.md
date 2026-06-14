@@ -58,6 +58,9 @@ Le principali tecnologie usate sono:
 ### Database:
 - MySQL: database relazionare usato per la persistenza dei vari dati
 
+## AUTENTIICAZIONE STATELESS
+Il programma utilizza un sistema di autenticazione basato su JSON Web Token. Dopo ogni login il server genera un tokem JWT che contiene le informazioni dell'utente che viene restituito e va inviato in ogni richiesta HTTP. Questo paradigma è stateless perchè il backend non mantiene attiva nessuna sessione in lato server perchè il token contiene già da sè tutte le informazioni necessarie per autenticare l'utente.
+
 ## CONTAINERIZZAZIONE
 L'intera applicazione è divisa in tre container: frontend, backend, databse per garantirne la portabilità anche in fase di produzione, ambiente ospitato su Microsoft Azure.
 Le strategie adottate sono:
@@ -68,7 +71,13 @@ Le strategie adottate sono:
   
 - orchestrazione tramite docker compose che gestisce l'avvio e la comunicazione tra i container
 
-## PIPELINE CI/CD (TODO)
+## PIPELINE CI/CD 
+La pipeline automatizza tramite GitHub l'esecuzione dei test. Ad ogni commit vengono:
+- avvia come lavoro quello di eseguire i test
+- avvia il container docker con il database 
+- configura il database secondo le variabili necessarie
+- installa le tecnologie necessarie
+- esegue i test
 
 # SPECIFICHE DELLA MACCHINA VIRTUALE
 L'applicazione è ospitata su una Virtual Machine Microsoft Azure che gestisce l'intero programma tramite Docker.
