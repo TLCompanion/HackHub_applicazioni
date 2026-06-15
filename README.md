@@ -2,9 +2,9 @@
 
 HackHub è una piattaforma full-stack pensata per la gestione e la partecipazione di team ad Hackathon. 
 
-Le funzionalità principali sono divise in backend e frontend. 
+Le funzionalità implementate sono suddiviin backend e frontend. 
 
-Il backend(precedentemente sviluppato) contiene le seguenti funznionalità
+Il backend(precedentemente sviluppato) contiene le seguenti funzionalità
 
 - Gestione Team: creazione, invito utenti, accettazione o rifiuto di inviti, visualizzazione e partecipazione ad hackathon
 
@@ -18,7 +18,7 @@ Il frontend implementa solo alcune di queste funzionalità, nel particolare:
 
 - Registrazione e login: è possibile registrarsi nella piattaforma ed accedere con tali credenziali.
 
->  Per registrarsi con successo devono essere obbligatoriamente compilati tutti i campi, il nome può essere scelto liberamente (sono già presenti nel database i nomi: giada, utente1 fino ad utente10), l'email deve essere in formato testo@testo, la password deve contenere almeno 6 caratteri
+>  Per registrarsi con successo devono essere obbligatoriamente compilati tutti i campi, il nome può essere scelto liberamente (sono già presenti nel database i nomi: demo, utente1 fino ad utente10), l'email deve essere in formato testo@testo, la password deve contenere almeno 6 caratteri
 
 - Visualizzazione di hackathon e team: la visualizzazione della pagina è lato organizzatore. I team sono già stati creati e possono solo essere visualizzati
 
@@ -35,14 +35,14 @@ Il frontend implementa solo alcune di queste funzionalità, nel particolare:
 Il progetto implementa un'architettura containerizzata basata su servizi indipendenti ed è pensata per facilitare lo sviluppo locale, il deploy e la manutenzione. 
 
 ### Frontend
-- React: Framework frontend usato per sviluppare l'interfaccia come Single Page Application.
+- React: React: libreria JavaScript utilizzata per sviluppare l'interfaccia utente come Single Page Application (SPA).
 
 - Vite: come strumento di build per il frontend React
   
 - Nginx: usato per gestire i file generati dalla build React
 
 ### Backend
-Il backend segue un modello MVC che divide la logica di implementazione delle entità da quelle dei servizi. Le boundary gestiscono le REST API, i servizi implementano la logica di business tramite l'accesso ai dati fornito dalle Repository e le entity generano la base del Database.
+Il backend segue un modello MVC che divide la logica di implementazione delle entità da quelle dei servizi. Le Boundary espongono le API REST, i Service implementano la logica di business, le Repository gestiscono l'accesso ai dati e le Entity rappresentano il modello persistente utilizzato da JPA/Hibernate per la generazione dello schema del database.
 Le principali tecnologie usate sono:
 
 - Java 21: linguaggio usato per sviluppare il backend grazie alla facile integrazione con Spring
@@ -58,11 +58,11 @@ Le principali tecnologie usate sono:
 ### Database:
 - MySQL: database relazionare usato per la persistenza dei vari dati
 
-## AUTENTIICAZIONE STATELESS
-Il programma utilizza un sistema di autenticazione basato su JSON Web Token. Dopo ogni login il server genera un tokem JWT che contiene le informazioni dell'utente che viene restituito e va inviato in ogni richiesta HTTP. Questo paradigma è stateless perchè il backend non mantiene attiva nessuna sessione in lato server perchè il token contiene già da sè tutte le informazioni necessarie per autenticare l'utente.
+## AUTENTICAZIONE STATELESS
+Il programma utilizza un sistema di autenticazione basato su JSON Web Token. Dopo ogni login il server genera un token JWT che contiene le informazioni dell'utente. Il token viene restituito al client e deve essere inviato in ogni richiesta HTTP successiva. Questo paradigma è stateless perché il backend non mantiene alcuna sessione lato server. Tutte le informazioni necessarie per autenticare l'utente sono contenute nel token.
 
 ## CONTAINERIZZAZIONE
-L'intera applicazione è divisa in tre container: frontend, backend, databse per garantirne la portabilità anche in fase di produzione, ambiente ospitato su Microsoft Azure.
+L'intera applicazione è divisa in tre container: frontend, backend, database per garantirne la portabilità anche in fase di produzione, ambiente di produzione ospitato su Microsoft Azure.
 Le strategie adottate sono:
 
 - immagini dedicate per ogni servizio: Node.js per la compilazione del frontend, Nginx per la distribuzione dei file statici frontend, java jdk per l'esecuzione del backend e mysql per la persistenza dei dati
@@ -72,7 +72,7 @@ Le strategie adottate sono:
 - orchestrazione tramite docker compose che gestisce l'avvio e la comunicazione tra i container
 
 ## PIPELINE CI/CD 
-La pipeline automatizza tramite GitHub l'esecuzione dei test. Ad ogni commit vengono:
+La pipeline CI/CD automatizza l'esecuzione dei test tramite GitHub Actions. Ad ogni commit vengono eseguite le seguenti operazioni:
 - avvia come lavoro quello di eseguire i test
 - avvia il container docker con il database 
 - configura il database secondo le variabili necessarie
@@ -142,13 +142,23 @@ Per fermare l'applicazione:
 docker compose down
 
 # Deploy
-L'applicazione è stata deployata su una macchina virtuale Ubuntu lts su Azure.
+L'applicazione è stata deployata su una macchina virtuale Ubuntu Server LTS ospitata su Microsoft Azure.
 
 Link: http://158.158.10.19 
 
+## Credenziali di accesso
+- username: demo
+- password: 123456
+
 # Diagrammi
+<img width="351" height="602" alt="Diagramma finale 1" src="https://github.com/user-attachments/assets/c3142d16-efc1-4645-9606-b849f4c3df9c" />
+Questo diagramma mostra il flusso principale dell'applicazione. I container sono tre e sono gestiti da Docker all'interno della Virtual Machine di Azure.
+- Il frontend è composto da Nginx e React e l'utente può accedervi tramite chiamate HTTP
+- Il backend contiene la parte di Spring Boot e JWT con servizi, controller e componenti di sistema ed è collegata al frontend tramite le REST API
+- Il database MySQL memorizza i dati dell'applicazione. L'accesso ai dati viene gestito tramite JPA e Hibernate.
 
-
+<img width="1035" height="160" alt="Diagramma finale 2" src="https://github.com/user-attachments/assets/dd905f44-4756-4fd3-8775-d0d8a45aabaf" />
+Questo diagramma mostra il flusso principale di Github Actions. Ad ogni push vengono eseguiti test e build e vengono generate le immagini Docker che poi gestiscono i container dentro la Virtual Machine di Azure
 
 ##  REST API Reference Backend
  ### 1) Autenticazione
@@ -229,11 +239,7 @@ Il cambio leader del team avviene direttamente tramite `POST /api/team/leader`.
 - `GET /api/notifiche`
 - `GET /api/hackathon` (pubblico, non richiede JWT)
 - `GET /api/team`
-
-## Credenziali di accesso
-- username: demo
-- password: 123456
-
+  
 ##Autori(frontend):
 - Giada Branchesi
   
