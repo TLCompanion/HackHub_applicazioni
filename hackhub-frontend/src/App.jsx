@@ -2,12 +2,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import React from "react";
 import Login from "./pages/Login";       
 import Dashboard from "./pages/Dashboard"; 
-import "./styles/global.css";
-import "./styles/login.css";
-import "./styles/dashboard.css";
-import "./styles/hackathon.css";
-import "./styles/team.css";
-import "./styles/responsive.css";
+import "./style/global.css";
+import "./style/login.css";
+import "./style/dashboard.css";
+import "./style/hackathon.css";
+import "./style/team.css";
+import "./style/responsive.css";
 
 export default function App() {
   return (
