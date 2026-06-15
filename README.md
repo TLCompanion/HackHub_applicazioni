@@ -71,8 +71,8 @@ Le strategie adottate sono:
   
 - orchestrazione tramite docker compose che gestisce l'avvio e la comunicazione tra i container
 
-## PIPELINE CI/CD 
-La pipeline CI/CD automatizza l'esecuzione dei test tramite GitHub Actions. Ad ogni commit vengono eseguite le seguenti operazioni:
+## PIPELINE CI
+La pipeline CI automatizza l'esecuzione dei test tramite GitHub Actions. Ad ogni commit vengono eseguite le seguenti operazioni:
 - avvia come lavoro quello di eseguire i test
 - avvia il container docker con il database 
 - configura il database secondo le variabili necessarie
