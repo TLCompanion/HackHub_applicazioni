@@ -150,6 +150,7 @@ Link: http://158.158.10.19
 
 
 
+
 ##  REST API Reference Backend
  ### 1) Autenticazione
 - `POST /api/autenticazione/registrazione` - registra utente

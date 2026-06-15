@@ -1,0 +1,68 @@
+@media (max-width: 768px) {
+
+  .dashboard {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+    padding: 20px;
+  }
+
+  .content {
+    width: 100%;
+  }
+
+  .center {
+    flex-direction: column;
+    padding: 15px;
+  }
+
+  .center-column,
+  .widgets-column {
+    width: 100%;
+  }
+
+  .widget-box {
+    min-height: auto;
+    height: auto;
+  }
+
+  .login-page form {
+    width: 90%;
+    max-width: none;
+    padding: 25px;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .team-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .team-row-right {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .team-row-right button {
+    width: 100%;
+  }
+
+  .hackathon-card {
+    width: 150px;
+    height: 150px;
+  }
+
+  .search-bar {
+    width: 95%;
+  }
+
+  .logo {
+    text-align: center;
+  }
+}

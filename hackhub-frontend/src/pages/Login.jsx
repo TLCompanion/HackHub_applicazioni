@@ -11,11 +11,16 @@ export default function Login(){
   const[email, setEmail] = useState("");
   const[errore, setErrore] = useState("");
   const[isLogin, setIsLogin] = useState(false);
+  const[submitted, setSubmitted] = useState(false);
   
   {/* funzione che gestisce la registrazione e il login. Se l'utente è in fase di registrazione
     il campo per l'email è attivo. Una volta completata la registrazione si passa in allo stato login
     con username e password*/} 
   const handleSubmit = async (e) => {
+
+    if (submitted) return;
+    setSubmitted(true);
+
     if(password.length < 6){
       alert("La password deve essere composta da almeno 6 caratteri");
       return;
@@ -44,6 +49,7 @@ export default function Login(){
 
       if(!response.ok){
         alert(isLogin? "Credenziali non valide" : "Registrazione non riuscita");
+        return;
       }
 
       if (!isLogin) {
@@ -70,6 +76,8 @@ export default function Login(){
 
     } catch (err) {
       setErrore(err.message);
+    } finally {
+      setSubmitted(false);
     }
   };
 
@@ -98,7 +106,7 @@ export default function Login(){
         placeholder='password'
         value={password}
         onChange={(e) => setPassword(e.target.value)}/>
-        <button type="submit" className='main-button'>{isLogin? "Login" : "Registrati"}</button>
+        <button disabled={submitted} type="submit" className='main-button'>{isLogin? "Login" : "Registrati"}</button>
 
         <div className="container-switch">
         <p className="switch-mode">

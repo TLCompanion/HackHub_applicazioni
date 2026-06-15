@@ -1,0 +1,124 @@
+.welcome {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  gap: 15px;
+  background: #151D42;
+  border-radius: 25px;
+}
+
+.welcome-speech {
+  font-family: 'Crimson Text', serif;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+h2.welcome-speech {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+p.welcome-speech {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.center-box {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  gap: 20px;
+  height: 300px;
+  background: #FFFFFF;
+  border-radius: 25px;
+}
+
+.row-name {
+  font-family: 'Crimson Text', serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: #151D42;
+  text-align: center;
+}
+
+.hackathon-list {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  gap: 20px;
+}
+
+.hackathon-card {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 180px;
+  height: 180px;
+  border: 1px solid #CECACA;
+  border-radius: 25px;
+  overflow: hidden;
+  background: #FFFFFF;
+}
+
+.card-header {
+  width: 100%;
+  height: 75px;
+  background: #151D42;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  gap: 6px;
+  flex: 1;
+}
+
+.nome-hackathon {
+  font-family: 'Crimson Text', serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: #151D42;
+}
+
+.data,
+.luogo {
+  font-family: 'Crimson Text', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 14px;
+  color: #555555;
+}
+
+.bottom-box {
+  background: #FFFFFF;
+  border-radius: 25px;
+  min-height: 150px;
+  width: 100%;
+  padding: 20px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 15px;
+}
+
+.row label {
+  text-align: left;
+}
+
+.row input,
+.row textarea {
+  width: 100%;
+}
+
+.widget-box label {
+  font-size: 14px;
+}

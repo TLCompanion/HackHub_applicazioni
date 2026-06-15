@@ -20,8 +20,12 @@ export default function Dashboard(){
     const[nomeMentori, setNomeMentori] = useState("");
     const[nomeTeam, setNomeTeam] = useState("");
     const [teams, setTeams] = useState([]);
-    
+    const [submitted, setSubmitted] = useState(false);
+
     const createHackathon = async(e) => {
+
+        if (submitted) return;
+        setSubmitted(true);
 
         if(nome == "" || luogo ==  "" || premio ==  "" || dataInizio == null ||
         dataFine == null || !teamMin || !teamMax || !maxIscrizioni||regolamento ==  ""
@@ -87,6 +91,8 @@ export default function Dashboard(){
         } catch (err) {
             console.error(err);
             console.log("Errore nella creazione");
+        } finally {
+            setSubmitted(false);
         }
     };
     
@@ -250,7 +256,7 @@ export default function Dashboard(){
                     <div className="row"><label>Nome dei mentori:</label>
                     <input type="text" className="input-creation" placeholder="almeno un mentore"
                     value={nomeMentori} onChange={(e) => setNomeMentori(e.target.value)}/></div>
-                    <button className="other-button" onClick={createHackathon}>Crea Hackathon</button>
+                    <button disabled = {submitted} className="other-button" onClick={createHackathon}>Crea Hackathon</button>
                 </div>
             </aside>
         </main>

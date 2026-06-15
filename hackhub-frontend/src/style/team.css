@@ -1,0 +1,48 @@
+.team-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.team-row-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.team-row-right button {
+  width: auto;
+  min-width: 160px;
+  height: 30px;
+}
+
+.team-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.team-card {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #EEEEEE;
+  background-color: #FFFFFF;
+  color: #151D42;
+  display: flex;
+  gap: 50px;
+}
+
+.team-members {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.member {
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: #EEEEEE;
+  color: #151D42;
+}
