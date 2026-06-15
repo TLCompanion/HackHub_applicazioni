@@ -104,21 +104,21 @@ cd HackHub_applicazioni
 Creare un file .env nella directory principale del progetto.
 Incollare il seguente testo:
 
-MYSQL_DATABASE=hackhub
-MYSQL_USER=hackhub
-MYSQL_PASSWORD=1234abc
-MYSQL_ROOT_PASSWORD=1234abc
-MYSQL_PORT=3307
-
-DB_HOST=mysql
-DB_PORT=3306
-DB_NAME=hackhub
-DB_USERNAME=hackhub
-DB_PASSWORD=1234abc
-SERVER_PORT=8081
-
-APP_JWT_SECRET=hackhub_local_dev_secret_change_me_please_12345
-APP_JWT_EXPIRATION_MS=3600000
+MYSQL_DATABASE=hackhub    
+MYSQL_USER=hackhub  
+MYSQL_PASSWORD=1234abc  
+MYSQL_ROOT_PASSWORD=1234abc  
+MYSQL_PORT=3307  
+  
+DB_HOST=mysql  
+DB_PORT=3306  
+DB_NAME=hackhub  
+DB_USERNAME=hackhub  
+DB_PASSWORD=1234abc  
+SERVER_PORT=8081  
+  
+APP_JWT_SECRET=hackhub_local_dev_secret_change_me_please_12345  
+APP_JWT_EXPIRATION_MS=3600000  
 
 ## Inizializzazione del Database
 Il progetto include un file `data.sql` contenente dati iniziali utilizzati per la dimostrazione dell'applicazione
