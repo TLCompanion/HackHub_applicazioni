@@ -242,10 +242,10 @@ Il cambio leader del team avviene direttamente tramite `POST /api/team/leader`.
 - `GET /api/hackathon` (pubblico, non richiede JWT)
 - `GET /api/team`
   
-##Autori(frontend):
+## Autori(frontend):
 - Giada Branchesi
   
-##Autori(backend):
+## Autori(backend):
 - Letizia Pistola
 - Giada Branchesi
 - Jhonatan Silenzi

@@ -36,13 +36,13 @@ export default function Sidebar() {
                         className='side-menu'
                         onClick={() => handleNavigate("hackathon")}
                     >
-                        Hackathon
+                        Visualizza Hackathon
                     </button>
                     <button 
                         className='side-menu'
                         onClick={() => handleNavigate("teams")}
                     >
-                        visualizza team
+                        Visualizza Team
                     </button>
                     <button className="side-menu">
                         Sottomissioni
