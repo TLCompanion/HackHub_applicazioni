@@ -113,7 +113,7 @@ Installare i seguenti strumenti:
 ## Clonazione del repository
 Clonare il repository: 
 
-git clone https://github.com/TLCompanion/HackHub_applicazioni.git
+git clone https://github.com/TLCompanion/HackHub_applicazioni.git  
 cd HackHub_applicazioni
 
 ## Configurazione delle Variabili d'Ambiente
