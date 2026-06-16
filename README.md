@@ -169,13 +169,15 @@ Link: http://158.158.10.19
 - password: 123456
 
 # Diagrammi
-<img width="351" height="602" alt="Diagramma finale 1" src="https://github.com/user-attachments/assets/c3142d16-efc1-4645-9606-b849f4c3df9c" />
+<img width="351" height="602" alt="Diagramma finale 1" src="https://github.com/user-attachments/assets/c3142d16-efc1-4645-9606-b849f4c3df9c" />  
+
 Questo diagramma mostra il flusso principale dell'applicazione. I container sono tre e sono gestiti da Docker all'interno della Virtual Machine di Azure.
 - Il frontend è composto da Nginx e React e l'utente può accedervi tramite chiamate HTTP
 - Il backend contiene la parte di Spring Boot e JWT con servizi, controller e componenti di sistema ed è collegata al frontend tramite le REST API
 - Il database MySQL memorizza i dati dell'applicazione. L'accesso ai dati viene gestito tramite JPA e Hibernate.
 
-<img width="1035" height="160" alt="Diagramma finale 2" src="https://github.com/user-attachments/assets/dd905f44-4756-4fd3-8775-d0d8a45aabaf" />
+<img width="1035" height="160" alt="Diagramma finale 2" src="https://github.com/user-attachments/assets/dd905f44-4756-4fd3-8775-d0d8a45aabaf" />  
+
 Questo diagramma mostra il flusso principale di Github Actions. Ad ogni push vengono eseguiti test e build e vengono generate le immagini Docker che poi gestiscono i container dentro la Virtual Machine di Azure.
 
 
