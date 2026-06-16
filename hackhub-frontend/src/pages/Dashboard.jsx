@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 import { API_URL } from "../config/api";
+import Sidebar from "../components/Sidebar";
+import useHandleBackButton from "../hooks/useHandleBackButton";
 
 export default function Dashboard(){
 
     const navigate = useNavigate();
+    
+    useHandleBackButton(navigate);
+
     const[hackathon, setHackathon] = useState([]);
     const[nome, setNome] = useState("");
     const[dataInizio, setDataInizio] = useState("");
@@ -25,12 +30,12 @@ export default function Dashboard(){
     const createHackathon = async(e) => {
 
         if (submitted) return;
-        setSubmitted(true);
 
         if(nome == "" || luogo ==  "" || premio ==  "" || dataInizio == null ||
         dataFine == null || !teamMin || !teamMax || !maxIscrizioni||regolamento ==  ""
         || scadenzaIscrizioni == null || nomeGiudice ==  "" || nomeMentori ==  ""){
             alert("Tutti i campi devono essere compilati per poter creare un'hackathon");
+            setSubmitted(true);
             return;
         }
 
@@ -48,6 +53,8 @@ export default function Dashboard(){
             alert("La data di scadenza delle iscrizioni deve essere precedente o uguale alla data di inizio");
             return;
         }
+
+        setSubmitted(true);
 
         try {
 
@@ -78,6 +85,11 @@ export default function Dashboard(){
             }
         );
         
+        if(response.status === 401){
+            localStorage.removeItem("token");
+            navigate("/");
+            return;
+        }
 
         if (!response.ok) {
             const errorText = await response.text();
@@ -118,44 +130,19 @@ export default function Dashboard(){
         }
     })
     .then(res => res.json())
-    .then(data => {
-        console.log("TEAM:", data);
-        setTeams(data);
-    })
     .catch(err => console.error(err));
-}, []);
+    }, []);
 
     /*Funzione che mi ritorna alla pagina del login quando clicco esci*/ 
     const handleLogout = () => {
         localStorage.removeItem("token");
-        navigate("/"); 
+        navigate("/", { replace: true });
     };
 
     return ( 
     <div className='dashboard'>
         {/* Colonna a sinistra che contiene il menu */} 
-        <aside className='sidebar'>
-        <div className='logo'>HACKHUB</div>
-
-        <nav className='navigation'>
-            <p className='group-title'>NAVIGAZIONE</p>
-            <ul>
-            <button className='side-menu'>Dashboard</button>
-            <button className='side-menu'>Hackathon</button>
-            <button className='side-menu'>I miei team</button>
-            <button className='side-menu'>Sottomissioni</button>
-            </ul>
-        </nav>
-
-        <nav className='navigation'>
-            <p className='group-title'>ACCOUNT</p>
-            <ul>
-            <button className='side-menu'>Profilo</button>
-            <button className='side-menu'>Impostazioni</button>
-            <button onClick={handleLogout} className='side-menu'>Esci</button>
-            </ul>
-        </nav>
-        </aside>
+        <Sidebar />
 
         {/* parte centrale con tutto il contenuto */} 
         <div className='content'>
@@ -188,31 +175,7 @@ export default function Dashboard(){
                         </div>
                 ))}
                 </div>
-            </div>
-
-                        <div className="bottom-box">
-                        <h2 className="row-name">Visualizza Team</h2>
-    
-
-                    <div className="team-list">
-                        {teams.map((team, index) => (
-                            <div className="team-card" key={index}>
-                                <h3 className="team-name">
-                                    {team.nomeTeam}
-                                </h3>
-                                <div className="team-members">
-                                    {team.membri.map((membro, i) => (
-                                        <span className="member" key={i}>
-                                            {membro}
-                                        </span>
-                                    ))}
-                                </div>
-
-                            </div>
-                        ))}
-                    </div>
-
-                </div>
+            </div>  
             </section>
 
             {/* box a destra */} 
@@ -263,4 +226,4 @@ export default function Dashboard(){
         </div>
     </div>
     );
-    }
+}

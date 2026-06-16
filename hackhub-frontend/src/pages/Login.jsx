@@ -1,18 +1,23 @@
-import React, {useState} from "react";
+import React, { useEffect, useState } from "react";
 import { API_URL } from "../config/api";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+
 
 export default function Login(){
 
   const navigate = useNavigate();
 
+   useEffect(() => {
+      localStorage.removeItem("token");
+  }, []); 
+  
   const[username, setUsername] = useState("");
   const[password, setPassword] = useState("");
   const[email, setEmail] = useState("");
   const[errore, setErrore] = useState("");
   const[isLogin, setIsLogin] = useState(false);
   const[submitted, setSubmitted] = useState(false);
-  
+
   {/* funzione che gestisce la registrazione e il login. Se l'utente è in fase di registrazione
     il campo per l'email è attivo. Una volta completata la registrazione si passa in allo stato login
     con username e password*/} 

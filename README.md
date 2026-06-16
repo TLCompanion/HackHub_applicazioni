@@ -15,6 +15,7 @@ Il backend(precedentemente sviluppato) contiene le seguenti funzionalità
 - Gestione Staff: mentori e giudici possono essere attivamente cambiati dall'organizzatore. I giudici valutano le sottomissioni e i mentori gestiscono la necessità di assistenza dei team.
 
 Il frontend implementa solo alcune di queste funzionalità, nel particolare:
+> I bottoni funzionanti sono Dashboard, visualizza team e visualizza hackathon
 
 - Registrazione e login: è possibile registrarsi nella piattaforma ed accedere con tali credenziali.
 
