@@ -2,9 +2,9 @@
 
 HackHub è una piattaforma full-stack pensata per la gestione e la partecipazione di team ad Hackathon. 
 
-Le funzionalità implementate sono suddiviin backend e frontend. 
+Le funzionalità implementate sono suddivise in backend e frontend. 
 
-Il backend(precedentemente sviluppato) contiene le seguenti funzionalità
+Il backend(precedentemente sviluppato) contiene le seguenti funzionalità:
 
 - Gestione Team: creazione, invito utenti, accettazione o rifiuto di inviti, visualizzazione e partecipazione ad hackathon
 
@@ -102,6 +102,8 @@ git clone https://github.com/TLCompanion/HackHub_applicazioni.git
 cd HackHub_applicazioni
 
 ## Configurazione delle Variabili d'Ambiente
+Dopo aver clonato il repository:
+
 Creare un file .env nella directory principale del progetto.
 Incollare il seguente testo:
 
