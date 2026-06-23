@@ -122,7 +122,7 @@ class GestioneCallBoundaryIT extends BaseHttpIT {
         repositoryMembriTeam.saveAndFlush(new MembroTeam(utente(MEMBRO), team, RuoloTeam.MEMBRO));
 
 
-        String body = jsonPropostaCall(hackathon.getNome(), team.getNome(), "2026-06-21", "15:30:00");
+        String body = jsonPropostaCall(hackathon.getNome(), team.getNome(), "2030-06-21", "15:30:00");
 
 
         eseguiProposta(body, MENTORE)
@@ -150,7 +150,7 @@ class GestioneCallBoundaryIT extends BaseHttpIT {
         repositoryMembriTeam.saveAndFlush(new MembroTeam(utente(LEADER), team, RuoloTeam.LEADER));
 
 
-        String body = jsonPropostaCall(hackathon.getNome(), team.getNome(), "2026-06-21", "15:30:00");
+        String body = jsonPropostaCall(hackathon.getNome(), team.getNome(), "2030-06-21", "15:30:00");
 
 
         eseguiProposta(body, LEADER)
@@ -163,7 +163,7 @@ class GestioneCallBoundaryIT extends BaseHttpIT {
 
     @Test
     void avviaPropostaCall_hackathonNonEsistente_notFound() throws Exception {
-        String body = jsonPropostaCall("hack_inesistente", team.getNome(), "2026-06-21", "15:30:00");
+        String body = jsonPropostaCall("hack_inesistente", team.getNome(), "2030-06-21", "15:30:00");
 
 
         eseguiProposta(body, MENTORE)
@@ -180,7 +180,7 @@ class GestioneCallBoundaryIT extends BaseHttpIT {
         repositoryHackathon.saveAndFlush(hackathon);
 
 
-        String body = jsonPropostaCall(hackathon.getNome(), "team_non_iscritto", "2026-06-21", "15:30:00");
+        String body = jsonPropostaCall(hackathon.getNome(), "team_non_iscritto", "2030-06-21", "15:30:00");
 
 
         eseguiProposta(body, MENTORE)
@@ -202,7 +202,7 @@ class GestioneCallBoundaryIT extends BaseHttpIT {
         repositoryMembriTeam.saveAndFlush(new MembroTeam(utente(LEADER), team, RuoloTeam.LEADER));
 
 
-        String body = jsonPropostaCall(hackathon.getNome(), team.getNome(), "2026-06-23", "15:30:00");
+        String body = jsonPropostaCall(hackathon.getNome(), team.getNome(), "2030-06-23", "15:30:00");
 
 
         eseguiProposta(body, MENTORE)
@@ -225,7 +225,7 @@ class GestioneCallBoundaryIT extends BaseHttpIT {
         repositoryMembriTeam.saveAndFlush(new MembroTeam(utente(MEMBRO), team, RuoloTeam.MEMBRO));
 
 
-        String body = jsonPropostaCall(hackathon.getNome(), team.getNome(), "2026-06-21", "15:30:00");
+        String body = jsonPropostaCall(hackathon.getNome(), team.getNome(), "2030-06-21", "15:30:00");
 
 
         eseguiProposta(body, MENTORE)
@@ -299,14 +299,14 @@ class GestioneCallBoundaryIT extends BaseHttpIT {
         return new Hackathon(
                 "Hackathon Call Test",
                 new Periodo(
-                        LocalDate.of(2026, 6, 20),
-                        LocalDate.of(2026, 6, 22)
+                        LocalDate.of(2030, 6, 20),
+                        LocalDate.of(2030, 6, 22)
                 ),
                 new BigDecimal("1000.00"),
                 "Camerino",
                 5,
                 3,
-                java.time.LocalDateTime.of(2026, 6, 19, 23, 59),
+                java.time.LocalDateTime.of(2030, 6, 19, 23, 59),
                 "Regolamento di prova",
                 20
         );

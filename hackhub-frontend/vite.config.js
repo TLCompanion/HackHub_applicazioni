@@ -6,6 +6,7 @@ export default defineConfig({
   server: {
     host: true,
     watch: {
+      /*verifica se ci sono nuove modifiche*/
       usePolling: true
     },
     proxy: {
