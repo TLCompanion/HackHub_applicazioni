@@ -14,6 +14,9 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
 
+    volumes: 
+    - mysql-data:/var/lib/mysql
+
   backend:
     build: ./hackhub-backend
     container_name: hackhub-backend
@@ -47,3 +50,6 @@ services:
 
     ports:
       - "80:80"
+
+volumes:
+   mysql-data:
